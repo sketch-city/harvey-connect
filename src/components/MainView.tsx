@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Button, Dimensions } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { API, Need } from '../API/API'
 import { CalloutView } from './CalloutView'
 import { BlurView, VibrancyView } from 'react-native-blur'
@@ -84,7 +84,7 @@ export class MainView extends Component<Props, State> {
                     left: 0,
                     right: 0,
                     top: 400,
-                    bottom: 10,
+                    bottom: 50,
                     position: 'absolute',
                 }}>
                     <FlatList data={['Wheelbarrow', 'Labor', 'Labor']}
@@ -92,8 +92,40 @@ export class MainView extends Component<Props, State> {
                         keyExtractor={this.keyExtractor}
                         horizontal={true}
                         pagingEnabled={true}
-
                     />
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignContent: 'space-around',
+                        justifyContent: 'space-between',
+                        backgroundColor: 'red',
+                        marginTop: 10,
+                        marginLeft: 10,
+                        marginRight: 10
+                    }}>
+                        <TouchableOpacity style={{
+                            height: 45,
+                            flex: 1,
+                            marginRight: 10,
+                            backgroundColor: 'green',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: 7
+                        }}>
+                            <Text style={{ color: 'white' }}>Call</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{
+                            height: 45,
+                            flex: 1,
+                            marginLeft: 10,
+                            backgroundColor: 'green',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: 7
+                        }}>
+                            <Text style={{ color: 'white' }}>Text</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         )
