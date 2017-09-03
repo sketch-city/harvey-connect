@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, FlatList, Button, Dimensions } from 'react-native';
 import { API, Need } from '../API/API'
+import { CalloutView } from './CalloutView'
 var MapView = require('react-native-maps')
 
 interface Props {
@@ -25,35 +26,68 @@ export class MainView extends Component<Props, State> {
 
     async getNeeds() {
         let needs = await API.getNeeds()
-        console.log('blag')
-        this.setState({ needs: needs })
+        if (needs !== undefined || needs !== null) {
+            this.setState({ needs: needs })
+        }
     }
+
+    renderItem = ({ item, index }: { item: string, index: number }) => {
+        let { width, height } = Dimensions.get('window')
+        return (
+
+            < View style={{ width: width - 20, height: 200, marginRight: 10, marginLeft: 10 }}>
+                <CalloutView />
+            </View >
+        )
+    }
+
+    keyExtractor = (_: string, index: number): string => {
+        return `${index}`
+    }
+
     render() {
         return (
-            <MapView
-                style={{ left: 0, right: 0, top: 0, bottom: 0, position: 'absolute' }}
-                initialRegion={{
-                    latitude: 29.7630556,
-                    longitude: -95.3630556,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
-                showsUserLocation={true}
-            >
-                {this.state.needs.map(marker => (
-                    <MapView.Marker
-                        pinColor={marker.areVolunteersNeeded ? 'red' : 'blue'}
-                        coordinate={{
-                            latitude: marker.latitude,
-                            longitude: marker.longitude
-                        }}
-                        title={marker.updatedBy}
-                        description={marker.tellUsAboutSupplyNeeds}
-                        key={marker.timestamp}
-                    >
-                    </MapView.Marker>
-                ))}
-            </MapView>
+            <View style={{ flex: 1 }}>
+                <MapView
+                    style={{ flex: 1 }}
+                    initialRegion={{
+                        latitude: 29.7630556,
+                        longitude: -95.3630556,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
+                    showsUserLocation={true}
+                >
+                    {this.state.needs.map(marker => (
+                        <MapView.Marker
+                            pinColor={marker.areVolunteersNeeded ? 'red' : 'blue'}
+                            coordinate={{
+                                latitude: marker.latitude,
+                                longitude: marker.longitude
+                            }}
+                            title={marker.updatedBy}
+                            description={marker.tellUsAboutSupplyNeeds}
+                            key={marker.timestamp}
+                        >
+                        </MapView.Marker>
+                    ))}
+                </MapView>
+                <View style={{
+                    left: 0,
+                    right: 0,
+                    top: 400,
+                    bottom: 10,
+                    position: 'absolute',
+                }}>
+                    <FlatList data={['Wheelbarrow', 'Labor', 'Labor']}
+                        renderItem={this.renderItem}
+                        keyExtractor={this.keyExtractor}
+                        horizontal={true}
+                        pagingEnabled={true}
+
+                    />
+                </View>
+            </View>
         )
     }
 }
