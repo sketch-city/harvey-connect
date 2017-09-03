@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native
 import { API, Need } from '../API/API'
 import { CalloutView } from './CalloutView'
 import { BlurView, VibrancyView } from 'react-native-blur'
+import PageControl from 'react-native-page-control';
 var MapView = require('react-native-maps')
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 
 interface State {
     needs: Need[]
+    currentPage: number
 }
 export class MainView extends Component<Props, State> {
     intervalId: number;
@@ -17,7 +19,8 @@ export class MainView extends Component<Props, State> {
     constructor(props) {
         super(props);
         this.state = {
-            needs: []
+            needs: [],
+            currentPage: 0
         }
     }
 
@@ -53,6 +56,14 @@ export class MainView extends Component<Props, State> {
         return `${index}`
     }
 
+    onScrollEnd = (e) => {
+        let contentOffset = e.nativeEvent.contentOffset;
+        let viewSize = e.nativeEvent.layoutMeasurement;
+
+        let pageNum = Math.floor(contentOffset.x / viewSize.width);
+        this.setState({ currentPage: pageNum })
+    }
+
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -85,15 +96,17 @@ export class MainView extends Component<Props, State> {
                     right: 0,
                     top: 400,
                     bottom: 50,
-                    position: 'absolute',
+                    position: 'absolute'
                 }}>
+
                     <FlatList data={['Wheelbarrow', 'Labor', 'Labor']}
                         renderItem={this.renderItem}
                         keyExtractor={this.keyExtractor}
                         horizontal={true}
                         pagingEnabled={true}
+                        onMomentumScrollEnd={this.onScrollEnd}
                     />
-                    <View style={{
+                    < View style={{
                         flex: 1,
                         flexDirection: 'row',
                         alignContent: 'space-around',
@@ -127,6 +140,18 @@ export class MainView extends Component<Props, State> {
                         </TouchableOpacity>
                     </View>
                 </View>
+                <PageControl
+                    style={{ position: 'absolute', left: 0, right: 0, bottom: 75 }}
+                    numberOfPages={3}
+                    currentPage={this.state.currentPage}
+
+                    pageIndicatorTintColor='gray'
+                    currentPageIndicatorTintColor='red'
+                    indicatorStyle={{ borderRadius: 5 }}
+                    currentIndicatorStyle={{ borderRadius: 5 }}
+                    indicatorSize={{ width: 8, height: 8 }}
+
+                />
             </View>
         )
     }
