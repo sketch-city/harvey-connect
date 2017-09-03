@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, FlatList, Button, Dimensions } from 'react-native';
 import { API, Need } from '../API/API'
 import { CalloutView } from './CalloutView'
+import { BlurView, VibrancyView } from 'react-native-blur'
 var MapView = require('react-native-maps')
 
 interface Props {
@@ -34,10 +35,17 @@ export class MainView extends Component<Props, State> {
     renderItem = ({ item, index }: { item: string, index: number }) => {
         let { width, height } = Dimensions.get('window')
         return (
-
-            < View style={{ width: width - 20, height: 200, marginRight: 10, marginLeft: 10 }}>
+            <BlurView style={{
+                width: width - 20,
+                height: 200,
+                marginRight: 10,
+                marginLeft: 10,
+                borderRadius: 6
+            }}
+                blurType={'light'}>
                 <CalloutView />
-            </View >
+            </BlurView >
+
         )
     }
 

@@ -16,8 +16,7 @@ export class CalloutView extends Component<Props, State> {
         return (
             <View style={{
                 height: 40,
-                justifyContent: 'center',
-                backgroundColor: 'white'
+                justifyContent: 'center'
             }}>
                 <Text style={{ marginLeft: 10 }}>{item}</Text>
             </View>
@@ -30,7 +29,7 @@ export class CalloutView extends Component<Props, State> {
 
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: 'red' }}>
+            <View style={{ flex: 1 }}>
                 <Text style={{
                     textAlign: 'left',
                     marginTop: 10,
