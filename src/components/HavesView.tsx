@@ -152,7 +152,7 @@ export class HavesView extends Component<{}, State> {
                         </TouchableOpacity>
                     </View>
                     <View style={{ flex: 1 }}>
-                        <FlatList data={['Phone', 'Category', 'Description', 'Name']}
+                        <FlatList data={['Phone', 'Category', 'Description', 'Name', 'Address', 'Email']}
                             renderItem={this.renderItem}
                             keyExtractor={this.keyExtractor}
                             extraData={this.state.selectedCategories}
