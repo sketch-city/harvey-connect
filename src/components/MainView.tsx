@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { API, Need } from '../API/API'
 import { CalloutView } from './CalloutView'
-import { BlurView, VibrancyView } from 'react-native-blur'
 import PageControl from 'react-native-page-control';
 var MapView = require('react-native-maps')
 
@@ -38,17 +37,16 @@ export class MainView extends Component<Props, State> {
     renderItem = ({ item, index }: { item: string, index: number }) => {
         let { width, height } = Dimensions.get('window')
         return (
-            <BlurView style={{
+            <View style={{
                 width: width - 20,
                 height: 200,
                 marginRight: 10,
                 marginLeft: 10,
-                borderRadius: 6
-            }}
-                blurType={'light'}>
+                borderRadius: 6,
+                backgroundColor: "#fff",
+            }}>
                 <CalloutView />
-            </BlurView >
-
+            </View >
         )
     }
 
@@ -105,6 +103,7 @@ export class MainView extends Component<Props, State> {
                         horizontal={true}
                         pagingEnabled={true}
                         onMomentumScrollEnd={this.onScrollEnd}
+                        showsHorizontalScrollIndicator={false}
                     />
                     < View style={{
                         flex: 1,
