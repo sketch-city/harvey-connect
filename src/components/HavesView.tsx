@@ -19,7 +19,7 @@ interface State {
         longitude: number
     },
     modalVisible: boolean,
-    selectedCategory: string
+    selectedCategories: {}
 }
 export class HavesView extends Component<{}, State> {
 
@@ -28,7 +28,7 @@ export class HavesView extends Component<{}, State> {
         this.state = {
             currentLocation: null,
             modalVisible: false,
-            selectedCategory: ''
+            selectedCategories: []
         }
     }
 
@@ -56,7 +56,7 @@ export class HavesView extends Component<{}, State> {
                 return <TextCell placeholder={item} />
             case 'Category':
                 return <ButtonCell buttonTitle={'Select Category'}
-                    value={this.state.selectedCategory}
+                    value={`${Object.keys(this.state.selectedCategories).length} Selected`}
                     onButtonPress={() => this.setState({ modalVisible: true })} />
 
             default:
@@ -76,7 +76,6 @@ export class HavesView extends Component<{}, State> {
                 }
             })
         }, (error) => {
-
         }, {
                 enableHighAccuracy: true,
                 timeout: 20000,
@@ -88,10 +87,11 @@ export class HavesView extends Component<{}, State> {
             <View style={{ flex: 1 }}>
                 <Modal visible={this.state.modalVisible}
                     animationType={'slide'}>
-                    <CategoryList closeButtonTapped={(items) => this.setState({ modalVisible: false })}
+                    <CategoryList
+                        selectedCategories={this.state.selectedCategories}
+                        closeButtonTapped={(items) => this.setState({ modalVisible: false, selectedCategories: items })}
                         itemSelected={(item) => this.setState({
                             modalVisible: false,
-                            selectedCategory: item
                         })} />
                 </Modal>
                 <MapView
@@ -155,6 +155,7 @@ export class HavesView extends Component<{}, State> {
                         <FlatList data={['Phone', 'Category', 'Description', 'Name']}
                             renderItem={this.renderItem}
                             keyExtractor={this.keyExtractor}
+                            extraData={this.state.selectedCategories}
                         />
                     </View>
 

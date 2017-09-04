@@ -2,19 +2,22 @@ import React, { Component } from 'react';
 import { View, Text, SectionList, TouchableOpacity } from 'react-native';
 import { Separator } from './Separator'
 interface Props {
-    closeButtonTapped: (items: { key: string, item: string, index: number }[]) => void,
-    itemSelected: (item: string) => void
+    closeButtonTapped: ({ }) => void,
+    itemSelected: (item: string) => void,
+    selectedCategories?: {}
+
 }
 
 interface State {
-    selectedIndices: { key: string, item: string, index: number }[]
-    data: { data: any[], key: any, keyExtractor: any }[]
+    selectedItems: {},
+    data: { data: string[], key: any, keyExtractor: any }[]
 }
 export class CategoryList extends Component<Props, State> {
     constructor(props) {
         super(props)
+        console.log(props.selectedCategories)
         this.state = {
-            selectedIndices: [],
+            selectedItems: props.selectedCategories ? props.selectedCategories : {},
             data: [
                 { data: ['muck', 'heavy trash', 'laundry'], key: 'labor', keyExtractor: this.keyExtractor },
                 { data: ['Nurse, medical doctor', 'House repairs', 'Legal advice'], key: 'specialized', keyExtractor: this.keyExtractor },
@@ -23,8 +26,14 @@ export class CategoryList extends Component<Props, State> {
 
         }
     }
-    itemSelected = (key: string, index: number) => {
-        return this.state.selectedIndices.filter((firstVal) => firstVal.key === key && firstVal.index === index).length > 0
+
+    itemSelected = (key: string, item: string) => {
+        let items = this.state.selectedItems[key]
+        if (items !== null && items !== undefined) {
+            return items.filter((firstVal) => firstVal === item).length > 0
+        } else {
+            return false
+        }
     }
 
     renderItem = ({ item, index, section }: { item: string, index: number, section: any }) => {
@@ -32,23 +41,28 @@ export class CategoryList extends Component<Props, State> {
             <TouchableOpacity style={{
                 height: 40,
                 padding: 10,
-                backgroundColor: this.itemSelected(section.key, index) ? 'green' : 'white'
+                backgroundColor: this.itemSelected(section.key, item) ? 'green' : 'white'
             }}
                 onPress={() => {
-                    if (this.itemSelected(section.key, index)) {
-                        let current = [...this.state.selectedIndices]
-
-                        let foundIndex = current.findIndex((val) => val.key === section.key && val.index === index)
-                        current.splice(foundIndex, 1)
-                        this.setState({ selectedIndices: current })
+                    if (this.itemSelected(section.key, item)) {
+                        let current = { ...this.state.selectedItems }
+                        let items = current[section.key]
+                        let foundIndex = items.findIndex((val) => val === item)
+                        items.splice(foundIndex, 1)
+                        if (items.length === 0) {
+                            delete current[section.key]
+                        }
+                        this.setState({ selectedItems: current })
                     } else {
-                        let current = [...this.state.selectedIndices]
+                        let current = { ...this.state.selectedItems }
 
-                        current.push({ key: section.key, item: item, index: index })
-                        this.setState({ selectedIndices: current })
+                        let array = current[section.key] ? current[section.key] : []
+                        array.push(item)
+                        current[section.key] = array
+                        this.setState({ selectedItems: current })
                     }
                 }}>
-                <Text style={{ color: this.itemSelected(section.key, index) ? 'white' : 'black' }}>{item}</Text>
+                <Text style={{ color: this.itemSelected(section.key, item) ? 'white' : 'black' }}>{item}</Text>
             </TouchableOpacity>
         )
     }
@@ -63,6 +77,7 @@ export class CategoryList extends Component<Props, State> {
     }
 
     render() {
+
         return (
             <View style={{ flex: 1, marginTop: 20 }}>
                 <TouchableOpacity style={{
@@ -74,7 +89,8 @@ export class CategoryList extends Component<Props, State> {
                     alignItems: 'center',
                     borderRadius: 4,
                 }}
-                    onPress={this.props.closeButtonTapped}>
+                    onPress={() => this.props.closeButtonTapped(this.state.selectedItems)}
+                >
                     <Text style={{ color: 'white' }}>Save</Text>
                 </TouchableOpacity>
                 <SectionList
@@ -82,7 +98,7 @@ export class CategoryList extends Component<Props, State> {
                     renderSectionHeader={this.renderHeader}
                     ItemSeparatorComponent={Separator}
                     sections={this.state.data}
-                    extraData={this.state.selectedIndices}
+                    extraData={this.state.selectedItems}
                 />
             </View>
         )
