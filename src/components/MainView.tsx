@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { API, Need } from '../API/API'
+import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import { API, Need, Category, Marker, CreateMarker } from '../API/API'
 import { CalloutView } from './CalloutView'
 import PageControl from 'react-native-page-control';
 let MapView = require('react-native-maps');
@@ -10,6 +11,7 @@ interface Props {
 
 interface State {
     needs: Need[]
+    categories: Category[]
     currentPage: number
 }
 export class MainView extends Component<Props, State> {
@@ -19,12 +21,21 @@ export class MainView extends Component<Props, State> {
         super(props);
         this.state = {
             needs: [],
+            categories: [],
             currentPage: 0
         }
     }
 
     componentDidMount() {
         this.getNeeds()
+        this.getCategories()
+    }
+
+    async getCategories() {
+        let categories = await API.getCategories()
+        if (categories !== undefined || categories !== null) {
+            this.setState({ categories: categories })
+        }
     }
 
     async getNeeds() {
@@ -72,14 +83,14 @@ export class MainView extends Component<Props, State> {
                 >
                     {this.state.needs.filter(marker => { return marker.latitude !== null && marker.longitude !== null }).map(marker => (
                         <MapView.Marker
-                            pinColor={marker.areVolunteersNeeded ? 'red' : 'blue'}
+                            pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
                             coordinate={{
                                 latitude: marker.latitude,
                                 longitude: marker.longitude
                             }}
-                            title={marker.updatedBy}
-                            description={marker.tellUsAboutSupplyNeeds}
-                            key={marker.timestamp}
+                            title={marker.category}
+                            description={marker.description}
+                            key={marker.id}
                         />
                     ))}
                 </MapView>
