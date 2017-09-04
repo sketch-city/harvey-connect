@@ -55,7 +55,7 @@ export class HavesView extends Component<{}, State> {
             case 'Name':
                 return <TextCell placeholder={item} />
             case 'Category':
-                return <ButtonCell buttonTitle={item}
+                return <ButtonCell buttonTitle={'Select Category'}
                     value={this.state.selectedCategory}
                     onButtonPress={() => this.setState({ modalVisible: true })} />
 
@@ -88,7 +88,7 @@ export class HavesView extends Component<{}, State> {
             <View style={{ flex: 1 }}>
                 <Modal visible={this.state.modalVisible}
                     animationType={'slide'}>
-                    <CategoryList closeButtonTapped={() => this.setState({ modalVisible: false })}
+                    <CategoryList closeButtonTapped={(items) => this.setState({ modalVisible: false })}
                         itemSelected={(item) => this.setState({
                             modalVisible: false,
                             selectedCategory: item
