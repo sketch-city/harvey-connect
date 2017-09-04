@@ -13,5 +13,4 @@ export const RootTabNavigator = TabNavigator({
     Map: { screen: MainView },
     "I Need": { screen: NeedsView },
     "I Have": { screen: HavesView },
-    Matches: { screen: MatchesView },
 });
