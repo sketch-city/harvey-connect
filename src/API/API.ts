@@ -41,12 +41,12 @@ export class Need extends Object {
 
 export class API {
     public static getNeeds = async () => {
-        // let needs = await fetch('https://api.harveyneeds.org/api/v1/needs?location_name=Houston')
-        // let json = await needs.json()
-        // await AsyncStorage.setItem('needs', JSON.stringify(json))
+        let needs = await fetch('https://api.harveyneeds.org/api/v1/needs?location_name=Houston')
+        let json = await needs.json()
+        await AsyncStorage.setItem('needs', JSON.stringify(json))
         return new Promise<Need[]>((resolve) => {
-            // let final = json["needs"].map((val) => new Need(val))
-            resolve([])
+            let final = json["needs"].map((val) => new Need(val))
+            resolve(final)
         })
     }
 }
