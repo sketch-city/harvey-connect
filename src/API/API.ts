@@ -41,6 +41,7 @@ export class Marker extends Object {
     marker_type: string
     name: string
     description: string
+    resolved: boolean
     phone: string
     category: string
     latitude: number
@@ -48,7 +49,13 @@ export class Marker extends Object {
     address: string
     email?: any
     updated_at: Date
-    resolved: boolean
+
+    coordinate = () => {
+        return {
+            longitude: this.longitude,
+            latitude: this.latitude
+        }
+    }
 }
 
 export class Category extends Object {
@@ -93,6 +100,36 @@ export class API {
             .catch(function (error) {
                 console.error(error)
             })
+
+        return new Promise<Need>((resolve) => {
+            let final = new Need(post)
+            resolve(final)
+        })
+    }
+
+    public static updateMarker = async (item: Marker) => {
+        let url = 'https://api.harveyneeds.org/api/v1/connect/markers/' + item.id
+        let post = null
+        await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => {
+                if (response.status == 201) {
+                    response.json().then(function (data) {
+                        post = data
+                    })
+                }
+                else throw new Error('Something went wrong on api server!')
+            })
+            .catch(function (error) {
+                console.error(error)
+            })
+
         return new Promise<Need>((resolve) => {
             let final = new Need(post)
             resolve(final)
@@ -103,6 +140,7 @@ export class API {
         let categories = await fetch('https://api.harveyneeds.org/api/v1/connect/categories')
         let json = await categories.json()
         await AsyncStorage.setItem('categories', JSON.stringify(json))
+
         return new Promise<Category[]>((resolve) => {
             let final = json["categories"].map((val) => {
                 let cat = new Category(val)
@@ -110,11 +148,6 @@ export class API {
                     let specialized = cat.labor[7].specialized
                     cat.labor[7] = specialized
                 }
-                //TODO: Address this mapping concern after api's are updated
-                // if (cat.housing) {
-                //     let petTypes = cat.housing[2]
-                //     cat.housing[2] = petTypes
-                // }
                 return cat
             })
             resolve(final)

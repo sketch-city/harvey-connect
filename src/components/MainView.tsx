@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { API, Need, Category } from '../API/API'
+import { API, Need, Category, Marker } from '../API/API'
 import { CalloutView } from './CalloutView'
 import PageControl from 'react-native-page-control';
 var MapView = require('react-native-maps')
