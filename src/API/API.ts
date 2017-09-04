@@ -36,6 +36,19 @@ export class Need extends Object {
     }
 }
 
+export class CreateMarker {
+    marker_type: string
+    name: string
+    description: string
+    phone: string
+    category: string
+    latitude: number
+    longitude: number
+    address: string
+    email?: any
+}
+
+
 export class Marker extends Object {
     id: number
     marker_type: string
@@ -79,7 +92,7 @@ export class API {
         })
     }
 
-    public static saveNewMarker = async (item: Marker) => {
+    public static saveNewMarker = async (item: CreateMarker) => {
         let post = null
         await fetch('https://api.harveyneeds.org/api/v1/connect/markers', {
             method: 'POST',
