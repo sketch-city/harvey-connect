@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { API, Need } from '../API/API'
+import { API, Need, Category } from '../API/API'
 import { CalloutView } from './CalloutView'
 import PageControl from 'react-native-page-control';
 var MapView = require('react-native-maps')
@@ -10,6 +10,7 @@ interface Props {
 
 interface State {
     needs: Need[]
+    categories: Category[]
     currentPage: number
 }
 export class MainView extends Component<Props, State> {
@@ -19,12 +20,21 @@ export class MainView extends Component<Props, State> {
         super(props);
         this.state = {
             needs: [],
+            categories: [],
             currentPage: 0
         }
     }
 
     componentDidMount() {
         this.getNeeds()
+        this.getCategories()
+    }
+
+    async getCategories() {
+        let categories = await API.getCategories()
+        if (categories !== undefined || categories !== null) {
+            this.setState({ categories: categories })
+        }
     }
 
     async getNeeds() {

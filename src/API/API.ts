@@ -39,14 +39,49 @@ export class Need extends Object {
     }
 }
 
+export class Category extends Object {
+    labor: any[];
+    equipment: string[];
+    supplies: string[];
+    transportation: string[];
+    housing: any[];
+    food: string[];
+}
+
 export class API {
     public static getNeeds = async () => {
-        // let needs = await fetch('https://api.harveyneeds.org/api/v1/needs?location_name=Houston')
-        // let json = await needs.json()
-        // await AsyncStorage.setItem('needs', JSON.stringify(json))
+        let needs = await fetch('https://api.harveyneeds.org/api/v1/connect/markers')
+        let json = await needs.json()
+        await AsyncStorage.setItem('needs', JSON.stringify(json))
         return new Promise<Need[]>((resolve) => {
-            // let final = json["needs"].map((val) => new Need(val))
+            let final = json["markers"].map((val) => new Need(val))
             resolve([])
         })
     }
+
+    public static getCategories = async () => {
+        let categories = await fetch('https://api.harveyneeds.org/api/v1/connect/categories')
+        let json = await categories.json()
+        await AsyncStorage.setItem('categories', JSON.stringify(json))
+        return new Promise<Category[]>((resolve) => {
+            let final = json["categories"].map((val) => {
+                let cat = new Category(val)
+                if (cat.labor) {
+                    let specialized = cat.labor[7].specialized
+                    cat.labor[7] = specialized
+                }
+                //TODO: Address this mapping concern after api's are updated
+                // if (cat.housing) {
+                //     let petTypes = cat.housing[2]
+                //     cat.housing[2] = petTypes
+                // }
+                return cat
+            })
+            resolve(final)
+        })
+    }
 }
+
+
+
+// https://api.harveyneeds.org/api/v1/connect/categories
