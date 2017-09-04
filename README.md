@@ -1,6 +1,6 @@
-# HarveryHelper
+# HarveyHelper
 
-An app to help coordinate relief efforts in Houston after hurricane Harvery. built with React Native.
+An app to help coordinate relief efforts in Houston after hurricane Harvey. built with React Native.
 
 # Getting Started
 First, clone the project, go to the terminal, and run `yarn` at the root of the project. You should also
