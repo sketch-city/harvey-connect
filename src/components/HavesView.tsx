@@ -12,14 +12,28 @@ import MapView from 'react-native-maps'
 import { TextCell } from './TextCell'
 import { ButtonCell } from './ButtonCell'
 import { CategoryList } from './CategoryList'
+import { API } from './../API/API'
 
+export enum MarkerValue {
+    Name,
+    Phone,
+    Address,
+    Description,
+    Email
+}
 interface State {
     currentLocation: {
         latitude: number,
         longitude: number
     },
     modalVisible: boolean,
-    selectedCategories: {}
+    selectedCategories: {},
+    phone: string,
+    name: string,
+    address: string
+    email?: string,
+    description: string
+
 }
 export class HavesView extends Component<{}, State> {
 
@@ -28,7 +42,12 @@ export class HavesView extends Component<{}, State> {
         this.state = {
             currentLocation: null,
             modalVisible: false,
-            selectedCategories: []
+            selectedCategories: [],
+            phone: '',
+            description: '',
+            email: '',
+            address: '',
+            name: ''
         }
     }
 
@@ -47,26 +66,62 @@ export class HavesView extends Component<{}, State> {
         )
     }
 
+    updateState = (value: string, marker: MarkerValue) => {
+        switch (marker) {
+            case MarkerValue.Address: this.setState({ address: value })
+                break;
+            case MarkerValue.Name: this.setState({ name: value })
+                break;
+            case MarkerValue.Phone: this.setState({ phone: value })
+                break;
+            case MarkerValue.Description: this.setState({ description: value })
+                break;
+            case MarkerValue.Email: this.setState({ email: value })
+                break;
+        }
+    }
+
     viewForCell = (item: string) => {
         switch (item) {
             case 'Phone':
                 return <TextCell placeholder={'Phone Number'}
-                    keyboardType={'phone-pad'} />
+                    keyboardType={'phone-pad'}
+                    markerValue={MarkerValue.Phone}
+                    textChanged={this.updateState} />
             case 'Name':
-                return <TextCell placeholder={item} />
+                return <TextCell placeholder={item}
+                    markerValue={MarkerValue.Name}
+                    textChanged={this.updateState} />
             case 'Category':
                 return <ButtonCell buttonTitle={'Select Category'}
                     value={`${Object.keys(this.state.selectedCategories).length} Selected`}
                     onButtonPress={() => this.setState({ modalVisible: true })} />
+            case 'Email':
+                return <TextCell placeholder={item}
+                    markerValue={MarkerValue.Email}
+                    textChanged={this.updateState} />
+            case 'Description':
+                return <TextCell placeholder={item}
+                    markerValue={MarkerValue.Description}
+                    textChanged={this.updateState} />
+            case 'Address':
+                return <TextCell placeholder={item}
+                    markerValue={MarkerValue.Address}
+                    textChanged={this.updateState} />
 
-            default:
-                return <TextCell placeholder={item} />
         }
     }
     keyExtractor = (_: string, index: number): string => {
         return `${index}`
     }
 
+    createMarker = () => {
+        console.log(this.state.name)
+        console.log(this.state.address)
+        console.log(this.state.description)
+        console.log(this.state.email)
+        console.log(this.state.phone)
+    }
     componentDidMount() {
         navigator.geolocation.getCurrentPosition((position) => {
             this.setState({
@@ -76,6 +131,7 @@ export class HavesView extends Component<{}, State> {
                 }
             })
         }, (error) => {
+            console.log(error)
         }, {
                 enableHighAccuracy: true,
                 timeout: 20000,
@@ -147,7 +203,8 @@ export class HavesView extends Component<{}, State> {
                             justifyContent: 'center',
                             alignItems: 'center',
                             borderRadius: 7
-                        }}>
+                        }}
+                            onPress={this.createMarker}>
                             <Text style={{ color: 'white' }}>Save</Text>
                         </TouchableOpacity>
                     </View>
