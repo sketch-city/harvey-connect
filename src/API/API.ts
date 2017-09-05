@@ -71,15 +71,6 @@ export class Marker extends Object {
     }
 }
 
-export class Category extends Object {
-    labor: any[]
-    equipment: string[]
-    supplies: string[]
-    transportation: string[]
-    housing: any[]
-    food: string[]
-}
-
 export class API {
     public static getNeeds = async () => {
         let needs = await fetch('https://api.harveyneeds.org/api/v1/connect/markers')
@@ -103,12 +94,12 @@ export class API {
             body: JSON.stringify(item)
         })
             .then((response) => {
-                if (response.status == 201) {
+                if (response.status === 201) {
                     response.json().then(function (data) {
                         post = data
                     })
                 }
-                else throw new Error('Something went wrong on api server!')
+                else { throw new Error('Something went wrong on api server!') }
             })
             .catch(function (error) {
                 console.error(error)
@@ -132,12 +123,12 @@ export class API {
             body: JSON.stringify(item)
         })
             .then((response) => {
-                if (response.status == 201) {
+                if (response.status === 201) {
                     response.json().then(function (data) {
                         post = data
                     })
                 }
-                else throw new Error('Something went wrong on api server!')
+                else { throw new Error('Something went wrong on api server!') }
             })
             .catch(function (error) {
                 console.error(error)
@@ -154,16 +145,85 @@ export class API {
         let json = await categories.json()
         await AsyncStorage.setItem('categories', JSON.stringify(json))
 
-        return new Promise<Category[]>((resolve) => {
-            let final = json["categories"].map((val) => {
-                let cat = new Category(val)
-                if (cat.labor) {
-                    let specialized = cat.labor[7].specialized
-                    cat.labor[7] = specialized
-                }
-                return cat
+        let categoryDictionary = new KeyedCollection<any>()
+
+        return new Promise<KeyedCollection<any>>((resolve) => {
+            json["categories"].map((val) => {
+                let keyName = Object.getOwnPropertyNames(val)[0]
+                let values = val[keyName]
+
+                categoryDictionary.Add(keyName, values)
             })
-            resolve(final)
+
+            resolve(categoryDictionary)
         })
+    }
+}
+
+
+export interface IKeyedCollection<T> {
+    Add(key: string, value: T);
+    ContainsKey(key: string): boolean;
+    Count(): number;
+    Item(key: string): T;
+    Keys(): string[];
+    Remove(key: string): T;
+    Values(): T[];
+}
+
+export class KeyedCollection<T> implements IKeyedCollection<T> {
+    private items: { [index: string]: T } = {};
+
+    private count: number = 0;
+
+    public ContainsKey(key: string): boolean {
+        return this.items.hasOwnProperty(key);
+    }
+
+    public Count(): number {
+        return this.count;
+    }
+
+    public Add(key: string, value: T) {
+        if (!this.items.hasOwnProperty(key)) {
+            this.count++;
+        }
+
+        this.items[key] = value;
+    }
+
+    public Remove(key: string): T {
+        var val = this.items[key];
+        delete this.items[key];
+        this.count--;
+        return val;
+    }
+
+    public Item(key: string): T {
+        return this.items[key];
+    }
+
+    public Keys(): string[] {
+        var keySet: string[] = [];
+
+        for (var prop in this.items) {
+            if (this.items.hasOwnProperty(prop)) {
+                keySet.push(prop);
+            }
+        }
+
+        return keySet;
+    }
+
+    public Values(): T[] {
+        var values: T[] = [];
+
+        for (var prop in this.items) {
+            if (this.items.hasOwnProperty(prop)) {
+                values.push(this.items[prop]);
+            }
+        }
+
+        return values;
     }
 }

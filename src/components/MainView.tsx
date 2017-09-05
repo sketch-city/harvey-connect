@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { API, Need, Category, Marker, CreateMarker } from '../API/API'
+import { API, Need, KeyedCollection, Marker, CreateMarker, IKeyedCollection } from '../API/API'
 import { CalloutView } from './CalloutView'
 import PageControl from 'react-native-page-control';
 let MapView = require('react-native-maps');
@@ -11,7 +11,7 @@ interface Props {
 
 interface State {
     needs: Need[]
-    categories: Category[]
+    categories: KeyedCollection<any>
     currentPage: number
 }
 export class MainView extends Component<Props, State> {
@@ -21,7 +21,7 @@ export class MainView extends Component<Props, State> {
         super(props);
         this.state = {
             needs: [],
-            categories: [],
+            categories: new KeyedCollection,
             currentPage: 0
         }
     }
@@ -49,7 +49,7 @@ export class MainView extends Component<Props, State> {
         let { width, height } = Dimensions.get('window');
         console.log(`width ${width}, height: ${height}`);
         return (
-            <View style={[styles.cardItem, { width: width - 20}]}>
+            <View style={[styles.cardItem, { width: width - 20 }]}>
                 <CalloutView />
             </View >
         )
@@ -94,7 +94,7 @@ export class MainView extends Component<Props, State> {
                         />
                     ))}
                 </MapView>
-                <View style={[styles.cardSheet, { height: height/3.0 }]}>
+                <View style={[styles.cardSheet, { height: height / 3.0 }]}>
                     <View style={styles.cardWrapper}>
                         <FlatList data={['Wheelbarrow', 'Labor', 'Labor']}
                             renderItem={this.renderItem}
