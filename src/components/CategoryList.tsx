@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, SectionList, TouchableOpacity } from 'react-native';
 import { Separator } from './Separator'
+import { Colors } from './Colors'
+
 interface Props {
     closeButtonTapped: ({ }) => void,
     itemSelected: (item: string) => void,
@@ -68,7 +70,9 @@ export class CategoryList extends Component<Props, State> {
     }
     renderHeader = (item) => {
         return (
-            <Text style={{ height: 25, padding: 10, paddingLeft: 15, marginBottom: 10 }}>{item.section.key}</Text>
+            <Text style={{ height: 30, padding: 10, marginBottom: 10,
+             color:Colors.darkblue, backgroundColor:'#F5F5F5',
+             fontWeight:'bold'}}>{item.section.key}</Text>
         )
     }
 
@@ -83,6 +87,7 @@ export class CategoryList extends Component<Props, State> {
                 <TouchableOpacity style={{
                     marginLeft: 10,
                     height: 40,
+                    marginBottom:10,
                     backgroundColor: 'green',
                     width: 75,
                     justifyContent: 'center',
