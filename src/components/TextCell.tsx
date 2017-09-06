@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, KeyboardTypeIOS, KeyboardType } from 'react-native';
 import {MarkerValue} from './HavesView'
+import { Colors } from './Colors'
+
 interface Props {
     placeholder: string,
     value?: string,
@@ -16,7 +18,7 @@ export class TextCell extends Component<Props, {}> {
                 value={this.props.value}
                 keyboardType={this.props.keyboardType}
                 multiline={false}
-                style={{ height: 45 }}
+                style={{ height: 45, color:Colors.darkblue }}
                 onChangeText={(text) => this.props.textChanged(text,this.props.markerValue)}
                 ></TextInput>
         )
