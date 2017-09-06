@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { API, Need, KeyedCollection, Marker, CreateMarker, IKeyedCollection } from '../API/API'
-import { CalloutView } from './CalloutView'
+import { CalloutView } from './CalloutView';
 import PageControl from 'react-native-page-control';
+
 let MapView = require('react-native-maps');
 
 interface Props {
@@ -14,6 +14,7 @@ interface State {
     categories: KeyedCollection<any>
     currentPage: number
 }
+
 export class MainView extends Component<Props, State> {
     intervalId: number;
 

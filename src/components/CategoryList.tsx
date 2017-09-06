@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, SectionList, TouchableOpacity } from 'react-native';
 import { Separator } from './Separator'
+import { AsyncStorage } from 'react-native';
+import { KeyedCollection, IKeyedCollection } from '../API/API';
 import { Colors } from './Colors'
 
 interface Props {
@@ -10,22 +12,60 @@ interface Props {
 
 }
 
+export class Category extends Object {
+    data: string[]
+    key: any
+    keyExtractor: any
+
+    constructor(key: string, values: any[], keyExtractor: any) {
+        super();
+        this.key = key;
+        this.data = values;
+        this.keyExtractor = keyExtractor;
+    }
+}
+
 interface State {
     selectedItems: {},
-    data: { data: string[], key: any, keyExtractor: any }[]
+    data: Category[]
 }
 export class CategoryList extends Component<Props, State> {
     constructor(props) {
         super(props)
         console.log(props.selectedCategories)
+
         this.state = {
             selectedItems: props.selectedCategories ? props.selectedCategories : {},
-            data: [
-                { data: ['muck', 'heavy trash', 'laundry'], key: 'labor', keyExtractor: this.keyExtractor },
-                { data: ['Nurse, medical doctor', 'House repairs', 'Legal advice'], key: 'specialized', keyExtractor: this.keyExtractor },
-                { data: ['construction', 'baby and child care', 'medicine'], key: 'supplies', keyExtractor: this.keyExtractor }
-            ]
+            data: []
 
+        }
+    }
+
+    componentDidMount() {
+        this.readCategories();
+    }
+
+    async readCategories() {
+        try {
+            let value = await AsyncStorage.getItem('categories');
+            if (value !== null) {
+                let categoriesParsed = JSON.parse(value).categories;
+
+                let categoryData = categoriesParsed.map((val) => {
+                    let keyName = Object.getOwnPropertyNames(val)[0];
+                    let values = val[keyName];
+
+                    if (values === null || values === undefined) { return; }
+
+                    let data = values.map((prop) => Object.getOwnPropertyNames(prop)[0].toUpperCase().replace("_", " "));
+
+                    return new Category(keyName.toUpperCase(), data, this.keyExtractor);
+                });
+
+                this.setState({ data: categoryData });
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -70,9 +110,11 @@ export class CategoryList extends Component<Props, State> {
     }
     renderHeader = (item) => {
         return (
-            <Text style={{ height: 30, padding: 10, marginBottom: 10,
-             color:Colors.darkblue, backgroundColor:'#F5F5F5',
-             fontWeight:'bold'}}>{item.section.key}</Text>
+            <Text style={{
+                height: 40, padding: 10,
+                color: Colors.darkblue, backgroundColor: '#F5F5F5',
+                fontWeight: 'bold'
+            }}>{item.section.key}</Text>
         )
     }
 
@@ -87,7 +129,7 @@ export class CategoryList extends Component<Props, State> {
                 <TouchableOpacity style={{
                     marginLeft: 10,
                     height: 40,
-                    marginBottom:10,
+                    marginBottom: 10,
                     backgroundColor: 'green',
                     width: 75,
                     justifyContent: 'center',
