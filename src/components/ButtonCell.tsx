@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { Colors } from './Colors'
+
 interface Props {
     buttonTitle: string,
     value?: string,
@@ -14,7 +16,7 @@ export class ButtonCell extends Component<Props, {}> {
             }}>
                 <TouchableOpacity style={{
                     height: 40,
-                    backgroundColor: 'green',
+                    backgroundColor: Colors.darkblue,
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: 10,
@@ -23,7 +25,7 @@ export class ButtonCell extends Component<Props, {}> {
                 }}
                     onPress={this.props.onButtonPress}
                 >
-                    <Text>{this.props.buttonTitle}</Text>
+                    <Text style={{color:'#fff'}} >{this.props.buttonTitle}</Text>
                 </TouchableOpacity>
                 <Text>{this.props.value}</Text>
             </View>
