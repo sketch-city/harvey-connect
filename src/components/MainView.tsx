@@ -7,6 +7,7 @@ import PageControl from 'react-native-page-control';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
+import _ from 'lodash';
 
 const DEFAULT_VP_DELTA = {
     latitudeDelta: 0.0922,
@@ -113,10 +114,27 @@ export class MainView extends Component<Props, State> {
         }
 
         // Based on the selected need, render the list view
-        
+        const needs = this.getFilteredNeeds()
+        const selectedNeedIndex = _.findIndex(needs, need => {
+            return +need.id === +this.state.selectedNeedId
+        })
+
         return (
             <View style={styles.cardWrapper}>
-                <FlatList data={this.getFilteredNeeds()}
+                <FlatList
+                    ref='cardViewList'
+                    data={needs}
+                    extraData={{
+                        selectedNeedId: this.state.selectedNeedId
+                    }}
+                    getItemLayout={(data, index) => {
+                        const {width} = Dimensions.get('window');
+                        return {
+                            offset: width * index,
+                            length: width,
+                            index
+                        }
+                    }}
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor}
                     horizontal
@@ -130,7 +148,7 @@ export class MainView extends Component<Props, State> {
 
     renderItem ({ item, index }: { item: string, index: number }) {
         let { width, height } = Dimensions.get('window');
-        console.log(`width ${width}, height: ${height}`);
+        // console.log(`width ${width}, height: ${height}`);
 
         return (
             <View style={StyleSheet.flatten([styles.cardItem, { width: width - 20 }])}>
@@ -151,8 +169,18 @@ export class MainView extends Component<Props, State> {
     onPressNeedMarker (e) {
         const {id, coordinate} = e.nativeEvent;
 
+
         this.setState({selectedNeedId: id}, () => {
             this.refs.mainMap.animateToCoordinate(coordinate, 300);
+
+            const needs = this.getFilteredNeeds()
+            let selectedNeedIndex = _.findIndex(needs, need => {
+                return +need.id === +this.state.selectedNeedId
+            })
+            this.refs.cardViewList.scrollToIndex({
+                index: selectedNeedIndex,
+                animated: true,
+            })
         });
     }
 
@@ -169,7 +197,7 @@ export class MainView extends Component<Props, State> {
                     {this.renderNeeds()}
                 </MapView>
 
-                <View style={StyleSheet.flatten([styles.cardSheet, { height: height / 3.0 }])}>
+                <View style={StyleSheet.flatten([styles.cardSheet])}>
                     <View style={styles.actionButtonContainer}>
                         <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonFilter} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
@@ -194,13 +222,13 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 10,
-        height: 240,
         flexDirection: 'column',
         justifyContent: 'space-between',
         position: 'absolute'
     },
     cardWrapper: {
         flex: 1,
+        height: 225,
     },
     cardItem: {
         flex: 1,
