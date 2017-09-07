@@ -13,6 +13,7 @@ import { TextCell } from './TextCell'
 import { ButtonCell } from './ButtonCell'
 import { CategoryList } from './CategoryList'
 import { API } from './../API/API'
+import { Separator } from "./Separator";
 
 export enum MarkerValue {
     Name,
@@ -83,7 +84,7 @@ export class HavesView extends Component<{}, State> {
 
     viewForCell = (item: string) => {
         switch (item) {
-            case 'Phone':
+            case 'Phone Number':
                 return <TextCell placeholder={'Phone Number'}
                     keyboardType={'phone-pad'}
                     markerValue={MarkerValue.Phone}
@@ -100,7 +101,7 @@ export class HavesView extends Component<{}, State> {
                 return <TextCell placeholder={item}
                     markerValue={MarkerValue.Email}
                     textChanged={this.updateState} />
-            case 'Description':
+            case 'I Have ...':
                 return <TextCell placeholder={item}
                     markerValue={MarkerValue.Description}
                     textChanged={this.updateState} />
@@ -151,7 +152,7 @@ export class HavesView extends Component<{}, State> {
                         })} />
                 </Modal>
                 <MapView
-                    style={{ flex: 2 }}
+                    style={{ flex: 1 }}
                     initialRegion={{
                         latitude: 29.7630556,
                         longitude: -95.3630556,
@@ -178,46 +179,32 @@ export class HavesView extends Component<{}, State> {
                 <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'white' }}
                     contentContainerStyle={{ flex: 1, backgroundColor: 'white' }}
                     behavior={'position'}>
-                    < View style={{
-                        height: 45,
-                        margin: 10,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                    }}>
-                        <TouchableOpacity style={{
-                            height: 45,
-                            flex: 1,
-                            marginRight: 10,
-                            backgroundColor: 'green',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderRadius: 7
-                        }}>
-                            <Text style={{ color: 'white' }}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{
-                            height: 45,
-                            flex: 1,
-                            marginLeft: 10,
-                            backgroundColor: 'green',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderRadius: 7
-                        }}
-                            onPress={this.createMarker}>
-                            <Text style={{ color: 'white' }}>Save</Text>
-                        </TouchableOpacity>
-                    </View>
                     <View style={{ flex: 1 }}>
-                        <FlatList data={['Phone', 'Category', 'Description', 'Name', 'Address', 'Email']}
+                        <FlatList data={['Name', 'Address', 'Phone Number', 'I Have ...']}
                             renderItem={this.renderItem}
                             keyExtractor={this.keyExtractor}
                             extraData={this.state.selectedCategories}
+                            ItemSeparatorComponent={Separator}
                         />
                     </View>
-
+                    <View style={{ height: 1, backgroundColor: 'gray' }} />
+                    <TouchableOpacity style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 45
+                    }}>
+                        <Text style={{ color: 'gray', fontWeight: '600' }}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'green',
+                        height: 45
+                    }}>
+                        <Text style={{ color: 'white', fontWeight: '600' }}>Done</Text>
+                    </TouchableOpacity>
                 </KeyboardAvoidingView>
-            </View>
+            </View >
         )
     }
 }
