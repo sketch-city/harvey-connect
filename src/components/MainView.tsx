@@ -67,8 +67,32 @@ export class MainView extends Component<Props, State> {
         this.setState({ currentPage: pageNum })
     };
 
+    renderNeeds () {
+        if (this.state.needs.length === 0) {
+            return
+        }
+
+        return this.state.needs.filter(marker => marker.latitude && marker.longitude)
+            .map(marker => {
+                return (
+                    <MapView.Marker
+                        pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
+                        coordinate={{
+                            latitude: marker.latitude,
+                            longitude: marker.longitude
+                        }}
+                        title={marker.category}
+                        description={marker.description}
+                        key={marker.id}
+                    />
+                )
+
+            })
+    }
+
     render() {
-        let height = Dimensions.get('window').height;
+        const {height} = Dimensions.get('window');
+
         return (
             <View style={{ flex: 1 }}>
                 <MapView
@@ -81,20 +105,10 @@ export class MainView extends Component<Props, State> {
                     }}
                     showsUserLocation={true}
                 >
-                    {this.state.needs.filter(marker => { return marker.latitude !== null && marker.longitude !== null }).map(marker => (
-                        <MapView.Marker
-                            pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
-                            coordinate={{
-                                latitude: marker.latitude,
-                                longitude: marker.longitude
-                            }}
-                            title={marker.category}
-                            description={marker.description}
-                            key={marker.id}
-                        />
-                    ))}
+                    {this.renderNeeds()}
                 </MapView>
-                <View style={[styles.cardSheet, { height: height / 3.0 }]}>
+
+                <View style={StyleSheet.flatten([styles.cardSheet, { height: height / 3.0 }])}>
                     <View style={styles.cardWrapper}>
                         <FlatList data={['Wheelbarrow', 'Labor', 'Labor']}
                             renderItem={this.renderItem}
@@ -105,15 +119,17 @@ export class MainView extends Component<Props, State> {
                             showsHorizontalScrollIndicator={false}
                         />
                     </View>
+
                     <View style={styles.actionButtonContainer}>
-                        <TouchableOpacity activeOpacity={0.9} style={[styles.actionButton, styles.actionButtonLeft]}>
-                            <Text style={styles.actionButtonText}>Call</Text>
+                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
+                            <Text style={styles.actionButtonText}>FILTER</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.9} style={[styles.actionButton, styles.actionButtonRight]}>
-                            <Text style={styles.actionButtonText}>Text</Text>
+                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
+                            <Text style={styles.actionButtonText}>NEED</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
+
                 <PageControl
                     style={styles.pageControl}
                     numberOfPages={3}
@@ -166,11 +182,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 7
     },
-    actionButtonLeft: {
-        marginRight: 10,
+    actionButtonFilter: {
+      backgroundColor: '#FF5A5F',
+      marginRight: 10,
     },
-    actionButtonRight: {
-        marginLeft: 10,
+    actionButtonNeed: {
+      backgroundColor: '#0080FE',
+      marginLeft: 10,
     },
     actionButtonText: {
         color: 'white'
