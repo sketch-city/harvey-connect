@@ -15,16 +15,20 @@ interface State {
     needs: Need[]
     categories: KeyedCollection<any>
     currentPage: number
+    filters: string[]
 }
+
 export class MainView extends Component<Props, State> {
     intervalId: number;
 
     constructor(props) {
         super(props);
+
         this.state = {
             needs: [],
             categories: new KeyedCollection,
-            currentPage: 0
+            currentPage: 0,
+            filters: []
         }
     }
 
@@ -74,7 +78,12 @@ export class MainView extends Component<Props, State> {
             return
         }
 
-        return this.state.needs.filter(marker => marker.latitude && marker.longitude)
+        let filteredNeeds = [...this.state.needs]
+        if (this.state.filters && this.state.filters.length > 0) {
+            filteredNeeds = filteredNeeds.filter(need => this.state.filters.includes(need.category))
+        }
+
+        return filteredNeeds.filter(marker => marker.latitude && marker.longitude)
             .map(marker => {
                 return (
                     <MapView.Marker
@@ -90,6 +99,14 @@ export class MainView extends Component<Props, State> {
                 )
 
             })
+    }
+
+    onPressFilter () {
+        console.log('when people press filter')
+    }
+
+    onPressNeed () {
+        console.log('when people press need')
     }
 
     render() {
@@ -112,12 +129,12 @@ export class MainView extends Component<Props, State> {
 
                 <View style={StyleSheet.flatten([styles.cardSheet, { height: height / 3.0 }])}>
                     <View style={styles.actionButtonContainer}>
-                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressFilter} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
                             <Text style={styles.actionButtonText}> FILTER </Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressNeed} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
                             <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
                             <Text style={styles.actionButtonText}>NEED</Text>
                         </TouchableOpacity>
