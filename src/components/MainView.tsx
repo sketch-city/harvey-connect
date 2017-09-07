@@ -6,7 +6,18 @@ import { CalloutView } from './CalloutView'
 import PageControl from 'react-native-page-control';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
-let MapView = require('react-native-maps');
+import MapView from 'react-native-maps';
+
+const DEFAULT_VP_DELTA = {
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+}
+
+const INITIAL_REGION = {
+    latitude: 29.7630556,
+    longitude: -95.3630556,
+    ...DEFAULT_VP_DELTA
+}
 
 interface Props {
 }
@@ -15,7 +26,8 @@ interface State {
     needs: Need[]
     categories: KeyedCollection<any>
     currentPage: number
-    filters: string[]
+    filters: string[],
+    selectedNeedId: number
 }
 
 export class MainView extends Component<Props, State> {
@@ -28,7 +40,8 @@ export class MainView extends Component<Props, State> {
             needs: [],
             categories: new KeyedCollection,
             currentPage: 0,
-            filters: []
+            filters: [],
+            selectedNeedId: 0
         }
     }
 
@@ -75,12 +88,12 @@ export class MainView extends Component<Props, State> {
 
     renderNeeds () {
         if (this.state.needs.length === 0) {
-            return
+            return;
         }
 
-        let filteredNeeds = [...this.state.needs]
+        let filteredNeeds = this.state.needs.slice();
         if (this.state.filters && this.state.filters.length > 0) {
-            filteredNeeds = filteredNeeds.filter(need => this.state.filters.includes(need.category))
+            filteredNeeds = filteredNeeds.filter(need => this.state.filters.includes(need.category));
         }
 
         return filteredNeeds.filter(marker => marker.latitude && marker.longitude)
@@ -92,6 +105,8 @@ export class MainView extends Component<Props, State> {
                             latitude: marker.latitude,
                             longitude: marker.longitude
                         }}
+                        identifier={`${marker.id}`}
+                        onPress={this.onPressNeedMarker.bind(this)}
                         title={marker.category}
                         description={marker.description}
                         key={marker.id}
@@ -101,12 +116,41 @@ export class MainView extends Component<Props, State> {
             })
     }
 
-    onPressFilter () {
+    renderNeedCardView () {
+        if (!this.state.selectedNeedId) {
+            return
+        }
+
+        // Based on the selected need, render the list view
+        return (
+            <View style={styles.cardWrapper}>
+                <FlatList data={['Wheelbarrow', 'Labor', 'Labor']}
+                    renderItem={this.renderItem}
+                    keyExtractor={this.keyExtractor}
+                    horizontal={true}
+                    pagingEnabled={true}
+                    onMomentumScrollEnd={this.onScrollEnd}
+                    showsHorizontalScrollIndicator={false}
+                />
+            </View>
+        )
+    }
+
+    onPressActionButtonFilter () {
         console.log('when people press filter')
     }
 
-    onPressNeed () {
+    onPressActionButtonNeed () {
         console.log('when people press need')
+        this.setState({selectedNeedId: 1})
+    }
+
+    onPressNeedMarker (e) {
+        const {id, coordinate} = e.nativeEvent;
+
+        this.setState({selectedNeedId: id}, () => {
+            this.refs.mainMap.animateToCoordinate(coordinate, 300);
+        });
     }
 
     render() {
@@ -114,14 +158,9 @@ export class MainView extends Component<Props, State> {
 
         return (
             <View style={{ flex: 1 }}>
-                <MapView
+                <MapView ref='mainMap'
                     style={{ flex: 1 }}
-                    initialRegion={{
-                        latitude: 29.7630556,
-                        longitude: -95.3630556,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
+                    initialRegion={INITIAL_REGION}
                     showsUserLocation={true}
                 >
                     {this.renderNeeds()}
@@ -129,39 +168,19 @@ export class MainView extends Component<Props, State> {
 
                 <View style={StyleSheet.flatten([styles.cardSheet, { height: height / 3.0 }])}>
                     <View style={styles.actionButtonContainer}>
-                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressFilter} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonFilter} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
                             <Text style={styles.actionButtonText}> FILTER </Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressNeed} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonNeed.bind(this)} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
                             <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
                             <Text style={styles.actionButtonText}>NEED</Text>
                         </TouchableOpacity>
                     </View>
 
-                    <View style={styles.cardWrapper}>
-                        <FlatList data={['Wheelbarrow', 'Labor', 'Labor']}
-                            renderItem={this.renderItem}
-                            keyExtractor={this.keyExtractor}
-                            horizontal={true}
-                            pagingEnabled={true}
-                            onMomentumScrollEnd={this.onScrollEnd}
-                            showsHorizontalScrollIndicator={false}
-                        />
-                    </View>
+                    {this.renderNeedCardView()}
                 </View>
-
-                <PageControl
-                    style={styles.pageControl}
-                    numberOfPages={3}
-                    currentPage={this.state.currentPage}
-                    pageIndicatorTintColor='gray'
-                    currentPageIndicatorTintColor='red'
-                    indicatorStyle={{ borderRadius: 5 }}
-                    currentIndicatorStyle={{ borderRadius: 5 }}
-                    indicatorSize={{ width: 8, height: 8 }}
-                />
             </View>
         )
     }
