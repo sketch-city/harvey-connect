@@ -60,19 +60,10 @@ export class MainView extends Component<Props, State> {
     async getNeeds() {
         let needs = await API.getNeeds();
         if (needs !== undefined || needs !== null) {
+            needs = needs.filter(need => need.latitude && need.longitude)
             this.setState({ needs: needs })
         }
     }
-
-    renderItem = ({ item, index }: { item: string, index: number }) => {
-        let { width, height } = Dimensions.get('window');
-        console.log(`width ${width}, height: ${height}`);
-        return (
-            <View style={[styles.cardItem, { width: width - 20 }]}>
-                <CalloutView />
-            </View >
-        )
-    };
 
     keyExtractor = (_: string, index: number): string => {
         return `${index}`
@@ -86,34 +77,34 @@ export class MainView extends Component<Props, State> {
         this.setState({ currentPage: pageNum })
     };
 
-    renderNeeds () {
-        if (this.state.needs.length === 0) {
-            return;
-        }
-
+    getFilteredNeeds () {
         let filteredNeeds = this.state.needs.slice();
-        if (this.state.filters && this.state.filters.length > 0) {
-            filteredNeeds = filteredNeeds.filter(need => this.state.filters.includes(need.category));
+
+        if (this.state.filters.length === 0) {
+            return filteredNeeds
         }
 
-        return filteredNeeds.filter(marker => marker.latitude && marker.longitude)
-            .map(marker => {
-                return (
-                    <MapView.Marker
-                        pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
-                        coordinate={{
-                            latitude: marker.latitude,
-                            longitude: marker.longitude
-                        }}
-                        identifier={`${marker.id}`}
-                        onPress={this.onPressNeedMarker.bind(this)}
-                        title={marker.category}
-                        description={marker.description}
-                        key={marker.id}
-                    />
-                )
+        return filteredNeeds.filter(need => this.state.filters.includes(need.category));
+    }
 
-            })
+    renderNeeds () {
+        return this.getFilteredNeeds().map(marker => {
+            return (
+                <MapView.Marker
+                    pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
+                    coordinate={{
+                        latitude: marker.latitude,
+                        longitude: marker.longitude
+                    }}
+                    identifier={`${marker.id}`}
+                    onPress={this.onPressNeedMarker.bind(this)}
+                    title={marker.category}
+                    description={marker.description}
+                    key={marker.id}
+                />
+            )
+
+        })
     }
 
     renderNeedCardView () {
@@ -122,19 +113,31 @@ export class MainView extends Component<Props, State> {
         }
 
         // Based on the selected need, render the list view
+        
         return (
             <View style={styles.cardWrapper}>
-                <FlatList data={['Wheelbarrow', 'Labor', 'Labor']}
+                <FlatList data={this.getFilteredNeeds()}
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor}
-                    horizontal={true}
-                    pagingEnabled={true}
+                    horizontal
+                    pagingEnabled
                     onMomentumScrollEnd={this.onScrollEnd}
                     showsHorizontalScrollIndicator={false}
                 />
             </View>
         )
     }
+
+    renderItem ({ item, index }: { item: string, index: number }) {
+        let { width, height } = Dimensions.get('window');
+        console.log(`width ${width}, height: ${height}`);
+
+        return (
+            <View style={StyleSheet.flatten([styles.cardItem, { width: width - 20 }])}>
+                <CalloutView need={item} />
+            </View >
+        )
+    };
 
     onPressActionButtonFilter () {
         console.log('when people press filter')
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
         position: 'absolute'
     },
     cardWrapper: {
-        flex: 1
+        flex: 1,
     },
     cardItem: {
         flex: 1,
