@@ -4,6 +4,8 @@ import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native
 import { API, Need, KeyedCollection, Marker, CreateMarker, IKeyedCollection } from '../API/API'
 import { CalloutView } from './CalloutView'
 import PageControl from 'react-native-page-control';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
+import FAIcon from 'react-native-vector-icons/FontAwesome';
 let MapView = require('react-native-maps');
 
 interface Props {
@@ -109,6 +111,18 @@ export class MainView extends Component<Props, State> {
                 </MapView>
 
                 <View style={StyleSheet.flatten([styles.cardSheet, { height: height / 3.0 }])}>
+                    <View style={styles.actionButtonContainer}>
+                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
+                            <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
+                            <Text style={styles.actionButtonText}> FILTER </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
+                            <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
+                            <Text style={styles.actionButtonText}>NEED</Text>
+                        </TouchableOpacity>
+                    </View>
+
                     <View style={styles.cardWrapper}>
                         <FlatList data={['Wheelbarrow', 'Labor', 'Labor']}
                             renderItem={this.renderItem}
@@ -118,15 +132,6 @@ export class MainView extends Component<Props, State> {
                             onMomentumScrollEnd={this.onScrollEnd}
                             showsHorizontalScrollIndicator={false}
                         />
-                    </View>
-
-                    <View style={styles.actionButtonContainer}>
-                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
-                            <Text style={styles.actionButtonText}>FILTER</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
-                            <Text style={styles.actionButtonText}>NEED</Text>
-                        </TouchableOpacity>
                     </View>
                 </View>
 
@@ -175,20 +180,25 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     actionButton: {
-        height: 44,
+        height: 40,
         flex: 1,
         backgroundColor: 'green',
         justifyContent: 'center',
+        flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 7
+        borderRadius: 50,
+        marginRight: 20,
+        marginLeft: 20,
+    },
+    actionButtonIcon: {
+        color: "#FFF",
+        marginRight: 5
     },
     actionButtonFilter: {
-      backgroundColor: '#FF5A5F',
-      marginRight: 10,
+        backgroundColor: '#FF5A5F',
     },
     actionButtonNeed: {
-      backgroundColor: '#0080FE',
-      marginLeft: 10,
+        backgroundColor: '#0080FE',
     },
     actionButtonText: {
         color: 'white'
@@ -197,7 +207,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        bottom: 74
+        bottom: 15
     },
     pageControlIndicator: {
         borderRadius: 5
