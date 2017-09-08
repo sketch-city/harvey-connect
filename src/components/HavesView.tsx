@@ -6,14 +6,25 @@ import {
     TouchableOpacity,
     Dimensions,
     KeyboardAvoidingView,
-    Modal
+    Modal,
+    Alert
 } from 'react-native';
 import MapView from 'react-native-maps'
 import { TextCell } from './TextCell'
 import { ButtonCell } from './ButtonCell'
 import { CategoryList } from './CategoryList'
-import { API } from './../API/API'
+import { API, CreateMarker } from './../API/API'
 import { Separator } from "./Separator";
+
+type LatLng = {
+    latitude: number,
+    longitude: number,
+}
+
+type Point = {
+    x: number,
+    y: number,
+}
 
 export enum MarkerValue {
     Name,
@@ -22,8 +33,15 @@ export enum MarkerValue {
     Description,
     Email
 }
+interface Props {
+    cancelTapped: () => void
+}
 interface State {
     currentLocation: {
+        latitude: number,
+        longitude: number
+    },
+    pinLocation: {
         latitude: number,
         longitude: number
     },
@@ -36,11 +54,12 @@ interface State {
     description: string
 
 }
-export class HavesView extends Component<{}, State> {
+export class HavesView extends Component<Props, State> {
 
     constructor(props) {
         super(props)
         this.state = {
+            pinLocation: null,
             currentLocation: null,
             modalVisible: false,
             selectedCategories: [],
@@ -53,9 +72,10 @@ export class HavesView extends Component<{}, State> {
     }
 
     renderItem = ({ item, index }: { item: string, index: number }) => {
+        let height = item === 'I Have ...' ? 100 : 45
         return (
             <View style={{
-                height: 45,
+                height: height,
                 marginRight: 10,
                 marginLeft: 10,
                 justifyContent: 'center'
@@ -116,17 +136,13 @@ export class HavesView extends Component<{}, State> {
         return `${index}`
     }
 
-    createMarker = () => {
-        console.log(this.state.name)
-        console.log(this.state.address)
-        console.log(this.state.description)
-        console.log(this.state.email)
-        console.log(this.state.phone)
-    }
     componentDidMount() {
         navigator.geolocation.getCurrentPosition((position) => {
             this.setState({
                 currentLocation: {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }, pinLocation: {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
                 }
@@ -139,6 +155,54 @@ export class HavesView extends Component<{}, State> {
                 maximumAge: 1000
             })
     }
+
+    onDragEnd = (info: { coordinate: LatLng, position: Point }) => {
+        this.setState({ pinLocation: info.coordinate })
+    }
+
+    createNeed = async () => {
+        let createMarker = new CreateMarker()
+        createMarker.name = this.state.name
+        createMarker.marker_type = 'need'
+        createMarker.address = this.state.address
+        createMarker.description = this.state.description
+        createMarker.phone = this.state.phone
+        createMarker.latitude = this.state.pinLocation.latitude
+        createMarker.longitude = this.state.pinLocation.longitude
+        createMarker.category = { labor: [{ muck: null }] }
+        Alert.alert('Coming Soon!')
+        // try {
+        //     let result = await API.saveNewMarker(createMarker)
+        //     console.log(`created a new marker: ${result}`)
+        // } catch (error) {
+        //     console.log('could not create a new marker')
+        // }
+
+
+    }
+
+    renderPin = () => {
+        if (this.state.currentLocation !== null) {
+            return (
+                <MapView.Marker
+                    draggable
+                    onDragEnd={this.onDragEnd}
+                    pinColor={'red'}
+                    coordinate={{
+                        latitude: this.state.currentLocation.latitude,
+                        longitude: this.state.currentLocation.longitude
+                    }}
+                    title={'test'}
+                    description={'this is a need'}
+                    key={'blah'}
+                >
+                </MapView.Marker>
+            )
+        } else {
+            return null
+        }
+    }
+
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -160,21 +224,8 @@ export class HavesView extends Component<{}, State> {
                         longitudeDelta: 0.0421,
                     }}
                     showsUserLocation={true}
-
                 >
-                    {/* {this.state.needs.map(marker => (
-                <MapView.Marker
-                    pinColor={marker.areVolunteersNeeded ? 'red' : 'blue'}
-                    coordinate={{
-                        latitude: marker.latitude,
-                        longitude: marker.longitude
-                    }}
-                    title={marker.updatedBy}
-                    description={marker.tellUsAboutSupplyNeeds}
-                    key={marker.timestamp}
-                >
-                </MapView.Marker>
-            ))} */}
+                    {this.renderPin()}
                 </MapView>
                 <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'white' }}
                     contentContainerStyle={{ flex: 1, backgroundColor: 'white' }}
@@ -187,20 +238,22 @@ export class HavesView extends Component<{}, State> {
                             ItemSeparatorComponent={Separator}
                         />
                     </View>
-                    <View style={{ height: 1, backgroundColor: 'gray' }} />
+                    <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
                     <TouchableOpacity style={{
                         alignItems: 'center',
                         justifyContent: 'center',
                         height: 45
-                    }}>
-                        <Text style={{ color: 'gray', fontWeight: '600' }}>Cancel</Text>
+                    }}
+                        onPress={this.props.cancelTapped}>
+                        <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: 'green',
+                        backgroundColor: '#50E3C2',
                         height: 45
-                    }}>
+                    }}
+                        onPress={this.createNeed}>
                         <Text style={{ color: 'white', fontWeight: '600' }}>Done</Text>
                     </TouchableOpacity>
                 </KeyboardAvoidingView>
