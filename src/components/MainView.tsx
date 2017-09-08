@@ -207,7 +207,9 @@ export class MainView extends Component<Props, State> {
                 <ModalView
                     modalVisible={this.state.modalVisible}
                     modalType={this.state.modalType}
-                    onCancel={this.dismissModal.bind(this)} />
+                    onCancel={this.dismissModal.bind(this)}
+                    categories={this.state.categories}
+                    filters={this.state.filters} />
 
                 <MapView ref='mainMap'
                     style={{ flex: 1 }}

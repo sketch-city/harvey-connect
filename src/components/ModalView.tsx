@@ -14,6 +14,8 @@ import { FiltersView } from './FiltersView'
 interface Props {
   modalVisible: boolean
   modalType: string
+  categories?: KeyedCollection<any>
+  filters?: string[]
   onCancel(): void
   onSelectFilters?(): void
 }
@@ -36,7 +38,10 @@ export class ModalView extends Component<Props, State> {
         modalContent = <FiltersView 
           onCancel={this.props.onCancel}
           onSelectFilters={this.props.onSelectFilters} 
+          categories={this.props.categories}
+          filters={this.props.filters}
         />
+        break
       default:
         break
     }
