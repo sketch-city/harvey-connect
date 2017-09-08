@@ -14,6 +14,7 @@ import { TextCell } from './TextCell'
 import { ButtonCell } from './ButtonCell'
 import { CategoryList } from './CategoryList'
 import { API, CreateMarker } from './../API/API'
+import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
 
 type LatLng = {
@@ -72,7 +73,7 @@ export class HavesView extends Component<Props, State> {
     }
 
     renderItem = ({ item, index }: { item: string, index: number }) => {
-        let height = item === 'I Have ...' ? 100 : 45
+        let height = item === 'I Need ...' ? 100 : 45
         return (
             <View style={{
                 height: height,
@@ -121,7 +122,7 @@ export class HavesView extends Component<Props, State> {
                 return <TextCell placeholder={item}
                     markerValue={MarkerValue.Email}
                     textChanged={this.updateState} />
-            case 'I Have ...':
+            case 'I Need ...':
                 return <TextCell placeholder={item}
                     markerValue={MarkerValue.Description}
                     textChanged={this.updateState} />
@@ -169,14 +170,15 @@ export class HavesView extends Component<Props, State> {
         createMarker.phone = this.state.phone
         createMarker.latitude = this.state.pinLocation.latitude
         createMarker.longitude = this.state.pinLocation.longitude
-        createMarker.category = { labor: [{ muck: null }] }
-        Alert.alert('Coming Soon!')
-        // try {
-        //     let result = await API.saveNewMarker(createMarker)
-        //     console.log(`created a new marker: ${result}`)
-        // } catch (error) {
-        //     console.log('could not create a new marker')
-        // }
+        createMarker.data = { categories: { labor: null } }
+        createMarker.category = 'deprecated'
+        createMarker.device_uuid = await UUIDHelper.getUUID()
+        try {
+            let result = await API.saveNewMarker(createMarker)
+            Alert.alert('Success!', 'Created a new need!')
+        } catch (error) {
+            Alert.alert('Error', 'Something went wrong, please try again.')
+        }
 
 
     }
@@ -231,7 +233,7 @@ export class HavesView extends Component<Props, State> {
                     contentContainerStyle={{ flex: 1, backgroundColor: 'white' }}
                     behavior={'position'}>
                     <View style={{ flex: 1 }}>
-                        <FlatList data={['Name', 'Address', 'Phone Number', 'I Have ...']}
+                        <FlatList data={['Name', 'Address', 'Phone Number', 'I Need ...']}
                             renderItem={this.renderItem}
                             keyExtractor={this.keyExtractor}
                             extraData={this.state.selectedCategories}
