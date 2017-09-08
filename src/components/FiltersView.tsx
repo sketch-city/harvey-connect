@@ -19,6 +19,7 @@ import { CategoryList } from './CategoryList'
 import { API, CreateMarker } from './../API/API'
 import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
+import FAIcon from 'react-native-vector-icons/FontAwesome';
 
 import _ from 'lodash';
 
@@ -60,8 +61,11 @@ const styles = StyleSheet.create({
 
     filtersListItem: {
         height: 40,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center',
         paddingLeft: 15,
+        paddingRight: 15,
         borderBottomColor: '#A2AEB6',
         borderBottomWidth: 0.5,
     },
@@ -74,12 +78,17 @@ const styles = StyleSheet.create({
         color: 'black'
     },
 
+    activeFilterCheckMark: {
+        color: 'black'
+    },
+
     // footer
     filtersListFooter: {
         height: 50,
         backgroundColor: '#50E3C2',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        width: Dimensions.get('window').width,
     },
     filterListFooterText: {
         color: 'white',
@@ -105,9 +114,13 @@ export class FiltersView extends Component<Props, State> {
 
     renderItem ({item, index}) {
         const isActiveFilter = (item.name === this.state.activeFilter)
+     
         return (
             <TouchableOpacity style={[styles.filtersListItem]} onPress={this.onPressFilter.bind(this, item.name)}>
                 <Text style={[styles.filterListItemText, isActiveFilter && styles.filterListItemTextActive]}>{item.name}</Text>
+                {isActiveFilter && 
+                    <FAIcon name="check" size={15} style={styles.activeFilterCheckMark} />
+                }
             </TouchableOpacity>
         )
     }
