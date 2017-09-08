@@ -4,7 +4,21 @@ import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native
 import { API, Need, KeyedCollection, Marker, CreateMarker, IKeyedCollection } from '../API/API'
 import { CalloutView } from './CalloutView'
 import PageControl from 'react-native-page-control';
-let MapView = require('react-native-maps');
+import EntypoIcon from 'react-native-vector-icons/Entypo';
+import FAIcon from 'react-native-vector-icons/FontAwesome';
+import MapView from 'react-native-maps';
+import _ from 'lodash';
+
+const DEFAULT_VP_DELTA = {
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+}
+
+const INITIAL_REGION = {
+    latitude: 29.7630556,
+    longitude: -95.3630556,
+    ...DEFAULT_VP_DELTA
+}
 
 interface Props {
 }
@@ -13,16 +27,22 @@ interface State {
     needs: Need[]
     categories: KeyedCollection<any>
     currentPage: number
+    filters: string[],
+    selectedNeedId: number
 }
+
 export class MainView extends Component<Props, State> {
     intervalId: number;
 
     constructor(props) {
         super(props);
+
         this.state = {
             needs: [],
             categories: new KeyedCollection,
-            currentPage: 0
+            currentPage: 0,
+            filters: [],
+            selectedNeedId: 0
         }
     }
 
@@ -41,19 +61,10 @@ export class MainView extends Component<Props, State> {
     async getNeeds() {
         let needs = await API.getNeeds();
         if (needs !== undefined || needs !== null) {
+            needs = needs.filter(need => need.latitude && need.longitude)
             this.setState({ needs: needs })
         }
     }
-
-    renderItem = ({ item, index }: { item: string, index: number }) => {
-        let { width, height } = Dimensions.get('window');
-        console.log(`width ${width}, height: ${height}`);
-        return (
-            <View style={[styles.cardItem, { width: width - 20 }]}>
-                <CalloutView />
-            </View >
-        )
-    };
 
     keyExtractor = (_: string, index: number): string => {
         return `${index}`
@@ -67,63 +78,140 @@ export class MainView extends Component<Props, State> {
         this.setState({ currentPage: pageNum })
     };
 
+    getFilteredNeeds () {
+        let filteredNeeds = this.state.needs.slice();
+
+        if (this.state.filters.length === 0) {
+            return filteredNeeds
+        }
+
+        return filteredNeeds.filter(need => this.state.filters.includes(need.category));
+    }
+
+    renderNeeds () {
+        return this.getFilteredNeeds().map(marker => {
+            return (
+                <MapView.Marker
+                    pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
+                    coordinate={{
+                        latitude: marker.latitude,
+                        longitude: marker.longitude
+                    }}
+                    identifier={`${marker.id}`}
+                    onPress={this.onPressNeedMarker.bind(this)}
+                    title={marker.category}
+                    description={marker.description}
+                    key={marker.id}
+                />
+            )
+
+        })
+    }
+
+    renderNeedCardView () {
+        if (!this.state.selectedNeedId) {
+            return
+        }
+
+        // Based on the selected need, render the list view
+        const needs = this.getFilteredNeeds()
+        const selectedNeedIndex = _.findIndex(needs, need => {
+            return +need.id === +this.state.selectedNeedId
+        })
+
+        return (
+            <View style={styles.cardWrapper}>
+                <FlatList
+                    ref='cardViewList'
+                    data={needs}
+                    extraData={{
+                        selectedNeedId: this.state.selectedNeedId
+                    }}
+                    getItemLayout={(data, index) => {
+                        const {width} = Dimensions.get('window');
+                        return {
+                            offset: width * index,
+                            length: width,
+                            index
+                        }
+                    }}
+                    renderItem={this.renderItem}
+                    keyExtractor={this.keyExtractor}
+                    horizontal
+                    pagingEnabled
+                    onMomentumScrollEnd={this.onScrollEnd}
+                    showsHorizontalScrollIndicator={false}
+                />
+            </View>
+        )
+    }
+
+    renderItem ({ item, index }: { item: string, index: number }) {
+        let { width, height } = Dimensions.get('window');
+        // console.log(`width ${width}, height: ${height}`);
+
+        return (
+            <View style={StyleSheet.flatten([styles.cardItem, { width: width - 20 }])}>
+                <CalloutView need={item} />
+            </View >
+        )
+    };
+
+    onPressActionButtonFilter () {
+        console.log('when people press filter')
+    }
+
+    onPressActionButtonNeed () {
+        console.log('when people press need')
+        this.setState({selectedNeedId: 1})
+    }
+
+    onPressNeedMarker (e) {
+        const {id, coordinate} = e.nativeEvent;
+
+
+        this.setState({selectedNeedId: id}, () => {
+            this.refs.mainMap.animateToCoordinate(coordinate, 300);
+
+            const needs = this.getFilteredNeeds()
+            let selectedNeedIndex = _.findIndex(needs, need => {
+                return +need.id === +this.state.selectedNeedId
+            })
+            this.refs.cardViewList.scrollToIndex({
+                index: selectedNeedIndex,
+                animated: true,
+            })
+        });
+    }
+
     render() {
-        let height = Dimensions.get('window').height;
+        const {height} = Dimensions.get('window');
+
         return (
             <View style={{ flex: 1 }}>
-                <MapView
+                <MapView ref='mainMap'
                     style={{ flex: 1 }}
-                    initialRegion={{
-                        latitude: 29.7630556,
-                        longitude: -95.3630556,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
+                    initialRegion={INITIAL_REGION}
                     showsUserLocation={true}
                 >
-                    {this.state.needs.filter(marker => { return marker.latitude !== null && marker.longitude !== null }).map(marker => (
-                        <MapView.Marker
-                            pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
-                            coordinate={{
-                                latitude: marker.latitude,
-                                longitude: marker.longitude
-                            }}
-                            title={marker.category}
-                            description={marker.description}
-                            key={marker.id}
-                        />
-                    ))}
+                    {this.renderNeeds()}
                 </MapView>
-                <View style={[styles.cardSheet, { height: height / 3.0 }]}>
-                    <View style={styles.cardWrapper}>
-                        <FlatList data={['Wheelbarrow', 'Labor', 'Labor']}
-                            renderItem={this.renderItem}
-                            keyExtractor={this.keyExtractor}
-                            horizontal={true}
-                            pagingEnabled={true}
-                            onMomentumScrollEnd={this.onScrollEnd}
-                            showsHorizontalScrollIndicator={false}
-                        />
-                    </View>
+
+                <View style={StyleSheet.flatten([styles.cardSheet])}>
                     <View style={styles.actionButtonContainer}>
-                        <TouchableOpacity activeOpacity={0.9} style={[styles.actionButton, styles.actionButtonLeft]}>
-                            <Text style={styles.actionButtonText}>Call</Text>
+                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonFilter} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
+                            <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
+                            <Text style={styles.actionButtonText}> FILTER </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.9} style={[styles.actionButton, styles.actionButtonRight]}>
-                            <Text style={styles.actionButtonText}>Text</Text>
+
+                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonNeed.bind(this)} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
+                            <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
+                            <Text style={styles.actionButtonText}>NEED</Text>
                         </TouchableOpacity>
                     </View>
+
+                    {this.renderNeedCardView()}
                 </View>
-                <PageControl
-                    style={styles.pageControl}
-                    numberOfPages={3}
-                    currentPage={this.state.currentPage}
-                    pageIndicatorTintColor='gray'
-                    currentPageIndicatorTintColor='red'
-                    indicatorStyle={{ borderRadius: 5 }}
-                    currentIndicatorStyle={{ borderRadius: 5 }}
-                    indicatorSize={{ width: 8, height: 8 }}
-                />
             </View>
         )
     }
@@ -134,13 +222,13 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 10,
-        height: 240,
         flexDirection: 'column',
         justifyContent: 'space-between',
         position: 'absolute'
     },
     cardWrapper: {
-        flex: 1
+        flex: 1,
+        height: 225,
     },
     cardItem: {
         flex: 1,
@@ -159,18 +247,25 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     actionButton: {
-        height: 44,
+        height: 40,
         flex: 1,
         backgroundColor: 'green',
         justifyContent: 'center',
+        flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 7
+        borderRadius: 50,
+        marginRight: 20,
+        marginLeft: 20,
     },
-    actionButtonLeft: {
-        marginRight: 10,
+    actionButtonIcon: {
+        color: "#FFF",
+        marginRight: 5
     },
-    actionButtonRight: {
-        marginLeft: 10,
+    actionButtonFilter: {
+        backgroundColor: '#FF5A5F',
+    },
+    actionButtonNeed: {
+        backgroundColor: '#0080FE',
     },
     actionButtonText: {
         color: 'white'
@@ -179,7 +274,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        bottom: 74
+        bottom: 15
     },
     pageControlIndicator: {
         borderRadius: 5
