@@ -26,6 +26,7 @@ import _ from 'lodash';
 interface Props {
     categories: KeyedCollection<any>
     filters: string[]
+    onSelectFilters([])
     onCancel()
     onSelectFilters()
 }
@@ -111,6 +112,14 @@ export class FiltersView extends Component<Props, State> {
             activeFilter: filterName
         })
     }
+    
+    onPressDone () {
+        const selectedFilters= this.state.activeFilter === 'Anything'
+            ? [] 
+            : [this.state.activeFilter]
+        
+        this.props.onSelectFilters(selectedFilters)
+    }
 
     renderItem ({item, index}) {
         const isActiveFilter = (item.name === this.state.activeFilter)
@@ -153,9 +162,9 @@ export class FiltersView extends Component<Props, State> {
                     />
                 </View>
 
-                <View style={styles.filtersListFooter}>
+                <TouchableOpacity style={styles.filtersListFooter} onPress={this.onPressDone.bind(this)}>
                     <Text style={styles.filterListFooterText}> Done </Text>
-                </View>
+                </TouchableOpacity>
             </View >
         )
     }

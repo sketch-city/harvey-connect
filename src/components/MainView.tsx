@@ -89,7 +89,7 @@ export class MainView extends Component<Props, State> {
             return filteredNeeds
         }
 
-        return filteredNeeds.filter(need => this.state.filters.includes(need.category));
+        return filteredNeeds.filter(need => this.state.filters.includes(_.capitalize(need.category)));
     }
 
     renderNeeds() {
@@ -199,7 +199,15 @@ export class MainView extends Component<Props, State> {
         });
     }
 
-    render() {
+    onSelectFilters (filters) {
+        this.setState({ 
+            filters,
+            modalVisible: false,
+            modalType: ''
+         }) 
+    }
+
+    render () {
         const { height } = Dimensions.get('window');
 
         return (
@@ -208,6 +216,7 @@ export class MainView extends Component<Props, State> {
                     modalVisible={this.state.modalVisible}
                     modalType={this.state.modalType}
                     onCancel={this.dismissModal.bind(this)}
+                    onSelectFilters={this.onSelectFilters.bind(this)}
                     categories={this.state.categories}
                     filters={this.state.filters} />
 
