@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { View, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Modal } from 'react-native';
 import { API, Need, KeyedCollection, Marker, CreateMarker, IKeyedCollection } from '../API/API'
 import { CalloutView } from './CalloutView'
 import PageControl from 'react-native-page-control';
@@ -8,6 +7,7 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 import _ from 'lodash';
+import { HavesView } from './HavesView';
 
 const DEFAULT_VP_DELTA = {
     latitudeDelta: 0.0922,
@@ -28,7 +28,9 @@ interface State {
     categories: KeyedCollection<any>
     currentPage: number
     filters: string[],
-    selectedNeedId: number
+    selectedNeedId: number,
+    modalVisible: boolean
+
 }
 
 export class MainView extends Component<Props, State> {
@@ -42,7 +44,8 @@ export class MainView extends Component<Props, State> {
             categories: new KeyedCollection,
             currentPage: 0,
             filters: [],
-            selectedNeedId: 0
+            selectedNeedId: 0,
+            modalVisible: false
         }
     }
 
@@ -78,7 +81,7 @@ export class MainView extends Component<Props, State> {
         this.setState({ currentPage: pageNum })
     };
 
-    getFilteredNeeds () {
+    getFilteredNeeds() {
         let filteredNeeds = this.state.needs.slice();
 
         if (this.state.filters.length === 0) {
@@ -88,7 +91,7 @@ export class MainView extends Component<Props, State> {
         return filteredNeeds.filter(need => this.state.filters.includes(need.category));
     }
 
-    renderNeeds () {
+    renderNeeds() {
         return this.getFilteredNeeds().map(marker => {
             return (
                 <MapView.Marker
@@ -108,7 +111,7 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    renderNeedCardView () {
+    renderNeedCardView() {
         if (!this.state.selectedNeedId) {
             return
         }
@@ -128,7 +131,7 @@ export class MainView extends Component<Props, State> {
                         selectedNeedId: this.state.selectedNeedId
                     }}
                     getItemLayout={(data, index) => {
-                        const {width} = Dimensions.get('window');
+                        const { width } = Dimensions.get('window');
                         return {
                             offset: width * index,
                             length: width,
@@ -146,7 +149,7 @@ export class MainView extends Component<Props, State> {
         )
     }
 
-    renderItem ({ item, index }: { item: string, index: number }) {
+    renderItem({ item, index }: { item: string, index: number }) {
         let { width, height } = Dimensions.get('window');
         // console.log(`width ${width}, height: ${height}`);
 
@@ -157,20 +160,19 @@ export class MainView extends Component<Props, State> {
         )
     };
 
-    onPressActionButtonFilter () {
+    onPressActionButtonFilter() {
         console.log('when people press filter')
     }
 
-    onPressActionButtonNeed () {
-        console.log('when people press need')
-        this.setState({selectedNeedId: 1})
+    onPressActionButtonNeed() {
+        this.setState({ modalVisible: true })
     }
 
-    onPressNeedMarker (e) {
-        const {id, coordinate} = e.nativeEvent;
+    onPressNeedMarker(e) {
+        const { id, coordinate } = e.nativeEvent;
 
 
-        this.setState({selectedNeedId: id}, () => {
+        this.setState({ selectedNeedId: id }, () => {
             this.refs.mainMap.animateToCoordinate(coordinate, 300);
 
             const needs = this.getFilteredNeeds()
@@ -185,10 +187,14 @@ export class MainView extends Component<Props, State> {
     }
 
     render() {
-        const {height} = Dimensions.get('window');
+        const { height } = Dimensions.get('window');
 
         return (
             <View style={{ flex: 1 }}>
+                <Modal visible={this.state.modalVisible}
+                    animationType={'slide'}>
+                    <HavesView cancelTapped={() => this.setState({ modalVisible: false })} />
+                </Modal>
                 <MapView ref='mainMap'
                     style={{ flex: 1 }}
                     initialRegion={INITIAL_REGION}

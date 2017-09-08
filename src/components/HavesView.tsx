@@ -6,13 +6,26 @@ import {
     TouchableOpacity,
     Dimensions,
     KeyboardAvoidingView,
-    Modal
+    Modal,
+    Alert
 } from 'react-native';
 import MapView from 'react-native-maps'
 import { TextCell } from './TextCell'
 import { ButtonCell } from './ButtonCell'
 import { CategoryList } from './CategoryList'
-import { API } from './../API/API'
+import { API, CreateMarker } from './../API/API'
+import { UUIDHelper } from './../API/UUIDHelper'
+import { Separator } from "./Separator";
+
+type LatLng = {
+    latitude: number,
+    longitude: number,
+}
+
+type Point = {
+    x: number,
+    y: number,
+}
 
 export enum MarkerValue {
     Name,
@@ -21,8 +34,15 @@ export enum MarkerValue {
     Description,
     Email
 }
+interface Props {
+    cancelTapped: () => void
+}
 interface State {
     currentLocation: {
+        latitude: number,
+        longitude: number
+    },
+    pinLocation: {
         latitude: number,
         longitude: number
     },
@@ -35,11 +55,12 @@ interface State {
     description: string
 
 }
-export class HavesView extends Component<{}, State> {
+export class HavesView extends Component<Props, State> {
 
     constructor(props) {
         super(props)
         this.state = {
+            pinLocation: null,
             currentLocation: null,
             modalVisible: false,
             selectedCategories: [],
@@ -52,9 +73,10 @@ export class HavesView extends Component<{}, State> {
     }
 
     renderItem = ({ item, index }: { item: string, index: number }) => {
+        let height = item === 'I Need ...' ? 100 : 45
         return (
             <View style={{
-                height: 45,
+                height: height,
                 marginRight: 10,
                 marginLeft: 10,
                 justifyContent: 'center'
@@ -83,7 +105,7 @@ export class HavesView extends Component<{}, State> {
 
     viewForCell = (item: string) => {
         switch (item) {
-            case 'Phone':
+            case 'Phone Number':
                 return <TextCell placeholder={'Phone Number'}
                     keyboardType={'phone-pad'}
                     markerValue={MarkerValue.Phone}
@@ -100,7 +122,7 @@ export class HavesView extends Component<{}, State> {
                 return <TextCell placeholder={item}
                     markerValue={MarkerValue.Email}
                     textChanged={this.updateState} />
-            case 'Description':
+            case 'I Need ...':
                 return <TextCell placeholder={item}
                     markerValue={MarkerValue.Description}
                     textChanged={this.updateState} />
@@ -115,17 +137,13 @@ export class HavesView extends Component<{}, State> {
         return `${index}`
     }
 
-    createMarker = () => {
-        console.log(this.state.name)
-        console.log(this.state.address)
-        console.log(this.state.description)
-        console.log(this.state.email)
-        console.log(this.state.phone)
-    }
     componentDidMount() {
         navigator.geolocation.getCurrentPosition((position) => {
             this.setState({
                 currentLocation: {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }, pinLocation: {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
                 }
@@ -138,6 +156,55 @@ export class HavesView extends Component<{}, State> {
                 maximumAge: 1000
             })
     }
+
+    onDragEnd = (info: { coordinate: LatLng, position: Point }) => {
+        this.setState({ pinLocation: info.coordinate })
+    }
+
+    createNeed = async () => {
+        let createMarker = new CreateMarker()
+        createMarker.name = this.state.name
+        createMarker.marker_type = 'need'
+        createMarker.address = this.state.address
+        createMarker.description = this.state.description
+        createMarker.phone = this.state.phone
+        createMarker.latitude = this.state.pinLocation.latitude
+        createMarker.longitude = this.state.pinLocation.longitude
+        createMarker.data = { categories: { labor: null } }
+        createMarker.category = 'deprecated'
+        createMarker.device_uuid = await UUIDHelper.getUUID()
+        try {
+            let result = await API.saveNewMarker(createMarker)
+            Alert.alert('Success!', 'Created a new need!')
+        } catch (error) {
+            Alert.alert('Error', 'Something went wrong, please try again.')
+        }
+
+
+    }
+
+    renderPin = () => {
+        if (this.state.currentLocation !== null) {
+            return (
+                <MapView.Marker
+                    draggable
+                    onDragEnd={this.onDragEnd}
+                    pinColor={'red'}
+                    coordinate={{
+                        latitude: this.state.currentLocation.latitude,
+                        longitude: this.state.currentLocation.longitude
+                    }}
+                    title={'test'}
+                    description={'this is a need'}
+                    key={'blah'}
+                >
+                </MapView.Marker>
+            )
+        } else {
+            return null
+        }
+    }
+
     render() {
         return (
             <View style={{ flex: 1 }}>
@@ -151,7 +218,7 @@ export class HavesView extends Component<{}, State> {
                         })} />
                 </Modal>
                 <MapView
-                    style={{ flex: 2 }}
+                    style={{ flex: 1 }}
                     initialRegion={{
                         latitude: 29.7630556,
                         longitude: -95.3630556,
@@ -159,65 +226,40 @@ export class HavesView extends Component<{}, State> {
                         longitudeDelta: 0.0421,
                     }}
                     showsUserLocation={true}
-
                 >
-                    {/* {this.state.needs.map(marker => (
-                <MapView.Marker
-                    pinColor={marker.areVolunteersNeeded ? 'red' : 'blue'}
-                    coordinate={{
-                        latitude: marker.latitude,
-                        longitude: marker.longitude
-                    }}
-                    title={marker.updatedBy}
-                    description={marker.tellUsAboutSupplyNeeds}
-                    key={marker.timestamp}
-                >
-                </MapView.Marker>
-            ))} */}
+                    {this.renderPin()}
                 </MapView>
                 <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'white' }}
                     contentContainerStyle={{ flex: 1, backgroundColor: 'white' }}
                     behavior={'position'}>
-                    < View style={{
-                        height: 45,
-                        margin: 10,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                    }}>
-                        <TouchableOpacity style={{
-                            height: 45,
-                            flex: 1,
-                            marginRight: 10,
-                            backgroundColor: 'green',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderRadius: 7
-                        }}>
-                            <Text style={{ color: 'white' }}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{
-                            height: 45,
-                            flex: 1,
-                            marginLeft: 10,
-                            backgroundColor: 'green',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderRadius: 7
-                        }}
-                            onPress={this.createMarker}>
-                            <Text style={{ color: 'white' }}>Save</Text>
-                        </TouchableOpacity>
-                    </View>
                     <View style={{ flex: 1 }}>
-                        <FlatList data={['Phone', 'Category', 'Description', 'Name', 'Address', 'Email']}
+                        <FlatList data={['Name', 'Address', 'Phone Number', 'I Need ...']}
                             renderItem={this.renderItem}
                             keyExtractor={this.keyExtractor}
                             extraData={this.state.selectedCategories}
+                            ItemSeparatorComponent={Separator}
                         />
                     </View>
-
+                    <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                    <TouchableOpacity style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 45
+                    }}
+                        onPress={this.props.cancelTapped}>
+                        <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#50E3C2',
+                        height: 45
+                    }}
+                        onPress={this.createNeed}>
+                        <Text style={{ color: 'white', fontWeight: '600' }}>Done</Text>
+                    </TouchableOpacity>
                 </KeyboardAvoidingView>
-            </View>
+            </View >
         )
     }
 }

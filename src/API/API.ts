@@ -36,16 +36,18 @@ export class Need extends Object {
     }
 }
 
-export class CreateMarker {
+export class CreateMarker extends Object {
     marker_type: string
     name: string
+    category: string
     description: string
     phone: string
-    category: string
+    data: Object
     latitude: number
     longitude: number
     address: string
     email?: any
+    device_uuid: string
 }
 
 
