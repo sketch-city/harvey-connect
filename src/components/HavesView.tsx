@@ -175,7 +175,7 @@ export class HavesView extends Component<Props, State> {
         createMarker.device_uuid = await UUIDHelper.getUUID()
         try {
             let result = await API.saveNewMarker(createMarker)
-            Alert.alert('Success!', 'Created a new need!')
+            Alert.alert('Success!', 'Created a new need!', [{ text: 'OK', onPress: this.props.cancelTapped, style: 'default' }])
         } catch (error) {
             Alert.alert('Error', 'Something went wrong, please try again.')
         }
