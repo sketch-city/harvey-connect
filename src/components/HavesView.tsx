@@ -27,15 +27,22 @@ type Point = {
     y: number,
 }
 
-export enum MarkerValue {
-    Name,
+export const enum MarkerValue {
+    Name = 1,
     Phone,
     Address,
     Description,
     Email
 }
+
+export const enum MarkerType {
+    Have = 1,
+    Need
+}
 interface Props {
-    cancelTapped: () => void
+    cancelTapped: () => void,
+    markerType: MarkerType
+
 }
 interface State {
     currentLocation: {
@@ -72,8 +79,8 @@ export class HavesView extends Component<Props, State> {
         }
     }
 
-    renderItem = ({ item, index }: { item: string, index: number }) => {
-        let height = item === 'I Need ...' ? 100 : 45
+    renderItem = ({ item, index }: { item: MarkerValue, index: number }) => {
+        let height = item === MarkerValue.Description ? 100 : 45
         return (
             <View style={{
                 height: height,
@@ -103,37 +110,39 @@ export class HavesView extends Component<Props, State> {
         }
     }
 
-    viewForCell = (item: string) => {
+    viewForCell = (item: MarkerValue) => {
         switch (item) {
-            case 'Phone Number':
+            case MarkerValue.Phone:
                 return <TextCell placeholder={'Phone Number'}
                     keyboardType={'phone-pad'}
                     markerValue={MarkerValue.Phone}
                     textChanged={this.updateState} />
-            case 'Name':
-                return <TextCell placeholder={item}
+            case MarkerValue.Name:
+                return <TextCell placeholder={'Name'}
                     markerValue={MarkerValue.Name}
                     textChanged={this.updateState} />
-            case 'Category':
-                return <ButtonCell buttonTitle={'Select Category'}
-                    value={`${Object.keys(this.state.selectedCategories).length} Selected`}
-                    onButtonPress={() => this.setState({ modalVisible: true })} />
-            case 'Email':
-                return <TextCell placeholder={item}
+            // case MarkerValue.:
+            //     return <ButtonCell buttonTitle={'Select Category'}
+            //         value={`${Object.keys(this.state.selectedCategories).length} Selected`}
+            //         onButtonPress={() => this.setState({ modalVisible: true })} />
+            case MarkerValue.Email:
+                return <TextCell placeholder={'Email'}
                     markerValue={MarkerValue.Email}
                     textChanged={this.updateState} />
-            case 'I Need ...':
-                return <TextCell placeholder={item}
+            case MarkerValue.Description:
+                let placeholder = this.props.markerType === MarkerType.Need ? 'I Need ...' : 'I Have ...'
+                return <TextCell placeholder={placeholder}
                     markerValue={MarkerValue.Description}
                     textChanged={this.updateState} />
-            case 'Address':
-                return <TextCell placeholder={item}
+            case MarkerValue.Address:
+                return <TextCell placeholder={'Address'}
                     markerValue={MarkerValue.Address}
                     textChanged={this.updateState} />
 
         }
     }
-    keyExtractor = (_: string, index: number): string => {
+
+    keyExtractor = (_: MarkerValue, index: number): string => {
         return `${index}`
     }
 
@@ -157,26 +166,23 @@ export class HavesView extends Component<Props, State> {
             })
     }
 
-    onDragEnd = (info: { coordinate: LatLng, position: Point }) => {
-        this.setState({ pinLocation: info.coordinate })
-    }
-
     createNeed = async () => {
         let createMarker = new CreateMarker()
         createMarker.name = this.state.name
-        createMarker.marker_type = 'need'
+        let type = this.props.markerType === MarkerType.Need ? 'need' : 'have'
+        createMarker.marker_type = type
         createMarker.address = this.state.address
         createMarker.description = this.state.description
         createMarker.phone = this.state.phone
         createMarker.latitude = this.state.pinLocation.latitude
         createMarker.longitude = this.state.pinLocation.longitude
-        createMarker.data = { categories: { labor: null } }
-        createMarker.category = 'deprecated'
-        createMarker.device_uuid = await UUIDHelper.getUUID()
+        createMarker.categories = { labor: null }
+
         try {
             let result = await API.saveNewMarker(createMarker)
             Alert.alert('Success!', 'Created a new need!', [{ text: 'OK', onPress: this.props.cancelTapped, style: 'default' }])
         } catch (error) {
+            console.log(error)
             Alert.alert('Error', 'Something went wrong, please try again.')
         }
 
@@ -187,8 +193,9 @@ export class HavesView extends Component<Props, State> {
         if (this.state.currentLocation !== null) {
             return (
                 <MapView.Marker
+                    ref='marker'
                     draggable
-                    onDragEnd={this.onDragEnd}
+                    onDragEnd={(event) => this.setState({ pinLocation: event.nativeEvent.coordinate })}
                     pinColor={'red'}
                     coordinate={{
                         latitude: this.state.currentLocation.latitude,
@@ -233,7 +240,7 @@ export class HavesView extends Component<Props, State> {
                     contentContainerStyle={{ flex: 1, backgroundColor: 'white' }}
                     behavior={'position'}>
                     <View style={{ flex: 1 }}>
-                        <FlatList data={['Name', 'Address', 'Phone Number', 'I Need ...']}
+                        <FlatList data={[MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.Description]}
                             renderItem={this.renderItem}
                             keyExtractor={this.keyExtractor}
                             extraData={this.state.selectedCategories}

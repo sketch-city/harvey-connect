@@ -8,7 +8,7 @@ import FAIcon from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 import _ from 'lodash';
 
-import { HavesView } from './HavesView';
+import { HavesView, MarkerType } from './HavesView';
 import { FiltersView } from './FiltersView'
 
 interface Props {
@@ -20,10 +20,10 @@ interface Props {
   onSelectFilters?(): void
 }
 
-interface State {}
+interface State { }
 
 export class ModalView extends Component<Props, State> {
-  render () {
+  render() {
     if (!this.props.modalVisible) {
       return null
     }
@@ -32,12 +32,17 @@ export class ModalView extends Component<Props, State> {
 
     switch (this.props.modalType.toUpperCase()) {
       case 'NEED':
-        modalContent = <HavesView cancelTapped={this.props.onCancel} />
+        modalContent = <HavesView cancelTapped={this.props.onCancel}
+          markerType={MarkerType.Need} />
+        break
+      case 'HAVE':
+        modalContent = <HavesView cancelTapped={this.props.onCancel}
+          markerType={MarkerType.Have} />
         break
       case 'FILTER':
-        modalContent = <FiltersView 
+        modalContent = <FiltersView
           onCancel={this.props.onCancel}
-          onSelectFilters={this.props.onSelectFilters} 
+          onSelectFilters={this.props.onSelectFilters}
           categories={this.props.categories}
           filters={this.props.filters}
         />

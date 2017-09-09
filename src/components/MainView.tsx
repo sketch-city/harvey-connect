@@ -150,7 +150,7 @@ export class MainView extends Component<Props, State> {
         )
     }
 
-    renderItem({ item, index }: { item: string, index: number }) {
+    renderItem({ item, index }: { item: Need, index: number }) {
         let { width, height } = Dimensions.get('window');
         // console.log(`width ${width}, height: ${height}`);
 
@@ -169,13 +169,13 @@ export class MainView extends Component<Props, State> {
     }
 
     onPressActionButtonNeed() {
-        this.setState({ 
+        this.setState({
             modalVisible: true,
             modalType: 'NEED'
-         })
+        })
     }
-    
-    dismissModal () {
+
+    dismissModal() {
         this.setState({
             modalVisible: false,
             modalType: ''
@@ -199,15 +199,15 @@ export class MainView extends Component<Props, State> {
         });
     }
 
-    onSelectFilters (filters) {
-        this.setState({ 
+    onSelectFilters(filters) {
+        this.setState({
             filters,
             modalVisible: false,
             modalType: ''
-         }) 
+        })
     }
 
-    render () {
+    render() {
         const { height } = Dimensions.get('window');
 
         return (
