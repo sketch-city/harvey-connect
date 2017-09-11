@@ -6,7 +6,7 @@ import PageControl from 'react-native-page-control';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
-import { HavesView } from './HavesView';
+import { ModalView } from './ModalView';
 
 const DEFAULT_VP_DELTA = {
     latitudeDelta: 0.0922,
@@ -29,7 +29,8 @@ interface State {
     filters: Set<string>,
     selectedNeedId: string | null,
     modalVisible: boolean,
-    currentPosition: Position | null
+    currentPosition: Position | null,
+    modalType: string
 }
 
 export class MainView extends Component<Props, State> {
@@ -44,7 +45,8 @@ export class MainView extends Component<Props, State> {
             filters: new Set<string>(),
             selectedNeedId: null,
             modalVisible: false,
-            currentPosition: null
+            currentPosition: null,
+            modalType: ''
         };
     }
 
@@ -99,6 +101,7 @@ export class MainView extends Component<Props, State> {
         }
 
         return this.state.needs.filter(need => this.state.filters.has(need.category));
+//        return filteredNeeds.filter(need => this.state.filters.includes(_.capitalize(need.category)));
     }
 
     renderNeeds = () => {
@@ -171,20 +174,31 @@ export class MainView extends Component<Props, State> {
     };
 
     onPressActionButtonFilter = () => {
-        console.log('when people press filter')
+        this.setState({
+            modalVisible: true,
+            modalType: 'FILTER'
+        })
     }
 
     onPressActionButtonNeed = () => {
-        this.setState({ modalVisible: true })
+        this.setState({ 
+            modalVisible: true,
+            modalType: 'NEED'
+         })
+    }
+    
+    dismissModal () {
+        this.setState({
+            modalVisible: false,
+            modalType: ''
+        })
     }
 
     onPressNeedMarker = (e) => {
         const { id, coordinate } = e.nativeEvent;
 
-
         this.setState({ selectedNeedId: id }, () => {
             (this.refs.mainMap as MapView).animateToCoordinate(coordinate, 300);
-
 
             const needs = this.getFilteredNeeds()
             let selectedNeedIndex = needs.findIndex(need => {
@@ -197,15 +211,27 @@ export class MainView extends Component<Props, State> {
         });
     }
 
-    render() {
+    onSelectFilters (filters) {
+        this.setState({ 
+            filters,
+            modalVisible: false,
+            modalType: ''
+         }) 
+    }
+
+    render () {
         const { height } = Dimensions.get('window');
 
         return (
             <View style={{ flex: 1 }}>
-                <Modal visible={this.state.modalVisible}
-                    animationType={'slide'}>
-                    <HavesView cancelTapped={() => this.setState({ modalVisible: false })} />
-                </Modal>
+                <ModalView
+                    modalVisible={this.state.modalVisible}
+                    modalType={this.state.modalType}
+                    onCancel={this.dismissModal.bind(this)}
+                    onSelectFilters={this.onSelectFilters.bind(this)}
+                    categories={this.state.categories}
+                    filters={this.state.filters} />
+
                 <MapView ref='mainMap'
                     style={{ flex: 1 }}
                     initialRegion={INITIAL_REGION}
@@ -216,7 +242,7 @@ export class MainView extends Component<Props, State> {
 
                 <View style={styles.cardSheet}>
                     <View style={styles.actionButtonContainer}>
-                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonFilter} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonFilter.bind(this)} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
                             <Text style={styles.actionButtonText}> FILTER </Text>
                         </TouchableOpacity>
