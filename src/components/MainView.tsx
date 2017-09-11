@@ -42,7 +42,7 @@ export class MainView extends Component<Props, State> {
         this.state = {
             needs: [],
             categories: new KeyedCollection,
-            currentPage: 0,
+            currentPage: -1,
             filters: [],
             selectedNeedId: null,
             modalVisible: false,
@@ -95,7 +95,23 @@ export class MainView extends Component<Props, State> {
         let viewSize = e.nativeEvent.layoutMeasurement;
 
         let pageNum = Math.floor(contentOffset.x / (viewSize.width || width ))
-        this.setState({ currentPage: pageNum })
+
+        if (pageNum === this.state.currentPage) {
+            return
+        }
+        const targetNeed = this.state.needs[pageNum]
+
+        this.setState({ 
+            currentPage: pageNum,
+            selectedNeedId: `${targetNeed.id}`
+         }, () => {
+            if (this.state.currentPage === -1) {
+                return
+            }
+
+            (this.refs.mainMap as MapView).animateToCoordinate(this.state.needs[pageNum].coordinate(), 300);
+            this.refs[`marker-${targetNeed.id}`].showCallout();
+        })
     };
 
     getFilteredNeeds = () => {
@@ -114,6 +130,7 @@ export class MainView extends Component<Props, State> {
         return this.getFilteredNeeds().map(marker => {
             return (
                 <MapView.Marker
+                    ref={`marker-${marker.id}`}
                     pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
                     coordinate={{
                         latitude: marker.latitude,
@@ -222,6 +239,7 @@ export class MainView extends Component<Props, State> {
 
             this.refs.cardViewList.scrollToIndex({
                 index: selectedNeedIndex,
+                animated: true,
             })
         })
     }
