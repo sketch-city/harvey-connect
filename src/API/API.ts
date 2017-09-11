@@ -34,6 +34,12 @@ export class Need extends Object {
             latitude: this.latitude
         }
     }
+
+    distanceToCoordinate = (other: { latitude: number, longitude: number }): number => {
+        let dLat = other.latitude - this.latitude;
+        let dLon = other.longitude - this.longitude;
+        return Math.sqrt((dLat*dLat) + (dLon*dLon));
+    }
 }
 
 export class CreateMarker extends Object {
