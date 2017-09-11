@@ -80,6 +80,7 @@ export class MainView extends Component<Props, State> {
                     return lhsDistance - rhsDistance;
                 });
             }
+
             this.setState({ needs: needs })
         }
     }
@@ -99,11 +100,13 @@ export class MainView extends Component<Props, State> {
     getFilteredNeeds = () => {
         let filteredNeeds = this.state.needs.slice(); 
 
-        if (filteredNeeds.length === 0) {
+        if (filteredNeeds.length === 0 || this.state.filters.length === 0) {
             return filteredNeeds;
         }
 
-        return filteredNeeds.filter(need => this.state.filters.includes(_.capitalize(need.category)));
+        return filteredNeeds.filter(need => 
+            this.state.filters.includes(_.chain(need.categories).keys().capitalize().value())
+        );
     }
 
     renderNeeds = () => {

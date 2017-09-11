@@ -6,7 +6,7 @@ export class Need extends Object {
     name: string
     description: string
     phone: string
-    category: string
+    categories: Object
     latitude: number
     longitude: number
     address: string
@@ -15,13 +15,14 @@ export class Need extends Object {
 
     constructor(json: {}) {
         super()
+
         this.markerType = json['marker_type']
         this.updatedAt = json['updated_at']
         this.id = json['id']
         this.name = json['name']
         this.description = json['description']
         this.phone = json['phone']
-        this.category = json['category']
+        this.categories = json['categories']
         this.latitude = json['latitude']
         this.longitude = json['longitude']
         this.address = json['address']
