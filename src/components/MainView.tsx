@@ -27,45 +27,59 @@ interface State {
     needs: Need[]
     categories: KeyedCollection<any>
     currentPage: number
-    filters: string[],
-    selectedNeedId: number
+    filters: stirng[],
+    selectedNeedId: string | null
     modalVisible: boolean
     modalType: string
+    currentPosition: Position | null
 }
 
 export class MainView extends Component<Props, State> {
-    intervalId: number;
+    private watchId: number;
 
     constructor(props) {
         super(props);
-
         this.state = {
             needs: [],
             categories: new KeyedCollection,
             currentPage: 0,
             filters: [],
-            selectedNeedId: 0,
+            selectedNeedId: null,
             modalVisible: false,
-            modalType: ''
-        }
+            modalType: '',
+            currentPosition: null,
+        };
     }
 
     componentDidMount() {
-        this.getNeeds()
-        this.getCategories()
+        this.watchId = navigator.geolocation.watchPosition((pos) => this.setState({ currentPosition: pos }) , (err) => {}, { enableHighAccuracy: true })
+        this.getNeeds();
+        this.getCategories();
     }
 
-    async getCategories() {
+    componentWillUnmount() {
+        navigator.geolocation.clearWatch(this.watchId);
+    }
+
+    getCategories = async () => {
         let categories = await API.getCategories()
         if (categories !== undefined || categories !== null) {
             this.setState({ categories: categories })
         }
     }
 
-    async getNeeds() {
+    getNeeds = async () => {
         let needs = await API.getNeeds();
         if (needs !== undefined || needs !== null) {
             needs = needs.filter(need => need.latitude && need.longitude)
+            if (this.state.currentPosition) {
+                let {latitude, longitude} = this.state.currentPosition.coords;
+                needs = needs.sort((lhs, rhs) => {
+                    let lhsDistance = lhs.distanceToCoordinate({latitude, longitude});
+                    let rhsDistance = rhs.distanceToCoordinate({latitude, longitude});
+                    return lhsDistance - rhsDistance;
+                });
+            }
             this.setState({ needs: needs })
         }
     }
@@ -82,17 +96,17 @@ export class MainView extends Component<Props, State> {
         this.setState({ currentPage: pageNum })
     };
 
-    getFilteredNeeds() {
-        let filteredNeeds = this.state.needs.slice();
+    getFilteredNeeds = () => {
+        let filteredNeeds = this.state.needs.slice(); 
 
-        if (this.state.filters.length === 0) {
-            return filteredNeeds
+        if (filteredNeeds.length === 0) {
+            return filteredNeeds;
         }
 
         return filteredNeeds.filter(need => this.state.filters.includes(_.capitalize(need.category)));
     }
 
-    renderNeeds() {
+    renderNeeds = () => {
         return this.getFilteredNeeds().map(marker => {
             return (
                 <MapView.Marker
@@ -102,7 +116,7 @@ export class MainView extends Component<Props, State> {
                         longitude: marker.longitude
                     }}
                     identifier={`${marker.id}`}
-                    onPress={this.onPressNeedMarker.bind(this)}
+                    onPress={this.onPressNeedMarker}
                     title={marker.category}
                     description={marker.description}
                     key={marker.id}
@@ -112,16 +126,16 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    renderNeedCardView() {
+    renderNeedCardView = () => {
         if (!this.state.selectedNeedId) {
             return
         }
 
         // Based on the selected need, render the list view
         const needs = this.getFilteredNeeds()
-        const selectedNeedIndex = _.findIndex(needs, need => {
+        const selectedNeedIndex = needs.findIndex(need => {
             return +need.id === +this.state.selectedNeedId
-        })
+        });
 
         return (
             <View style={styles.cardWrapper}>
@@ -150,7 +164,7 @@ export class MainView extends Component<Props, State> {
         )
     }
 
-    renderItem({ item, index }: { item: string, index: number }) {
+    renderItem = ({ item, index }: { item: Need, index: number }) => {
         let { width, height } = Dimensions.get('window');
         // console.log(`width ${width}, height: ${height}`);
 
@@ -169,12 +183,12 @@ export class MainView extends Component<Props, State> {
     }
 
     onPressActionButtonNeed() {
-        this.setState({ 
+        this.setState({
             modalVisible: true,
             modalType: 'NEED'
          })
     }
-    
+
     dismissModal () {
         this.setState({
             modalVisible: false,
@@ -182,16 +196,17 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    onPressNeedMarker(e) {
+    onPressNeedMarker = (e) => {
         const { id, coordinate } = e.nativeEvent;
 
         this.setState({ selectedNeedId: id }, () => {
-            this.refs.mainMap.animateToCoordinate(coordinate, 300);
+            (this.refs.mainMap as MapView).animateToCoordinate(coordinate, 300);
+
 
             const needs = this.getFilteredNeeds()
-            let selectedNeedIndex = _.findIndex(needs, need => {
+            let selectedNeedIndex = needs.findIndex(need => {
                 return +need.id === +this.state.selectedNeedId
-            })
+            });
             this.refs.cardViewList.scrollToIndex({
                 index: selectedNeedIndex,
                 animated: true,
@@ -200,11 +215,11 @@ export class MainView extends Component<Props, State> {
     }
 
     onSelectFilters (filters) {
-        this.setState({ 
+        this.setState({
             filters,
             modalVisible: false,
             modalType: ''
-         }) 
+         })
     }
 
     render () {
@@ -228,7 +243,7 @@ export class MainView extends Component<Props, State> {
                     {this.renderNeeds()}
                 </MapView>
 
-                <View style={StyleSheet.flatten([styles.cardSheet])}>
+                <View style={styles.cardSheet}>
                     <View style={styles.actionButtonContainer}>
                         <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonFilter.bind(this)} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
