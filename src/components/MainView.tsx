@@ -7,6 +7,7 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 import { ModalView } from './ModalView';
+import { strings } from '../localization/Strings';
 
 const DEFAULT_VP_DELTA = {
     latitudeDelta: 0.0922,
@@ -100,8 +101,14 @@ export class MainView extends Component<Props, State> {
             return this.state.needs;
         }
 
-        return this.state.needs.filter(need => this.state.filters.has(need.category));
-//        return filteredNeeds.filter(need => this.state.filters.includes(_.capitalize(need.category)));
+        // I did this because `capitalize` was the only lodash function we were
+        // using. It seemed like overkill to include lodash for 3 lines of code.
+        return this.state.needs.filter((need) => {
+            let categoryArray = [... need.category.toLowerCase()];
+            categoryArray[0] = categoryArray[0].toUpperCase();
+            this.state.filters.has(categoryArray.join());
+        });
+        // return filteredNeeds.filter(need => this.state.filters.includes(_.capitalize(need.category)));
     }
 
     renderNeeds = () => {
@@ -181,13 +188,13 @@ export class MainView extends Component<Props, State> {
     }
 
     onPressActionButtonNeed = () => {
-        this.setState({ 
+        this.setState({
             modalVisible: true,
             modalType: 'NEED'
          })
     }
-    
-    dismissModal () {
+
+    dismissModal = () => {
         this.setState({
             modalVisible: false,
             modalType: ''
@@ -211,12 +218,12 @@ export class MainView extends Component<Props, State> {
         });
     }
 
-    onSelectFilters (filters) {
-        this.setState({ 
+    onSelectFilters = (filters) => {
+        this.setState({
             filters,
             modalVisible: false,
             modalType: ''
-         }) 
+         })
     }
 
     render () {
@@ -227,8 +234,8 @@ export class MainView extends Component<Props, State> {
                 <ModalView
                     modalVisible={this.state.modalVisible}
                     modalType={this.state.modalType}
-                    onCancel={this.dismissModal.bind(this)}
-                    onSelectFilters={this.onSelectFilters.bind(this)}
+                    onCancel={this.dismissModal}
+                    onSelectFilters={this.onSelectFilters}
                     categories={this.state.categories}
                     filters={this.state.filters} />
 
@@ -242,14 +249,14 @@ export class MainView extends Component<Props, State> {
 
                 <View style={styles.cardSheet}>
                     <View style={styles.actionButtonContainer}>
-                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonFilter.bind(this)} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonFilter} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
-                            <Text style={styles.actionButtonText}> FILTER </Text>
+                            <Text style={styles.actionButtonText}>{strings.filterActionLabel.toUpperCase()}</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonNeed.bind(this)} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonNeed} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
                             <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
-                            <Text style={styles.actionButtonText}>NEED</Text>
+                            <Text style={styles.actionButtonText}>{strings.needActionLabel.toUpperCase()}</Text>
                         </TouchableOpacity>
                     </View>
 
