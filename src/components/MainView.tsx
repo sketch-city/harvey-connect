@@ -32,6 +32,7 @@ interface State {
     modalVisible: boolean,
     currentPosition: Position | null,
     modalType: string
+    currentPosition: Position | null
 }
 
 export class MainView extends Component<Props, State> {
@@ -46,8 +47,8 @@ export class MainView extends Component<Props, State> {
             filters: new Set<string>(),
             selectedNeedId: null,
             modalVisible: false,
+            modalType: '',
             currentPosition: null,
-            modalType: ''
         };
     }
 
@@ -206,6 +207,7 @@ export class MainView extends Component<Props, State> {
 
         this.setState({ selectedNeedId: id }, () => {
             (this.refs.mainMap as MapView).animateToCoordinate(coordinate, 300);
+
 
             const needs = this.getFilteredNeeds()
             let selectedNeedIndex = needs.findIndex(need => {
