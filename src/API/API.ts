@@ -1,4 +1,5 @@
 import { AsyncStorage } from 'react-native'
+import { UUIDHelper } from './UUIDHelper';
 
 export class Need extends Object {
     id: number
@@ -46,15 +47,15 @@ export class Need extends Object {
 export class CreateMarker extends Object {
     marker_type: string
     name: string
-    category: string
+    categories: Object
     description: string
     phone: string
-    data: Object
+    data?: Object
     latitude: number
     longitude: number
     address: string
     email?: any
-    device_uuid: string
+    resolved?: boolean
 }
 
 
@@ -94,30 +95,26 @@ export class API {
 
     public static saveNewMarker = async (item: CreateMarker) => {
         let post = null
-        await fetch('https://api.harveyneeds.org/api/v1/connect/markers', {
+        let uuid = await UUIDHelper.getUUID()
+        let response = await fetch('https://api.harveyneeds.org/api/v1/connect/markers', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'DisasterConnect-Device-UUID': uuid
             },
             body: JSON.stringify(item)
         })
-            .then((response) => {
-                if (response.status === 201) {
-                    response.json().then(function (data) {
-                        post = data
-                    })
-                }
-                else { throw new Error('Something went wrong on api server!') }
-            })
-            .catch(function (error) {
-                console.error(error)
-            })
 
-        return new Promise<Need>((resolve) => {
-            let final = new Need(post)
-            resolve(final)
-        })
+        if (response.status === 201) {
+            let json = await response.json()
+            return new Promise<Need>((resolve) => {
+                let final = new Need(json)
+                resolve(json)
+            })
+        } else {
+            return new Promise<Need>((reslove, reject) => reject(new Error(`Got a bad status code: ${response.status}`)))
+        }
     }
 
     public static updateMarker = async (item: Marker) => {

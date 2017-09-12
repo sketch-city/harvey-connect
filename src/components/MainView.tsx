@@ -27,7 +27,7 @@ interface State {
     needs: Need[]
     categories: KeyedCollection<any>
     currentPage: number
-    filters: stirng[],
+    filters: string[],
     selectedNeedId: string | null
     modalVisible: boolean
     modalType: string
@@ -52,7 +52,7 @@ export class MainView extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.watchId = navigator.geolocation.watchPosition((pos) => this.setState({ currentPosition: pos }) , (err) => {}, { enableHighAccuracy: true })
+        this.watchId = navigator.geolocation.watchPosition((pos) => this.setState({ currentPosition: pos }), (err) => { }, { enableHighAccuracy: true })
         this.getNeeds();
         this.getCategories();
     }
@@ -73,10 +73,10 @@ export class MainView extends Component<Props, State> {
         if (needs !== undefined || needs !== null) {
             needs = needs.filter(need => need.latitude && need.longitude)
             if (this.state.currentPosition) {
-                let {latitude, longitude} = this.state.currentPosition.coords;
+                let { latitude, longitude } = this.state.currentPosition.coords;
                 needs = needs.sort((lhs, rhs) => {
-                    let lhsDistance = lhs.distanceToCoordinate({latitude, longitude});
-                    let rhsDistance = rhs.distanceToCoordinate({latitude, longitude});
+                    let lhsDistance = lhs.distanceToCoordinate({ latitude, longitude });
+                    let rhsDistance = rhs.distanceToCoordinate({ latitude, longitude });
                     return lhsDistance - rhsDistance;
                 });
             }
@@ -94,17 +94,17 @@ export class MainView extends Component<Props, State> {
         let contentOffset = e.nativeEvent.contentOffset;
         let viewSize = e.nativeEvent.layoutMeasurement;
 
-        let pageNum = Math.floor(contentOffset.x / (viewSize.width || width ))
+        let pageNum = Math.floor(contentOffset.x / (viewSize.width || width))
 
         if (pageNum === this.state.currentPage) {
             return
         }
         const targetNeed = this.state.needs[pageNum]
 
-        this.setState({ 
+        this.setState({
             currentPage: pageNum,
             selectedNeedId: `${targetNeed.id}`
-         }, () => {
+        }, () => {
             if (this.state.currentPage === -1) {
                 return
             }
@@ -115,13 +115,13 @@ export class MainView extends Component<Props, State> {
     };
 
     getFilteredNeeds = () => {
-        let filteredNeeds = this.state.needs.slice(); 
+        let filteredNeeds = this.state.needs.slice();
 
         if (filteredNeeds.length === 0 || this.state.filters.length === 0) {
             return filteredNeeds;
         }
 
-        return filteredNeeds.filter(need => 
+        return filteredNeeds.filter(need =>
             this.state.filters.includes(_.chain(need.categories).keys().capitalize().value())
         );
     }
@@ -208,10 +208,10 @@ export class MainView extends Component<Props, State> {
         this.setState({
             modalVisible: true,
             modalType: 'NEED'
-         })
+        })
     }
 
-    dismissModal () {
+    dismissModal() {
         this.setState({
             modalVisible: false,
             modalType: ''
@@ -244,15 +244,15 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    onSelectFilters (filters) {
+    onSelectFilters(filters) {
         this.setState({
             filters,
             modalVisible: false,
             modalType: ''
-         })
+        })
     }
 
-    render () {
+    render() {
         const { height } = Dimensions.get('window');
 
         return (
