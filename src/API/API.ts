@@ -7,7 +7,7 @@ export class Need extends Object {
     name: string
     description: string
     phone: string
-    category: string
+    categories: Object
     latitude: number
     longitude: number
     address: string
@@ -16,13 +16,14 @@ export class Need extends Object {
 
     constructor(json: {}) {
         super()
+
         this.markerType = json['marker_type']
         this.updatedAt = json['updated_at']
         this.id = json['id']
         this.name = json['name']
         this.description = json['description']
         this.phone = json['phone']
-        this.category = json['category']
+        this.categories = json['categories']
         this.latitude = json['latitude']
         this.longitude = json['longitude']
         this.address = json['address']
@@ -34,6 +35,12 @@ export class Need extends Object {
             longitude: this.longitude,
             latitude: this.latitude
         }
+    }
+
+    distanceToCoordinate = (other: { latitude: number, longitude: number }): number => {
+        let dLat = other.latitude - this.latitude;
+        let dLon = other.longitude - this.longitude;
+        return Math.sqrt((dLat*dLat) + (dLon*dLon));
     }
 }
 

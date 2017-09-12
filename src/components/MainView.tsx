@@ -28,44 +28,59 @@ interface State {
     categories: KeyedCollection<any>
     currentPage: number
     filters: string[],
-    selectedNeedId: number
+    selectedNeedId: string | null
     modalVisible: boolean
     modalType: string
+    currentPosition: Position | null
 }
 
 export class MainView extends Component<Props, State> {
-    intervalId: number;
+    private watchId: number;
 
     constructor(props) {
         super(props);
-
         this.state = {
             needs: [],
             categories: new KeyedCollection,
-            currentPage: 0,
+            currentPage: -1,
             filters: [],
-            selectedNeedId: 0,
+            selectedNeedId: null,
             modalVisible: false,
-            modalType: ''
-        }
+            modalType: '',
+            currentPosition: null,
+        };
     }
 
     componentDidMount() {
-        this.getNeeds()
-        this.getCategories()
+        this.watchId = navigator.geolocation.watchPosition((pos) => this.setState({ currentPosition: pos }), (err) => { }, { enableHighAccuracy: true })
+        this.getNeeds();
+        this.getCategories();
     }
 
-    async getCategories() {
+    componentWillUnmount() {
+        navigator.geolocation.clearWatch(this.watchId);
+    }
+
+    getCategories = async () => {
         let categories = await API.getCategories()
         if (categories !== undefined || categories !== null) {
             this.setState({ categories: categories })
         }
     }
 
-    async getNeeds() {
+    getNeeds = async () => {
         let needs = await API.getNeeds();
         if (needs !== undefined || needs !== null) {
             needs = needs.filter(need => need.latitude && need.longitude)
+            if (this.state.currentPosition) {
+                let { latitude, longitude } = this.state.currentPosition.coords;
+                needs = needs.sort((lhs, rhs) => {
+                    let lhsDistance = lhs.distanceToCoordinate({ latitude, longitude });
+                    let rhsDistance = rhs.distanceToCoordinate({ latitude, longitude });
+                    return lhsDistance - rhsDistance;
+                });
+            }
+
             this.setState({ needs: needs })
         }
     }
@@ -75,34 +90,54 @@ export class MainView extends Component<Props, State> {
     };
 
     onScrollEnd = (e) => {
+        const { width, height } = Dimensions.get('window');
         let contentOffset = e.nativeEvent.contentOffset;
         let viewSize = e.nativeEvent.layoutMeasurement;
 
-        let pageNum = Math.floor(contentOffset.x / viewSize.width);
-        this.setState({ currentPage: pageNum })
+        let pageNum = Math.floor(contentOffset.x / (viewSize.width || width))
+
+        if (pageNum === this.state.currentPage) {
+            return
+        }
+        const targetNeed = this.state.needs[pageNum]
+
+        this.setState({
+            currentPage: pageNum,
+            selectedNeedId: `${targetNeed.id}`
+        }, () => {
+            if (this.state.currentPage === -1) {
+                return
+            }
+
+            (this.refs.mainMap as MapView).animateToCoordinate(this.state.needs[pageNum].coordinate(), 300);
+            this.refs[`marker-${targetNeed.id}`].showCallout();
+        })
     };
 
-    getFilteredNeeds() {
+    getFilteredNeeds = () => {
         let filteredNeeds = this.state.needs.slice();
 
-        if (this.state.filters.length === 0) {
-            return filteredNeeds
+        if (filteredNeeds.length === 0 || this.state.filters.length === 0) {
+            return filteredNeeds;
         }
 
-        return filteredNeeds.filter(need => this.state.filters.includes(_.capitalize(need.category)));
+        return filteredNeeds.filter(need =>
+            this.state.filters.includes(_.chain(need.categories).keys().capitalize().value())
+        );
     }
 
-    renderNeeds() {
+    renderNeeds = () => {
         return this.getFilteredNeeds().map(marker => {
             return (
                 <MapView.Marker
+                    ref={`marker-${marker.id}`}
                     pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
                     coordinate={{
                         latitude: marker.latitude,
                         longitude: marker.longitude
                     }}
                     identifier={`${marker.id}`}
-                    onPress={this.onPressNeedMarker.bind(this)}
+                    onPress={this.onPressNeedMarker}
                     title={marker.category}
                     description={marker.description}
                     key={marker.id}
@@ -112,16 +147,15 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    renderNeedCardView() {
+    renderNeedCardView = () => {
         if (!this.state.selectedNeedId) {
             return
         }
 
-        // Based on the selected need, render the list view
         const needs = this.getFilteredNeeds()
-        const selectedNeedIndex = _.findIndex(needs, need => {
+        const selectedNeedIndex = needs.findIndex(need => {
             return +need.id === +this.state.selectedNeedId
-        })
+        });
 
         return (
             <View style={styles.cardWrapper}>
@@ -133,12 +167,14 @@ export class MainView extends Component<Props, State> {
                     }}
                     getItemLayout={(data, index) => {
                         const { width } = Dimensions.get('window');
+
                         return {
                             offset: width * index,
                             length: width,
                             index
                         }
                     }}
+                    initialScrollIndex={selectedNeedIndex}
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor}
                     horizontal
@@ -150,7 +186,7 @@ export class MainView extends Component<Props, State> {
         )
     }
 
-    renderItem({ item, index }: { item: Need, index: number }) {
+    renderItem = ({ item, index }: { item: Need, index: number }) => {
         let { width, height } = Dimensions.get('window');
         // console.log(`width ${width}, height: ${height}`);
 
@@ -182,21 +218,30 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    onPressNeedMarker(e) {
+    onPressNeedMarker = (e) => {
         const { id, coordinate } = e.nativeEvent;
+        (this.refs.mainMap as MapView).animateToCoordinate(coordinate, 300);
+
+        const needs = this.getFilteredNeeds();
+        const prevSelectedId = this.state.selectedNeedId;
+        let selectedNeedIndex = needs.findIndex(need => {
+            return +need.id === +id
+        });
 
         this.setState({ selectedNeedId: id }, () => {
-            this.refs.mainMap.animateToCoordinate(coordinate, 300);
+            if (!prevSelectedId) {
+                return
+            }
 
-            const needs = this.getFilteredNeeds()
-            let selectedNeedIndex = _.findIndex(needs, need => {
-                return +need.id === +this.state.selectedNeedId
-            })
+            if (selectedNeedIndex < 0) {
+                return
+            }
+
             this.refs.cardViewList.scrollToIndex({
                 index: selectedNeedIndex,
                 animated: true,
             })
-        });
+        })
     }
 
     onSelectFilters(filters) {
@@ -228,7 +273,7 @@ export class MainView extends Component<Props, State> {
                     {this.renderNeeds()}
                 </MapView>
 
-                <View style={StyleSheet.flatten([styles.cardSheet])}>
+                <View style={styles.cardSheet}>
                     <View style={styles.actionButtonContainer}>
                         <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonFilter.bind(this)} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
