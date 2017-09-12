@@ -31,29 +31,19 @@ export class CardView extends Component<Props, State> {
 
     render() {
         const {need} = this.props;
-
+        
         return (
             <View style={styles.cardContainer}>
-                <Text style={{
-                    textAlign: 'left',
-                    marginTop: 10,
-                    marginBottom: 10,
-                    marginLeft: 10,
-                    fontSize: 16,
-                    fontWeight: 'bold'
-                }}>{need.category}</Text>
+                <Text style={styles.needTitleText}>
+                    {need.name}
+                </Text>
 
-                <Text style={{
-                    textAlign: 'left',
-                    marginTop: 10,
-                    marginBottom: 10,
-                    marginLeft: 10
-                }}>{need.description}</Text>
+                <Text style={styles.needDescriptionText}>{need.description}</Text>
 
                 <View style={styles.actionButtonsContainer}>
                     <View style={styles.actionButtonsTop}>
                         <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten(styles.actionButtonDirections)}>
-                            <FAIcon name="map-marker" size={15} style={styles.directionButtonIcon} />
+                            <FAIcon name="map-marker" size={24} style={styles.directionButtonIcon} />
                             <Text style={styles.actionButtonDirectionText}> Directions </Text>
                         </TouchableOpacity>
                     </View>
@@ -68,7 +58,6 @@ export class CardView extends Component<Props, State> {
                         </TouchableOpacity>
                     </View>
                 </View>
-
             </View>
         )
     }
@@ -78,24 +67,64 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
     cardContainer: {
         flex: 1,
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         width: (width - 20),
         marginLeft: 10,
         marginRight: 10,
         height: 300,
+        borderRadius: 35,
         backgroundColor: '#FFF',
     },
 
+    needTitleText: {
+        textAlign: 'left',
+        marginTop: 10,
+        marginBottom: 10,
+        marginLeft: 15,
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: "#505E65",
+    },
+
+    needDescriptionText: {
+        textAlign: 'left',
+        height: 150,
+        marginTop: 10,
+        marginBottom: 10,
+        marginLeft: 15,
+        color: "#505E65",
+    },
+
     actionButtonsContainer: {
-        height: 50,
-        backgroundColor: '#50E3C2',
+        backgroundColor: 'red',
+        height: 80,
         alignContent: 'space-around',
         justifyContent: 'space-between',
         marginTop: 10,
+        overflow: 'hidden',
+        width: (width - 20),
+        borderBottomLeftRadius: 35,
+        borderBottomRightRadius: 35,
     },
 
     actionButtonsTop: {
-        height: 25,
+        borderTopWidth: 0.5,
+        borderTopColor: '#A2AEB6',
+        height: 40,
+    },
+
+    actionButtonsBottom: {
+        flex: 1,
+        backgroundColor: '#50E3C2',
+        flexDirection: 'row',
+        height: 40,
+        overflow: 'hidden',
+        width: (width - 20)
+    },
+
+    actionButtonText: {
+        fontSize: 24,
+        color: 'white',
     },
 
     actionButtonDirections: {
@@ -104,13 +133,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#FFF',
-        borderTopWidth: 0.5,
-        borderTopColor: '#A2AEB6',
     },
 
     actionButtonDirectionText: {
+        fontSize: 24,
         color: '#A2AEB6',
-        fontWeight: 'bold',
     },
 
     directionButtonIcon: {
@@ -118,21 +145,10 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
 
-    actionButtonsBottom: {
-        flex: 1,
-        flexDirection: 'row',
-        height: 20
-    },
-
     actionButton: {
         flex: 1,
         justifyContent: 'center',
         flexDirection: 'row',
         alignItems: 'center',
-    },
-
-    actionButtonText: {
-        color: 'white',
-        fontWeight: 'bold'
     },
 });

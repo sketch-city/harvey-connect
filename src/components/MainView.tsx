@@ -300,6 +300,7 @@ export class MainView extends Component<Props, State> {
     }
 }
 
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
     cardSheet: {
         left: 0,
