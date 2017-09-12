@@ -4,6 +4,8 @@ import { Need } from '../API/API'
 import { Separator } from '../components/Separator'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 
+import Communications from 'react-native-communications';
+
 interface Props {
     need?: Need
 }
@@ -31,7 +33,7 @@ export class CardView extends Component<Props, State> {
 
     render() {
         const {need} = this.props;
-        
+
         return (
             <View style={styles.cardContainer}>
                 <Text style={styles.needTitleText}>
@@ -49,11 +51,11 @@ export class CardView extends Component<Props, State> {
                     </View>
 
                     <View style={styles.actionButtonsBottom}>
-                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton])}>
+                        <TouchableOpacity onPress={() => Communications.phonecall(need.phone, true)} activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton])}>
                             <Text style={styles.actionButtonText}> Call </Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton])}>
+                        <TouchableOpacity onPress={() => Communications.text(need.phone)} activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton])}>
                             <Text style={styles.actionButtonText}> Text </Text>
                         </TouchableOpacity>
                     </View>
