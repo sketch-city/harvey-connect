@@ -42,7 +42,7 @@ export class MainView extends Component<Props, State> {
         this.state = {
             needs: [],
             categories: new KeyedCollection,
-            currentPage: 0,
+            currentPage: -1,
             filters: [],
             selectedNeedId: null,
             modalVisible: false,
@@ -80,6 +80,7 @@ export class MainView extends Component<Props, State> {
                     return lhsDistance - rhsDistance;
                 });
             }
+
             this.setState({ needs: needs })
         }
     }
@@ -89,27 +90,47 @@ export class MainView extends Component<Props, State> {
     };
 
     onScrollEnd = (e) => {
+        const { width, height } = Dimensions.get('window');
         let contentOffset = e.nativeEvent.contentOffset;
         let viewSize = e.nativeEvent.layoutMeasurement;
 
-        let pageNum = Math.floor(contentOffset.x / viewSize.width);
-        this.setState({ currentPage: pageNum })
+        let pageNum = Math.floor(contentOffset.x / (viewSize.width || width ))
+
+        if (pageNum === this.state.currentPage) {
+            return
+        }
+        const targetNeed = this.state.needs[pageNum]
+
+        this.setState({ 
+            currentPage: pageNum,
+            selectedNeedId: `${targetNeed.id}`
+         }, () => {
+            if (this.state.currentPage === -1) {
+                return
+            }
+
+            (this.refs.mainMap as MapView).animateToCoordinate(this.state.needs[pageNum].coordinate(), 300);
+            this.refs[`marker-${targetNeed.id}`].showCallout();
+        })
     };
 
     getFilteredNeeds = () => {
         let filteredNeeds = this.state.needs.slice(); 
 
-        if (filteredNeeds.length === 0) {
+        if (filteredNeeds.length === 0 || this.state.filters.length === 0) {
             return filteredNeeds;
         }
 
-        return filteredNeeds.filter(need => this.state.filters.includes(_.capitalize(need.category)));
+        return filteredNeeds.filter(need => 
+            this.state.filters.includes(_.chain(need.categories).keys().capitalize().value())
+        );
     }
 
     renderNeeds = () => {
         return this.getFilteredNeeds().map(marker => {
             return (
                 <MapView.Marker
+                    ref={`marker-${marker.id}`}
                     pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
                     coordinate={{
                         latitude: marker.latitude,
@@ -131,7 +152,6 @@ export class MainView extends Component<Props, State> {
             return
         }
 
-        // Based on the selected need, render the list view
         const needs = this.getFilteredNeeds()
         const selectedNeedIndex = needs.findIndex(need => {
             return +need.id === +this.state.selectedNeedId
@@ -147,12 +167,14 @@ export class MainView extends Component<Props, State> {
                     }}
                     getItemLayout={(data, index) => {
                         const { width } = Dimensions.get('window');
+
                         return {
                             offset: width * index,
                             length: width,
                             index
                         }
                     }}
+                    initialScrollIndex={selectedNeedIndex}
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor}
                     horizontal
@@ -198,20 +220,28 @@ export class MainView extends Component<Props, State> {
 
     onPressNeedMarker = (e) => {
         const { id, coordinate } = e.nativeEvent;
+        (this.refs.mainMap as MapView).animateToCoordinate(coordinate, 300);
+
+        const needs = this.getFilteredNeeds();
+        const prevSelectedId = this.state.selectedNeedId;
+        let selectedNeedIndex = needs.findIndex(need => {
+            return +need.id === +id
+        });
 
         this.setState({ selectedNeedId: id }, () => {
-            (this.refs.mainMap as MapView).animateToCoordinate(coordinate, 300);
+            if (!prevSelectedId) {
+                return
+            }
 
+            if (selectedNeedIndex < 0) {
+                return
+            }
 
-            const needs = this.getFilteredNeeds()
-            let selectedNeedIndex = needs.findIndex(need => {
-                return +need.id === +this.state.selectedNeedId
-            });
             this.refs.cardViewList.scrollToIndex({
                 index: selectedNeedIndex,
                 animated: true,
             })
-        });
+        })
     }
 
     onSelectFilters (filters) {
