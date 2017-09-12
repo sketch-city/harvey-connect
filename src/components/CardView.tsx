@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Need } from '../API/API'
 import { Separator } from '../components/Separator'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
@@ -9,7 +9,7 @@ interface Props {
 }
 interface State { }
 
-export class CalloutView extends Component<Props, State> {
+export class CardView extends Component<Props, State> {
     constructor(props) {
         super(props)
     }
@@ -33,7 +33,7 @@ export class CalloutView extends Component<Props, State> {
         const {need} = this.props;
 
         return (
-            <View style={styles.calloutContainer}>
+            <View style={styles.cardContainer}>
                 <Text style={{
                     textAlign: 'left',
                     marginTop: 10,
@@ -74,10 +74,16 @@ export class CalloutView extends Component<Props, State> {
     }
 }
 
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
-    calloutContainer: {
+    cardContainer: {
         flex: 1,
         justifyContent: 'space-around',
+        width: (width - 20),
+        marginLeft: 10,
+        marginRight: 10,
+        height: 300,
+        backgroundColor: '#FFF',
     },
 
     actionButtonsContainer: {

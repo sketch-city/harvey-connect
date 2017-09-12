@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Modal } from 'react-native';
-import { API, Need, KeyedCollection, Marker, CreateMarker, IKeyedCollection } from '../API/API'
-import { CalloutView } from './CalloutView'
-import PageControl from 'react-native-page-control';
+
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
-import MapView from 'react-native-maps';
 import _ from 'lodash';
+import MapView from 'react-native-maps';
+
+import { CardView } from './CardView'
+import PageControl from 'react-native-page-control';
+import {
+    API,
+    Need,
+    KeyedCollection,
+    Marker,
+    CreateMarker,
+    IKeyedCollection
+} from '../API/API'
+
 import { ModalView } from './ModalView';
 
 const DEFAULT_VP_DELTA = {
@@ -158,7 +168,7 @@ export class MainView extends Component<Props, State> {
         });
 
         return (
-            <View style={styles.cardWrapper}>
+            <View style={styles.cardViewContainer}>
                 <FlatList
                     ref='cardViewList'
                     data={needs}
@@ -175,7 +185,7 @@ export class MainView extends Component<Props, State> {
                         }
                     }}
                     initialScrollIndex={selectedNeedIndex}
-                    renderItem={this.renderItem}
+                    renderItem={this.renderCardView}
                     keyExtractor={this.keyExtractor}
                     horizontal
                     pagingEnabled
@@ -186,14 +196,11 @@ export class MainView extends Component<Props, State> {
         )
     }
 
-    renderItem = ({ item, index }: { item: Need, index: number }) => {
-        let { width, height } = Dimensions.get('window');
-        // console.log(`width ${width}, height: ${height}`);
+    renderCardView = ({ item, index }: { item: Need, index: number }) => {
+        const { width, height } = Dimensions.get('window');
 
         return (
-            <View style={StyleSheet.flatten([styles.cardItem, { width: width - 20 }])}>
-                <CalloutView need={item} />
-            </View >
+            <CardView need={item} />
         )
     };
 
@@ -302,17 +309,13 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         position: 'absolute'
     },
-    cardWrapper: {
+
+    cardViewContainer: {
         flex: 1,
-        height: 225,
+        height: 300,
+        borderRadius: 50
     },
-    cardItem: {
-        flex: 1,
-        marginRight: 10,
-        marginLeft: 10,
-        borderRadius: 6,
-        backgroundColor: "#fff",
-    },
+
     actionButtonContainer: {
         height: 44,
         flexDirection: 'row',
