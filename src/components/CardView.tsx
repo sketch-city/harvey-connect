@@ -5,6 +5,7 @@ import { Separator } from '../components/Separator'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 
 import Communications from 'react-native-communications';
+import openMap from 'react-native-open-maps';
 
 interface Props {
     need?: Need
@@ -16,15 +17,13 @@ export class CardView extends Component<Props, State> {
         super(props)
     }
 
-    renderItem = ({ item, index }: { item: string, index: number }) => {
-        return (
-            <View style={{
-                height: 40,
-                justifyContent: 'center'
-            }}>
-                <Text style={{ marginLeft: 10 }}>{item}</Text>
-            </View>
-        )
+    onPressDirections = (e) => {
+      const {need} = this.props
+      if (!need.latitude || !need.longitude) {
+        return false
+      }
+
+      // open map
     }
 
     keyExtractor = (_: string, index: number): string => {
@@ -44,7 +43,7 @@ export class CardView extends Component<Props, State> {
 
                 <View style={styles.actionButtonsContainer}>
                     <View style={styles.actionButtonsTop}>
-                        <TouchableOpacity activeOpacity={0.9} style={StyleSheet.flatten(styles.actionButtonDirections)}>
+                        <TouchableOpacity onPress={this.onPressDirections} activeOpacity={0.9} style={StyleSheet.flatten(styles.actionButtonDirections)}>
                             <FAIcon name="map-marker" size={24} style={styles.directionButtonIcon} />
                             <Text style={styles.actionButtonDirectionText}> Directions </Text>
                         </TouchableOpacity>
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
 
     needDescriptionText: {
         textAlign: 'left',
-        height: 150,
+        height: 130,
         marginTop: 10,
         marginBottom: 10,
         marginLeft: 15,
@@ -99,7 +98,7 @@ const styles = StyleSheet.create({
 
     actionButtonsContainer: {
         backgroundColor: 'red',
-        height: 80,
+        height: 90,
         alignContent: 'space-around',
         justifyContent: 'space-between',
         marginTop: 10,
@@ -112,14 +111,14 @@ const styles = StyleSheet.create({
     actionButtonsTop: {
         borderTopWidth: 0.5,
         borderTopColor: '#A2AEB6',
-        height: 40,
+        height: 45,
     },
 
     actionButtonsBottom: {
         flex: 1,
         backgroundColor: '#50E3C2',
         flexDirection: 'row',
-        height: 40,
+        height: 45,
         overflow: 'hidden',
         width: (width - 20)
     },
