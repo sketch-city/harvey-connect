@@ -234,6 +234,7 @@ export class MainView extends Component<Props, State> {
     }
 
     onPressNeedMarker = (e) => {
+        e.stopPropagation();
         const { id, coordinate } = e.nativeEvent;
         (this.refs.mainMap as MapView).animateToRegion(this.offsetCoordinate(coordinate), 300);
 
@@ -267,6 +268,11 @@ export class MainView extends Component<Props, State> {
         })
     }
 
+    onPressMap(e) {
+        // dismiss modal view if not selecting a pin
+        this.setState({selectedNeedId: null})
+    }
+
     render() {
         const { height } = Dimensions.get('window');
 
@@ -283,6 +289,7 @@ export class MainView extends Component<Props, State> {
                 <MapView ref='mainMap'
                     style={{ flex: 1 }}
                     initialRegion={INITIAL_REGION}
+                    onPress={this.onPressMap.bind(this)}
                     showsUserLocation={true}
                 >
                     {this.renderNeeds()}
