@@ -12,8 +12,17 @@ interface Props {
     textChanged: (text: string, markerValue: MarkerValue) => void
 
 }
-export class TextCell extends Component<Props, {}> {
 
+interface State {
+    currentText: string
+}
+export class TextCell extends Component<Props, State> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            currentText: this.props.value
+        }
+    }
     iconForValue = () => {
         switch (this.props.markerValue) {
             case MarkerValue.Phone: return <FAIcon name={'phone'} size={15} style={styles.actionButtonIcon} />
@@ -31,11 +40,15 @@ export class TextCell extends Component<Props, {}> {
             <View style={{ height: viewHeight, flexDirection: 'row', alignItems: 'center' }}>
                 {this.iconForValue()}
                 <TextInput placeholder={this.props.placeholder}
-                    value={this.props.value}
+                    value={this.state.currentText}
                     keyboardType={this.props.keyboardType}
                     multiline={multiline}
                     style={{ alignSelf: 'center', fontSize: 15, height: viewHeight, width: 250, color: Colors.needText }}
-                    onChangeText={(text) => this.props.textChanged(text, this.props.markerValue)}
+                    onChangeText={(text) => {
+                        this.props.textChanged(text, this.props.markerValue)
+                        this.setState({ currentText: text })
+                    }
+                    }
                 ></TextInput>
             </View >
         )
