@@ -124,6 +124,7 @@ export class HavesView extends Component<Props, State> {
         let height = item === MarkerValue.Description ? 100 : 45
         return (
             <View style={{
+                backgroundColor: 'red',
                 height: height,
                 marginRight: 10,
                 marginLeft: 10,
@@ -217,6 +218,7 @@ export class HavesView extends Component<Props, State> {
                     value={this.state.description} />
             case MarkerValue.Address:
                 return <TextCell placeholder={'Address'}
+                    ref='addressCell'
                     markerValue={MarkerValue.Address}
                     textChanged={this.updateState}
                     value={this.state.address} />
@@ -294,13 +296,26 @@ export class HavesView extends Component<Props, State> {
 
     }
 
+    handlePinDrag = async (event) => {
+        let dict = event.nativeEvent.coordinate
+        try {
+            let address = await API.getAddressFromLatLang(dict.latitude, dict.longitude)
+            console.log(`got address: ${address}`)
+            this.setState({ pinLocation: dict, address: address })
+        } catch (error) {
+            console.log(error)
+            this.setState({ pinLocation: dict })
+        }
+
+
+    }
     renderPin = () => {
         if (this.state.currentLocation !== null) {
             return (
                 <MapView.Marker
                     ref='marker'
                     draggable
-                    onDragEnd={(event) => this.setState({ pinLocation: event.nativeEvent.coordinate })}
+                    onDragEnd={this.handlePinDrag}
                     pinColor={'red'}
                     coordinate={{
                         latitude: this.state.currentLocation.latitude,
@@ -343,7 +358,7 @@ export class HavesView extends Component<Props, State> {
                             renderSectionHeader={this.renderHeader}
                             ItemSeparatorComponent={Separator}
                             sections={this.state.listData}
-                            extraData={this.state.selectedCategories}
+                            extraData={this.state}
                         />
                     </View>
                     <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
