@@ -19,7 +19,7 @@ import { API, CreateMarker, KeyedCollection, IKeyedCollection, Need } from './..
 import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
 import { Colors } from './Colors'
-
+import { strings } from './../localization/Strings'
 type LatLng = {
     latitude: number,
     longitude: number,
@@ -64,7 +64,8 @@ interface State {
     address: string
     email?: string,
     description: string,
-    listData: any[]
+    listData: any[],
+    categoryMap: Object
 
 }
 export class HavesView extends Component<Props, State> {
@@ -92,7 +93,8 @@ export class HavesView extends Component<Props, State> {
                 keyExtractor: this.keyExtractor,
                 renderItem: this.renderItem
             }],
-            selectedCategories: need.categories || {}
+            selectedCategories: need.categories || {},
+            categoryMap: {}
         }
     }
 
@@ -100,17 +102,21 @@ export class HavesView extends Component<Props, State> {
         try {
             let value = await AsyncStorage.getItem('categories');
             if (value !== null) {
-                let categoriesParsed = JSON.parse(value).categories;
+                let json = JSON.parse(value);
+                let categoriesParsed = json.categories
+                let lang = strings.getInterfaceLanguage()
+                if (lang !== 'es' && lang !== 'en') {
+                    lang = 'en'
+                }
+                let localized = json[lang]
 
                 let categoryData = categoriesParsed.map((val) => {
                     let keyName = Object.getOwnPropertyNames(val)[0];
                     let values = val[keyName];
 
                     if (values === null || values === undefined) { return; }
-
-                    let data = values.map((prop) => Object.getOwnPropertyNames(prop)[0].toUpperCase().replace("_", " "));
-
-                    return new Category(keyName.toUpperCase(), data, this.keyExtractor, this.renderCategoryItem);
+                    let data = values.map((prop) => localized[Object.getOwnPropertyNames(prop)[0]]);
+                    return new Category(localized[keyName], data, this.keyExtractor, this.renderCategoryItem);
                 });
                 let final = categoryData.splice(0, 0, this.state.listData[0])
                 this.setState({ listData: categoryData });
@@ -178,7 +184,7 @@ export class HavesView extends Component<Props, State> {
 
     updateState = (value: string, marker: MarkerValue) => {
         switch (marker) {
-            case MarkerValue.Address: 
+            case MarkerValue.Address:
                 this.setState({
                     address: value
                 }, () => {
@@ -188,7 +194,7 @@ export class HavesView extends Component<Props, State> {
                                 latitude: result.lat,
                                 longitude: result.lng
                             }
-                            this.setState({ 
+                            this.setState({
                                 pinLocation: updatedLocation,
                                 currentLocation: updatedLocation
                             }, () => {
