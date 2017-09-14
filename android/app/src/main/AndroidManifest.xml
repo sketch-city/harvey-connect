@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.harveyhelper"
+    package="com.chaione.disasterconnect"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -32,6 +32,9 @@
       <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyBKrllwH0zqn33v83YR-gbDGYPKOA5hOt0"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d5c9da86795841ac6accbb0420d8455a5db15ad7" />
     </application>
 
 </manifest>
