@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
 
     cardViewContainer: {
         flex: 1,
-        height: 300,
+        height: 200,
         borderRadius: 50
     },
 
