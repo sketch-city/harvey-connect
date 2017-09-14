@@ -217,6 +217,7 @@ export class HavesView extends Component<Props, State> {
                     value={this.state.description} />
             case MarkerValue.Address:
                 return <TextCell placeholder={'Address'}
+                    ref='addressCell'
                     markerValue={MarkerValue.Address}
                     textChanged={this.updateState}
                     value={this.state.address} />
@@ -228,9 +229,18 @@ export class HavesView extends Component<Props, State> {
         return `${index}`
     }
 
-    componentDidMount() {
-        this.readCategories()
+    updateAddressFromCoords = async (coords) => {
+        try {
+            let address = await API.getAddressFromLatLang(coords.latitude, coords.longitude)
+            this.setState({ address: address })
+        } catch (error) {
+
+        }
+    }
+
+    getCurrentLocation = async () => {
         navigator.geolocation.getCurrentPosition((position) => {
+            this.updateAddressFromCoords(position.coords)
             this.setState({
                 currentLocation: {
                     latitude: position.coords.latitude,
@@ -247,6 +257,12 @@ export class HavesView extends Component<Props, State> {
                 timeout: 20000,
                 maximumAge: 1000
             })
+    }
+
+    componentDidMount() {
+        this.readCategories()
+        this.getCurrentLocation()
+
     }
 
     updateNeed = async () => {
@@ -294,13 +310,25 @@ export class HavesView extends Component<Props, State> {
 
     }
 
+    handlePinDrag = async (event) => {
+        let dict = event.nativeEvent.coordinate
+        try {
+            let address = await API.getAddressFromLatLang(dict.latitude, dict.longitude)
+            this.setState({ pinLocation: dict, address: address })
+        } catch (error) {
+            console.log(error)
+            this.setState({ pinLocation: dict })
+        }
+
+
+    }
     renderPin = () => {
         if (this.state.currentLocation !== null) {
             return (
                 <MapView.Marker
                     ref='marker'
                     draggable
-                    onDragEnd={(event) => this.setState({ pinLocation: event.nativeEvent.coordinate })}
+                    onDragEnd={this.handlePinDrag}
                     pinColor={'red'}
                     coordinate={{
                         latitude: this.state.currentLocation.latitude,
@@ -343,7 +371,7 @@ export class HavesView extends Component<Props, State> {
                             renderSectionHeader={this.renderHeader}
                             ItemSeparatorComponent={Separator}
                             sections={this.state.listData}
-                            extraData={this.state.selectedCategories}
+                            extraData={this.state}
                         />
                     </View>
                     <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />

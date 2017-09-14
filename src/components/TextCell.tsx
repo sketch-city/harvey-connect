@@ -39,14 +39,14 @@ export class TextCell extends Component<Props, State> {
         return (
             <View style={{ height: viewHeight, flexDirection: 'row', alignItems: 'center' }}>
                 {this.iconForValue()}
-                <TextInput placeholder={this.props.placeholder}
-                    value={this.state.currentText}
+                <TextInput
+                    placeholder={this.props.placeholder}
+                    value={this.props.value}
                     keyboardType={this.props.keyboardType}
                     multiline={multiline}
-                    style={{ alignSelf: 'center', fontSize: 15, height: viewHeight, width: 250, color: Colors.needText }}
+                    style={{ alignSelf: 'center', fontSize: 15, flex: 1, height: viewHeight, color: Colors.needText }}
                     onChangeText={(text) => {
                         this.props.textChanged(text, this.props.markerValue)
-                        this.setState({ currentText: text })
                     }
                     }
                 ></TextInput>
