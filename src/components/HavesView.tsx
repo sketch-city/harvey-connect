@@ -178,7 +178,27 @@ export class HavesView extends Component<Props, State> {
 
     updateState = (value: string, marker: MarkerValue) => {
         switch (marker) {
-            case MarkerValue.Address: this.setState({ address: value })
+            case MarkerValue.Address: 
+                this.setState({
+                    address: value
+                }, () => {
+                    API.getLatLangFromAddress(value)
+                        .then(result => {
+                            const updatedLocation = {
+                                latitude: result.lat,
+                                longitude: result.lng
+                            }
+                            this.setState({ 
+                                pinLocation: updatedLocation,
+                                currentLocation: updatedLocation
+                            }, () => {
+                                this.refs.havesMap.animateToCoordinate(updatedLocation, 300)
+                            })
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
+                })
                 break;
             case MarkerValue.Name: this.setState({ name: value })
                 break;
@@ -319,9 +339,8 @@ export class HavesView extends Component<Props, State> {
             console.log(error)
             this.setState({ pinLocation: dict })
         }
-
-
     }
+
     renderPin = () => {
         if (this.state.currentLocation !== null) {
             return (
@@ -357,6 +376,7 @@ export class HavesView extends Component<Props, State> {
         return (
             <View style={{ flex: 1 }}>
                 <MapView
+                    ref='havesMap'
                     style={{ flex: 0.5 }}
                     showsUserLocation={true}
                     followsUserLocation={true}
