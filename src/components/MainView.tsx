@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Modal } from 'react-native';
-import { API, Need, KeyedCollection, Marker, CreateMarker, IKeyedCollection } from '../API/API'
-import { CalloutView } from './CalloutView'
-import PageControl from 'react-native-page-control';
+
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
-import MapView from 'react-native-maps';
 import _ from 'lodash';
+import MapView from 'react-native-maps';
+
+import { CardView } from './CardView'
+import PageControl from 'react-native-page-control';
+import {
+    API,
+    Need,
+    KeyedCollection,
+    Marker,
+    CreateMarker,
+    IKeyedCollection
+} from '../API/API'
+
 import { ModalView } from './ModalView';
 
 const DEFAULT_VP_DELTA = {
@@ -109,7 +119,7 @@ export class MainView extends Component<Props, State> {
                 return
             }
 
-            (this.refs.mainMap as MapView).animateToCoordinate(this.state.needs[pageNum].coordinate(), 300);
+            (this.refs.mainMap as MapView).animateToRegion(this.offsetCoordinate(this.state.needs[pageNum].coordinate()), 300);
             this.refs[`marker-${targetNeed.id}`].showCallout();
         })
     };
@@ -158,7 +168,7 @@ export class MainView extends Component<Props, State> {
         });
 
         return (
-            <View style={styles.cardWrapper}>
+            <View style={styles.cardViewContainer}>
                 <FlatList
                     ref='cardViewList'
                     data={needs}
@@ -175,7 +185,7 @@ export class MainView extends Component<Props, State> {
                         }
                     }}
                     initialScrollIndex={selectedNeedIndex}
-                    renderItem={this.renderItem}
+                    renderItem={this.renderCardView}
                     keyExtractor={this.keyExtractor}
                     horizontal
                     pagingEnabled
@@ -186,13 +196,11 @@ export class MainView extends Component<Props, State> {
         )
     }
 
-    renderItem = ({ item, index }: { item: Need, index: number }) => {
-        let { width, height } = Dimensions.get('window');
+    renderCardView = ({ item, index }: { item: Need, index: number }) => {
+        const { width, height } = Dimensions.get('window');
 
         return (
-            <View style={StyleSheet.flatten([styles.cardItem, { width: width - 20 }])}>
-                <CalloutView need={item} />
-            </View >
+            <CardView need={item} />
         )
     };
 
@@ -210,9 +218,18 @@ export class MainView extends Component<Props, State> {
         })
     }
 
+    offsetCoordinate(coordinate) {
+        return {
+            latitude: coordinate.latitude - 0.02,
+            longitude: coordinate.longitude,
+            ...DEFAULT_VP_DELTA
+        }
+    }
+
     onPressNeedMarker = (e) => {
+        e.stopPropagation();
         const { id, coordinate } = e.nativeEvent;
-        (this.refs.mainMap as MapView).animateToCoordinate(coordinate, 300);
+        (this.refs.mainMap as MapView).animateToRegion(this.offsetCoordinate(coordinate), 300);
 
         const needs = this.getFilteredNeeds();
         const prevSelectedId = this.state.selectedNeedId;
@@ -244,6 +261,11 @@ export class MainView extends Component<Props, State> {
         })
     }
 
+    onPressMap(e) {
+        // dismiss modal view if not selecting a pin
+        this.setState({selectedNeedId: null})
+    }
+
     render() {
         const { height } = Dimensions.get('window');
 
@@ -260,6 +282,7 @@ export class MainView extends Component<Props, State> {
                 <MapView ref='mainMap'
                     style={{ flex: 1 }}
                     initialRegion={INITIAL_REGION}
+                    onPress={this.onPressMap.bind(this)}
                     showsUserLocation={true}
                 >
                     {this.renderNeeds()}
@@ -317,6 +340,7 @@ export class MainView extends Component<Props, State> {
     }
 }
 
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
     cardSheet: {
         left: 0,
@@ -326,17 +350,13 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         position: 'absolute'
     },
-    cardWrapper: {
+
+    cardViewContainer: {
         flex: 1,
-        height: 225,
+        height: 300,
+        borderRadius: 50
     },
-    cardItem: {
-        flex: 1,
-        marginRight: 10,
-        marginLeft: 10,
-        borderRadius: 6,
-        backgroundColor: "#fff",
-    },
+
     actionButtonContainer: {
         height: 44,
         flexDirection: 'row',
