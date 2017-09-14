@@ -8,6 +8,8 @@ import Communications from 'react-native-communications';
 import openMap from 'react-native-open-maps';
 import { Linking, Platform } from "react-native";
 
+import _ from 'lodash';
+
 interface Props {
     need?: Need
 }
@@ -40,7 +42,7 @@ export class CardView extends Component<Props, State> {
     }
 
     renderCategories() {
-        let categories = Object.keys(this.props.need.categories)
+        const categories = _.chain(this.props.need.categories).values().flatten().compact().value()
         if (categories.length === 0) {
             return <Text> N/A </Text>
         }
