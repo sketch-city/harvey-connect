@@ -12,6 +12,7 @@ export class Need extends Object {
     longitude: number
     address: string
     email?: any
+    data: Object
     updatedAt: Date
 
     constructor(json: {}) {
@@ -20,6 +21,7 @@ export class Need extends Object {
         this.markerType = json['marker_type']
         this.updatedAt = json['updated_at']
         this.id = json['id']
+        this.data = json['data']
         this.name = json['name']
         this.description = json['description']
         this.phone = json['phone']
@@ -40,7 +42,7 @@ export class Need extends Object {
     distanceToCoordinate = (other: { latitude: number, longitude: number }): number => {
         let dLat = other.latitude - this.latitude;
         let dLon = other.longitude - this.longitude;
-        return Math.sqrt((dLat*dLat) + (dLon*dLon));
+        return Math.sqrt((dLat * dLat) + (dLon * dLon));
     }
 }
 
@@ -86,6 +88,25 @@ export class API {
         let needs = await fetch('https://api.harveyneeds.org/api/v1/connect/markers')
         let json = await needs.json()
         await AsyncStorage.setItem('needs', JSON.stringify(json))
+
+        return new Promise<Need[]>((resolve) => {
+            let final = json["markers"].map((val) => new Need(val))
+            resolve(final)
+        })
+    }
+
+    public static getMyMarkers = async () => {
+        let uuid = await UUIDHelper.getUUID()
+        let needs = await fetch(`https://api.harveyneeds.org/api/v1/connect/markers?device_uuid=${uuid}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'DisasterConnect-Device-UUID': uuid
+            }
+        })
+        let json = await needs.json()
+        await AsyncStorage.setItem('myMarkers', JSON.stringify(json))
 
         return new Promise<Need[]>((resolve) => {
             let final = json["markers"].map((val) => new Need(val))

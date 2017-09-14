@@ -10,6 +10,7 @@ import _ from 'lodash';
 
 import { HavesView, MarkerType } from './HavesView';
 import { FiltersView } from './FiltersView'
+import { NeedListView } from './NeedListView';
 
 interface Props {
   modalVisible: boolean
@@ -32,8 +33,7 @@ export class ModalView extends Component<Props, State> {
 
     switch (this.props.modalType.toUpperCase()) {
       case 'NEED':
-        modalContent = <HavesView cancelTapped={this.props.onCancel}
-          markerType={MarkerType.Need} />
+        modalContent = <NeedListView cancelTapped={this.props.onCancel} />
         break
       case 'HAVE':
         modalContent = <HavesView cancelTapped={this.props.onCancel}
