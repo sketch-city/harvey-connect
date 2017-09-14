@@ -3,19 +3,22 @@ import {
     View,
     Text,
     FlatList,
+    SectionList,
     TouchableOpacity,
     Dimensions,
     KeyboardAvoidingView,
     Modal,
-    Alert
+    Alert,
+    AsyncStorage
 } from 'react-native';
 import MapView from 'react-native-maps'
 import { TextCell } from './TextCell'
 import { ButtonCell } from './ButtonCell'
-import { CategoryList } from './CategoryList'
-import { API, CreateMarker } from './../API/API'
+import { CategoryList, Category } from './CategoryList'
+import { API, CreateMarker, KeyedCollection, IKeyedCollection } from './../API/API'
 import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
+import { Colors } from './Colors'
 
 type LatLng = {
     latitude: number,
@@ -59,7 +62,9 @@ interface State {
     name: string,
     address: string
     email?: string,
-    description: string
+    description: string,
+    listData: any[],
+    infoData: any[]
 
 }
 export class HavesView extends Component<Props, State> {
@@ -70,12 +75,50 @@ export class HavesView extends Component<Props, State> {
             pinLocation: null,
             currentLocation: null,
             modalVisible: false,
-            selectedCategories: [],
             phone: '',
             description: '',
             email: '',
             address: '',
-            name: ''
+            name: '',
+            infoData: [{
+                data:
+                [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.Description],
+                key: 'Info',
+                keyExtractor: this.keyExtractor,
+                renderItem: this.renderItem
+            }],
+            listData: [{
+                data:
+                [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.Description],
+                key: 'Info',
+                keyExtractor: this.keyExtractor,
+                renderItem: this.renderItem
+            }],
+            selectedCategories: {}
+        }
+    }
+
+    async readCategories() {
+        try {
+            let value = await AsyncStorage.getItem('categories');
+            if (value !== null) {
+                let categoriesParsed = JSON.parse(value).categories;
+
+                let categoryData = categoriesParsed.map((val) => {
+                    let keyName = Object.getOwnPropertyNames(val)[0];
+                    let values = val[keyName];
+
+                    if (values === null || values === undefined) { return; }
+
+                    let data = values.map((prop) => Object.getOwnPropertyNames(prop)[0].toUpperCase().replace("_", " "));
+
+                    return new Category(keyName.toUpperCase(), data, this.keyExtractor, this.renderCategoryItem);
+                });
+                let final = categoryData.splice(0, 0, this.state.infoData[0])
+                this.setState({ listData: categoryData });
+            }
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -92,6 +135,46 @@ export class HavesView extends Component<Props, State> {
                 {this.viewForCell(item)}
             </View >
 
+        )
+    }
+
+    itemSelected = (key: string, item: string) => {
+        let items = this.state.selectedCategories[key]
+        if (items !== null && items !== undefined) {
+            return items.filter((firstVal) => firstVal === item).length > 0
+        } else {
+            return false
+        }
+    }
+
+    renderCategoryItem = ({ item, index, section }: { item: string, index: number, section: any }) => {
+        return (
+            <TouchableOpacity style={{
+                height: 40,
+                padding: 10,
+                backgroundColor: this.itemSelected(section.key, item) ? 'green' : 'white'
+            }}
+                onPress={() => {
+                    if (this.itemSelected(section.key, item)) {
+                        let current = { ...this.state.selectedCategories }
+                        let items = current[section.key]
+                        let foundIndex = items.findIndex((val) => val === item)
+                        items.splice(foundIndex, 1)
+                        if (items.length === 0) {
+                            delete current[section.key]
+                        }
+                        this.setState({ selectedCategories: current })
+                    } else {
+                        let current = { ...this.state.selectedCategories }
+
+                        let array = current[section.key] ? current[section.key] : []
+                        array.push(item)
+                        current[section.key] = array
+                        this.setState({ selectedCategories: current })
+                    }
+                }}>
+                <Text style={{ color: this.itemSelected(section.key, item) ? 'white' : 'black' }}>{item}</Text>
+            </TouchableOpacity>
         )
     }
 
@@ -121,10 +204,6 @@ export class HavesView extends Component<Props, State> {
                 return <TextCell placeholder={'Name'}
                     markerValue={MarkerValue.Name}
                     textChanged={this.updateState} />
-            // case MarkerValue.:
-            //     return <ButtonCell buttonTitle={'Select Category'}
-            //         value={`${Object.keys(this.state.selectedCategories).length} Selected`}
-            //         onButtonPress={() => this.setState({ modalVisible: true })} />
             case MarkerValue.Email:
                 return <TextCell placeholder={'Email'}
                     markerValue={MarkerValue.Email}
@@ -147,6 +226,7 @@ export class HavesView extends Component<Props, State> {
     }
 
     componentDidMount() {
+        this.readCategories()
         navigator.geolocation.getCurrentPosition((position) => {
             this.setState({
                 currentLocation: {
@@ -176,7 +256,7 @@ export class HavesView extends Component<Props, State> {
         createMarker.phone = this.state.phone
         createMarker.latitude = this.state.pinLocation.latitude
         createMarker.longitude = this.state.pinLocation.longitude
-        createMarker.categories = { labor: null }
+        createMarker.categories = this.state.selectedCategories
 
         try {
             let result = await API.saveNewMarker(createMarker)
@@ -201,8 +281,6 @@ export class HavesView extends Component<Props, State> {
                         latitude: this.state.currentLocation.latitude,
                         longitude: this.state.currentLocation.longitude
                     }}
-                    title={'test'}
-                    description={'this is a need'}
                     key={'blah'}
                 >
                 </MapView.Marker>
@@ -210,6 +288,16 @@ export class HavesView extends Component<Props, State> {
         } else {
             return null
         }
+    }
+
+    renderHeader = (item) => {
+        return (
+            <Text style={{
+                height: 40, padding: 10,
+                color: Colors.darkblue, backgroundColor: '#F5F5F5',
+                fontWeight: 'bold'
+            }}>{item.section.key}</Text>
+        )
     }
 
     render() {
@@ -240,11 +328,11 @@ export class HavesView extends Component<Props, State> {
                     contentContainerStyle={{ flex: 1, backgroundColor: 'white' }}
                     behavior={'position'}>
                     <View style={{ flex: 1 }}>
-                        <FlatList data={[MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.Description]}
-                            renderItem={this.renderItem}
-                            keyExtractor={this.keyExtractor}
-                            extraData={this.state.selectedCategories}
+                        <SectionList
+                            renderSectionHeader={this.renderHeader}
                             ItemSeparatorComponent={Separator}
+                            sections={this.state.listData}
+                            extraData={this.state.selectedCategories}
                         />
                     </View>
                     <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />

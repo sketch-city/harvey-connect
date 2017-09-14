@@ -148,7 +148,7 @@ export class MainView extends Component<Props, State> {
                     }}
                     identifier={`${marker.id}`}
                     onPress={this.onPressNeedMarker}
-                    title={marker.category}
+                    title={marker.name}
                     description={marker.description}
                     key={marker.id}
                 />
@@ -204,17 +204,10 @@ export class MainView extends Component<Props, State> {
         )
     };
 
-    onPressActionButtonFilter() {
+    onPressActionButton = (type: string) => {
         this.setState({
             modalVisible: true,
-            modalType: 'FILTER'
-        })
-    }
-
-    onPressActionButtonNeed() {
-        this.setState({
-            modalVisible: true,
-            modalType: 'NEED'
+            modalType: type
         })
     }
 
@@ -294,15 +287,47 @@ export class MainView extends Component<Props, State> {
                 >
                     {this.renderNeeds()}
                 </MapView>
-
-                <View style={styles.cardSheet}>
-                    <View style={styles.actionButtonContainer}>
-                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonFilter.bind(this)} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
+                <View style={{
+                    left: 0,
+                    right: 0,
+                    top: 10,
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    position: 'absolute'
+                }}>
+                    <View style={{
+                        height: 0,
+                        flexDirection: 'row',
+                        alignContent: 'space-around',
+                        justifyContent: 'space-between',
+                        marginTop: 10,
+                        marginLeft: 10,
+                        marginRight: 10
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            marginRight: 20,
+                            marginLeft: 20,
+                            height: 0,
+                        }} />
+                        <TouchableOpacity activeOpacity={0.9}
+                            onPress={() => this.onPressActionButton('FILTER')}
+                            style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
                             <Text style={styles.actionButtonText}> FILTER </Text>
                         </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.cardSheet}>
+                    <View style={styles.actionButtonContainer}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={() => this.onPressActionButton('HAVE')}
+                            style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
+                            <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
+                            <Text style={styles.actionButtonText}>HAVE</Text>
+                        </TouchableOpacity>
 
-                        <TouchableOpacity activeOpacity={0.9} onPress={this.onPressActionButtonNeed.bind(this)} style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={() => this.onPressActionButton('NEED')}
+                            style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
                             <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
                             <Text style={styles.actionButtonText}>NEED</Text>
                         </TouchableOpacity>
