@@ -1,5 +1,10 @@
-import { AsyncStorage } from 'react-native'
+import { AsyncStorage } from 'react-native';
 import { UUIDHelper } from './UUIDHelper';
+
+let googleMapAPIUrl = 'https://maps.googleapis.com/maps/api/geocode/json?';
+let googleMapsAPIKey = '&key=AIzaSyBKrllwH0zqn33v83YR-gbDGYPKOA5hOt0';
+let addressFilter = '&location_type=ROOFTOP&result_type=street_address';
+let latlngFilter = '&location_type=ROOFTOP&result_type=premise'
 
 export class Need extends Object {
     id: number
@@ -60,7 +65,6 @@ export class CreateMarker extends Object {
     email?: any
     resolved?: boolean
 }
-
 
 export class Marker extends Object {
     id: number
@@ -180,8 +184,35 @@ export class API {
             resolve(categoryDictionary)
         })
     }
-}
 
+    public static getAddressFromLatLang = async (latitude: number, longitude: number) => {
+        let reverseGeoCoding = await fetch(googleMapAPIUrl + 'latlng=' + latitude + ',' + longitude + latlngFilter + googleMapsAPIKey);
+        let json = await reverseGeoCoding.json();
+
+        return new Promise<string>((resolve) => {
+            if (json["results"][0].formatted_address) {
+                resolve(json["results"][0].formatted_address);
+            }
+            else {
+                resolve('Unable to get address from coordinates.')
+            }
+        });
+    }
+
+    public static getLatLangFromAddress = async (address: string) => {
+        let reverseGeoCoding = await fetch(googleMapAPIUrl + 'address=' + address + addressFilter + googleMapsAPIKey);
+        let json = await reverseGeoCoding.json();
+
+        return new Promise<object>((resolve) => {
+            if (json["results"][0].geometry.location) {
+                resolve(json["results"][0].geometry.location);
+            }
+            else {
+                resolve({ "error": 'Unable to get coordinates from address.' });
+            }
+        });
+    }
+}
 
 export interface IKeyedCollection<T> {
     Add(key: string, value: T);
