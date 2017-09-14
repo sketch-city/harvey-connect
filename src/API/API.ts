@@ -19,6 +19,7 @@ export class Need extends Object {
     email?: any
     data: Object
     updatedAt: Date
+    resolved: boolean
 
     constructor(json: {}) {
         super()
@@ -35,6 +36,7 @@ export class Need extends Object {
         this.longitude = json['longitude']
         this.address = json['address']
         this.email = json['email']
+        this.resolved = json['resolved']
     }
 
     coordinate = () => {
@@ -162,6 +164,7 @@ export class API {
                 resolve(json)
             })
         } else {
+            console.log(response)
             return new Promise<Need>((reslove, reject) => reject(new Error(`Got a bad status code: ${response.status}`)))
         }
     }
@@ -188,13 +191,13 @@ export class API {
     public static getAddressFromLatLang = async (latitude: number, longitude: number) => {
         let reverseGeoCoding = await fetch(googleMapAPIUrl + 'latlng=' + latitude + ',' + longitude + latlngFilter + googleMapsAPIKey);
         let json = await reverseGeoCoding.json();
-
-        return new Promise<string>((resolve) => {
+        console.log(json)
+        return new Promise<string>((resolve, reject) => {
             if (json["results"][0].formatted_address) {
                 resolve(json["results"][0].formatted_address);
             }
             else {
-                resolve('Unable to get address from coordinates.')
+                reject(new Error('Cant get address'))
             }
         });
     }
