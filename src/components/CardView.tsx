@@ -6,6 +6,7 @@ import FAIcon from 'react-native-vector-icons/FontAwesome';
 
 import Communications from 'react-native-communications';
 import openMap from 'react-native-open-maps';
+import { Linking, Platform } from "react-native";
 
 interface Props {
     need?: Need
@@ -17,13 +18,25 @@ export class CardView extends Component<Props, State> {
         super(props)
     }
 
-    onPressDirections = (e) => {
-      const {need} = this.props
-      if (!need.latitude || !need.longitude) {
-        return false
-      }
+    onPressDirections = () => {
+        const { need } = this.props
+        if (!need.latitude || !need.longitude) {
+            return false
+        }
+        let url = this.directionsURL(need.latitude, need.longitude)
+        Linking.openURL(url).catch(err =>
+            console.error("An error occurred", err)
+        );
+    }
 
-      // open map
+    directionsURL = (latitude: number, longitude: number) => {
+        let provider = Platform.OS
+        let link = {
+            android: `http://maps.google.com/maps?saddr&daddr=${latitude},${longitude}`,
+            ios: `http://maps.apple.com/?saddr=&daddr=${latitude},${longitude}`
+        };
+
+        return link[provider];
     }
 
     renderCategories() {
@@ -38,7 +51,7 @@ export class CardView extends Component<Props, State> {
     }
 
     render() {
-        const {need} = this.props;
+        const { need } = this.props;
 
         return (
             <View style={styles.cardContainer}>
