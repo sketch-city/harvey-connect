@@ -124,7 +124,6 @@ export class HavesView extends Component<Props, State> {
         let height = item === MarkerValue.Description ? 100 : 45
         return (
             <View style={{
-                backgroundColor: 'red',
                 height: height,
                 marginRight: 10,
                 marginLeft: 10,
