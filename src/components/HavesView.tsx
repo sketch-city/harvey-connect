@@ -15,7 +15,7 @@ import MapView from 'react-native-maps'
 import { TextCell } from './TextCell'
 import { ButtonCell } from './ButtonCell'
 import { CategoryList, Category } from './CategoryList'
-import { API, CreateMarker, KeyedCollection, IKeyedCollection } from './../API/API'
+import { API, CreateMarker, KeyedCollection, IKeyedCollection, Need } from './../API/API'
 import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
 import { Colors } from './Colors'
@@ -44,7 +44,8 @@ export const enum MarkerType {
 }
 interface Props {
     cancelTapped: () => void,
-    markerType: MarkerType
+    markerType: MarkerType,
+    editingNeed?: Need
 
 }
 interface State {
@@ -63,38 +64,35 @@ interface State {
     address: string
     email?: string,
     description: string,
-    listData: any[],
-    infoData: any[]
+    listData: any[]
 
 }
 export class HavesView extends Component<Props, State> {
-
     constructor(props) {
         super(props)
+        let need = null
+        if (this.props.editingNeed === undefined || this.props.editingNeed === null) {
+            need = new Need({})
+        } else {
+            need = this.props.editingNeed
+        }
         this.state = {
             pinLocation: null,
             currentLocation: null,
             modalVisible: false,
-            phone: '',
-            description: '',
-            email: '',
-            address: '',
-            name: '',
-            infoData: [{
-                data:
-                [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.Description],
-                key: 'Info',
-                keyExtractor: this.keyExtractor,
-                renderItem: this.renderItem
-            }],
+            phone: need.phone || '',
+            description: need.description || '',
+            email: need.email || '',
+            address: need.address || '',
+            name: need.name || '',
             listData: [{
                 data:
-                [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.Description],
+                [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone],
                 key: 'Info',
                 keyExtractor: this.keyExtractor,
                 renderItem: this.renderItem
             }],
-            selectedCategories: {}
+            selectedCategories: need.categories || {}
         }
     }
 
@@ -114,7 +112,7 @@ export class HavesView extends Component<Props, State> {
 
                     return new Category(keyName.toUpperCase(), data, this.keyExtractor, this.renderCategoryItem);
                 });
-                let final = categoryData.splice(0, 0, this.state.infoData[0])
+                let final = categoryData.splice(0, 0, this.state.listData[0])
                 this.setState({ listData: categoryData });
             }
         } catch (error) {
@@ -199,24 +197,29 @@ export class HavesView extends Component<Props, State> {
                 return <TextCell placeholder={'Phone Number'}
                     keyboardType={'phone-pad'}
                     markerValue={MarkerValue.Phone}
-                    textChanged={this.updateState} />
+                    textChanged={this.updateState}
+                    value={this.state.phone} />
             case MarkerValue.Name:
                 return <TextCell placeholder={'Name'}
                     markerValue={MarkerValue.Name}
-                    textChanged={this.updateState} />
+                    textChanged={this.updateState}
+                    value={this.state.name} />
             case MarkerValue.Email:
                 return <TextCell placeholder={'Email'}
                     markerValue={MarkerValue.Email}
-                    textChanged={this.updateState} />
+                    textChanged={this.updateState}
+                    value={this.state.email} />
             case MarkerValue.Description:
                 let placeholder = this.props.markerType === MarkerType.Need ? 'I Need ...' : 'I Have ...'
                 return <TextCell placeholder={placeholder}
                     markerValue={MarkerValue.Description}
-                    textChanged={this.updateState} />
+                    textChanged={this.updateState}
+                    value={this.state.description} />
             case MarkerValue.Address:
                 return <TextCell placeholder={'Address'}
                     markerValue={MarkerValue.Address}
-                    textChanged={this.updateState} />
+                    textChanged={this.updateState}
+                    value={this.state.address} />
 
         }
     }
@@ -244,6 +247,28 @@ export class HavesView extends Component<Props, State> {
                 timeout: 20000,
                 maximumAge: 1000
             })
+    }
+
+    updateNeed = async () => {
+        let createMarker = new CreateMarker()
+        createMarker.id = this.props.editingNeed.id
+        createMarker.name = this.state.name
+        let type = this.props.markerType === MarkerType.Need ? 'need' : 'have'
+        createMarker.marker_type = type
+        createMarker.address = this.state.address
+        createMarker.description = this.state.description
+        createMarker.phone = this.state.phone
+        createMarker.latitude = this.state.pinLocation.latitude
+        createMarker.longitude = this.state.pinLocation.longitude
+        createMarker.categories = this.state.selectedCategories
+
+        try {
+            let result = await API.updateMarker(createMarker)
+            Alert.alert('Success!', 'Updated the need!', [{ text: 'OK', onPress: this.props.cancelTapped, style: 'default' }])
+        } catch (error) {
+            console.log(error)
+            Alert.alert('Error', 'Something went wrong, please try again.')
+        }
     }
 
     createNeed = async () => {
@@ -303,24 +328,10 @@ export class HavesView extends Component<Props, State> {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <Modal visible={this.state.modalVisible}
-                    animationType={'slide'}>
-                    <CategoryList
-                        selectedCategories={this.state.selectedCategories}
-                        closeButtonTapped={(items) => this.setState({ modalVisible: false, selectedCategories: items })}
-                        itemSelected={(item) => this.setState({
-                            modalVisible: false,
-                        })} />
-                </Modal>
                 <MapView
-                    style={{ flex: 1 }}
-                    initialRegion={{
-                        latitude: 29.7630556,
-                        longitude: -95.3630556,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
+                    style={{ flex: 0.5 }}
                     showsUserLocation={true}
+                    followsUserLocation={true}
                 >
                     {this.renderPin()}
                 </MapView>
@@ -336,25 +347,42 @@ export class HavesView extends Component<Props, State> {
                         />
                     </View>
                     <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
-                    <TouchableOpacity style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: 45
-                    }}
-                        onPress={this.props.cancelTapped}>
-                        <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#50E3C2',
-                        height: 45
-                    }}
-                        onPress={this.createNeed}>
-                        <Text style={{ color: 'white', fontWeight: '600' }}>Done</Text>
-                    </TouchableOpacity>
+                    {this.renderBottomButtons()}
                 </KeyboardAvoidingView>
             </View >
+        )
+    }
+
+    renderBottomButtons = () => {
+        let text = null
+        let func = null
+        if (this.props.editingNeed === undefined || this.props.editingNeed === null) {
+            text = 'Done'
+            func = this.createNeed
+        } else {
+            text = 'Update'
+            func = this.updateNeed
+        }
+        return (
+            <View>
+                <TouchableOpacity style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 45
+                }}
+                    onPress={this.props.cancelTapped}>
+                    <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#50E3C2',
+                    height: 45
+                }}
+                    onPress={func}>
+                    <Text style={{ color: 'white', fontWeight: '600' }}>{text}</Text>
+                </TouchableOpacity>
+            </View>
         )
     }
 }

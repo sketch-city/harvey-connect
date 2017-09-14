@@ -12,6 +12,7 @@ export class Need extends Object {
     longitude: number
     address: string
     email?: any
+    data: Object
     updatedAt: Date
 
     constructor(json: {}) {
@@ -20,6 +21,7 @@ export class Need extends Object {
         this.markerType = json['marker_type']
         this.updatedAt = json['updated_at']
         this.id = json['id']
+        this.data = json['data']
         this.name = json['name']
         this.description = json['description']
         this.phone = json['phone']
@@ -40,11 +42,12 @@ export class Need extends Object {
     distanceToCoordinate = (other: { latitude: number, longitude: number }): number => {
         let dLat = other.latitude - this.latitude;
         let dLon = other.longitude - this.longitude;
-        return Math.sqrt((dLat*dLat) + (dLon*dLon));
+        return Math.sqrt((dLat * dLat) + (dLon * dLon));
     }
 }
 
 export class CreateMarker extends Object {
+    id?: number
     marker_type: string
     name: string
     categories: Object
@@ -93,6 +96,25 @@ export class API {
         })
     }
 
+    public static getMyMarkers = async () => {
+        let uuid = await UUIDHelper.getUUID()
+        let needs = await fetch(`https://api.harveyneeds.org/api/v1/connect/markers?device_uuid=${uuid}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'DisasterConnect-Device-UUID': uuid
+            }
+        })
+        let json = await needs.json()
+        await AsyncStorage.setItem('myMarkers', JSON.stringify(json))
+
+        return new Promise<Need[]>((resolve) => {
+            let final = json["markers"].map((val) => new Need(val))
+            resolve(final)
+        })
+    }
+
     public static saveNewMarker = async (item: CreateMarker) => {
         let post = null
         let uuid = await UUIDHelper.getUUID()
@@ -117,33 +139,27 @@ export class API {
         }
     }
 
-    public static updateMarker = async (item: Marker) => {
+    public static updateMarker = async (item: CreateMarker) => {
         let url = 'https://api.harveyneeds.org/api/v1/connect/markers/' + item.id
-        let post = null
-        await fetch(url, {
+        let uuid = await UUIDHelper.getUUID()
+        let response = await fetch(url, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'DisasterConnect-Device-UUID': uuid
             },
             body: JSON.stringify(item)
         })
-            .then((response) => {
-                if (response.status === 201) {
-                    response.json().then(function (data) {
-                        post = data
-                    })
-                }
-                else { throw new Error('Something went wrong on api server!') }
+        if (response.status === 200) {
+            let json = await response.json()
+            return new Promise<Need>((resolve) => {
+                let final = new Need(json)
+                resolve(json)
             })
-            .catch(function (error) {
-                console.error(error)
-            })
-
-        return new Promise<Need>((resolve) => {
-            let final = new Need(post)
-            resolve(final)
-        })
+        } else {
+            return new Promise<Need>((reslove, reject) => reject(new Error(`Got a bad status code: ${response.status}`)))
+        }
     }
 
     public static getCategories = async () => {
