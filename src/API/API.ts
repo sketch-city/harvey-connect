@@ -1,5 +1,10 @@
-import { AsyncStorage } from 'react-native'
+import { AsyncStorage } from 'react-native';
 import { UUIDHelper } from './UUIDHelper';
+
+let googleMapAPIUrl = 'https://maps.googleapis.com/maps/api/geocode/json?';
+let googleMapsAPIKey = '&key=AIzaSyBKrllwH0zqn33v83YR-gbDGYPKOA5hOt0';
+let addressFilter = '&location_type=ROOFTOP&result_type=street_address';
+let latlngFilter = '&location_type=ROOFTOP&result_type=premise'
 
 export class Need extends Object {
     id: number
@@ -40,7 +45,7 @@ export class Need extends Object {
     distanceToCoordinate = (other: { latitude: number, longitude: number }): number => {
         let dLat = other.latitude - this.latitude;
         let dLon = other.longitude - this.longitude;
-        return Math.sqrt((dLat*dLat) + (dLon*dLon));
+        return Math.sqrt((dLat * dLat) + (dLon * dLon));
     }
 }
 
@@ -57,7 +62,6 @@ export class CreateMarker extends Object {
     email?: any
     resolved?: boolean
 }
-
 
 export class Marker extends Object {
     id: number
@@ -164,8 +168,35 @@ export class API {
             resolve(categoryDictionary)
         })
     }
-}
 
+    public static getAddressFromLatLang = async (latitude: number, longitude: number) => {
+        let reverseGeoCoding = await fetch(googleMapAPIUrl + 'latlng=' + latitude + ',' + longitude + latlngFilter + googleMapsAPIKey);
+        let results = await reverseGeoCoding.json();
+
+        return ((resolve) => {
+            if (results[0].formatted_address) {
+                resolve(results[0].formatted_address);
+            }
+            else {
+                resolve('Unable to get address from coordinates.')
+            }
+        });
+    }
+
+    public static getLatLangFromAddress = async (address: string) => {
+        let reverseGeoCoding = await fetch(googleMapAPIUrl + 'address=' + address + addressFilter + googleMapsAPIKey);
+        let results = await reverseGeoCoding.json();
+
+        return ((resolve) => {
+            if (results[0].geometry.location) {
+                resolve(results[0].geometry.location);
+            }
+            else {
+                resolve('Unable to get coordinates from address.');
+            }
+        });
+    }
+}
 
 export interface IKeyedCollection<T> {
     Add(key: string, value: T);
