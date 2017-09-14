@@ -19,6 +19,8 @@ import {
 
 import { ModalView } from './ModalView';
 
+import { strings } from '../localization/Strings';
+
 const DEFAULT_VP_DELTA = {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
@@ -148,8 +150,6 @@ export class MainView extends Component<Props, State> {
                     }}
                     identifier={`${marker.id}`}
                     onPress={this.onPressNeedMarker}
-                    title={marker.name}
-                    description={marker.description}
                     key={marker.id}
                 />
             )
@@ -157,7 +157,27 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    renderNeedCardView = () => {
+    renderActionButtonsIfNecessary = () => {
+        if (this.state.selectedNeedId) {
+            return
+        }
+
+        return (
+            <View style={styles.actionButtonContainer}>
+                <View style={styles.actionButtonSpacer} />
+                <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => this.onPressActionButton('NEED')}
+                    style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
+                    <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
+                    <Text style={styles.actionButtonText}>{strings.needActionLabel.toLocaleUpperCase()}</Text>
+                </TouchableOpacity>
+                <View style={styles.actionButtonSpacer} />
+            </View>
+        );
+    }
+
+    renderNeedCardViewIfNecessary = () => {
         if (!this.state.selectedNeedId) {
             return
         }
@@ -304,36 +324,20 @@ export class MainView extends Component<Props, State> {
                         marginLeft: 10,
                         marginRight: 10
                     }}>
-                        <View style={{
-                            flex: 1,
-                            marginRight: 20,
-                            marginLeft: 20,
-                            height: 0,
-                        }} />
-                        <TouchableOpacity activeOpacity={0.9}
+                        <View style={styles.actionButtonSpacer} />
+                        <TouchableOpacity
+                            activeOpacity={0.9}
                             onPress={() => this.onPressActionButton('FILTER')}
                             style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
-                            <Text style={styles.actionButtonText}> FILTER </Text>
+                            <Text style={styles.actionButtonText}>{strings.filterActionLabel.toLocaleUpperCase()}</Text>
                         </TouchableOpacity>
+                        <View style={styles.actionButtonSpacer} />
                     </View>
                 </View>
                 <View style={styles.cardSheet}>
-                    <View style={styles.actionButtonContainer}>
-                        <TouchableOpacity activeOpacity={0.9} onPress={() => this.onPressActionButton('HAVE')}
-                            style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
-                            <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
-                            <Text style={styles.actionButtonText}>HAVE</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity activeOpacity={0.9} onPress={() => this.onPressActionButton('NEED')}
-                            style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
-                            <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
-                            <Text style={styles.actionButtonText}>NEED</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {this.renderNeedCardView()}
+                    {this.renderActionButtonsIfNecessary()}
+                    {this.renderNeedCardViewIfNecessary()}
                 </View>
             </View>
         )
@@ -353,7 +357,7 @@ const styles = StyleSheet.create({
 
     cardViewContainer: {
         flex: 1,
-        height: 200,
+        height: 240,
         borderRadius: 50
     },
 
@@ -374,8 +378,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 50,
-        marginRight: 20,
-        marginLeft: 20,
+        marginRight: 10,
+        marginLeft: 10,
+    },
+    actionButtonSpacer: {
+        height: 0,
+        flex: 1,
+        flexDirection: 'row',
+        marginRight: 0,
+        marginLeft: 0,
     },
     actionButtonIcon: {
         color: "#FFF",
