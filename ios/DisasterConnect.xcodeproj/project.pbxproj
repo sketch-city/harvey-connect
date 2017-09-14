@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -1314,7 +1315,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.chaione.disasterconnect;
 				PRODUCT_NAME = DisasterConnect;
 				PROVISIONING_PROFILE = "03750ebe-40af-465e-90ae-1c97f5982f9e";
-				PROVISIONING_PROFILE_SPECIFIER = "ChaiOne Generic In House Distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
