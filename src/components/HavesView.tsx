@@ -229,9 +229,18 @@ export class HavesView extends Component<Props, State> {
         return `${index}`
     }
 
-    componentDidMount() {
-        this.readCategories()
+    updateAddressFromCoords = async (coords) => {
+        try {
+            let address = await API.getAddressFromLatLang(coords.latitude, coords.longitude)
+            this.setState({ address: address })
+        } catch (error) {
+
+        }
+    }
+
+    getCurrentLocation = async () => {
         navigator.geolocation.getCurrentPosition((position) => {
+            this.updateAddressFromCoords(position.coords)
             this.setState({
                 currentLocation: {
                     latitude: position.coords.latitude,
@@ -248,6 +257,12 @@ export class HavesView extends Component<Props, State> {
                 timeout: 20000,
                 maximumAge: 1000
             })
+    }
+
+    componentDidMount() {
+        this.readCategories()
+        this.getCurrentLocation()
+
     }
 
     updateNeed = async () => {
@@ -299,7 +314,6 @@ export class HavesView extends Component<Props, State> {
         let dict = event.nativeEvent.coordinate
         try {
             let address = await API.getAddressFromLatLang(dict.latitude, dict.longitude)
-            console.log(`got address: ${address}`)
             this.setState({ pinLocation: dict, address: address })
         } catch (error) {
             console.log(error)
