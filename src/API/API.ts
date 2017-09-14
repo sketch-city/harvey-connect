@@ -47,6 +47,7 @@ export class Need extends Object {
 }
 
 export class CreateMarker extends Object {
+    id?: number
     marker_type: string
     name: string
     categories: Object
@@ -138,33 +139,27 @@ export class API {
         }
     }
 
-    public static updateMarker = async (item: Marker) => {
+    public static updateMarker = async (item: CreateMarker) => {
         let url = 'https://api.harveyneeds.org/api/v1/connect/markers/' + item.id
-        let post = null
-        await fetch(url, {
+        let uuid = await UUIDHelper.getUUID()
+        let response = await fetch(url, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'DisasterConnect-Device-UUID': uuid
             },
             body: JSON.stringify(item)
         })
-            .then((response) => {
-                if (response.status === 201) {
-                    response.json().then(function (data) {
-                        post = data
-                    })
-                }
-                else { throw new Error('Something went wrong on api server!') }
+        if (response.status === 200) {
+            let json = await response.json()
+            return new Promise<Need>((resolve) => {
+                let final = new Need(json)
+                resolve(json)
             })
-            .catch(function (error) {
-                console.error(error)
-            })
-
-        return new Promise<Need>((resolve) => {
-            let final = new Need(post)
-            resolve(final)
-        })
+        } else {
+            return new Promise<Need>((reslove, reject) => reject(new Error(`Got a bad status code: ${response.status}`)))
+        }
     }
 
     public static getCategories = async () => {
