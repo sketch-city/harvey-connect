@@ -171,11 +171,11 @@ export class API {
 
     public static getAddressFromLatLang = async (latitude: number, longitude: number) => {
         let reverseGeoCoding = await fetch(googleMapAPIUrl + 'latlng=' + latitude + ',' + longitude + latlngFilter + googleMapsAPIKey);
-        let results = await reverseGeoCoding.json();
+        let json = await reverseGeoCoding.json();
 
-        return ((resolve) => {
-            if (results[0].formatted_address) {
-                resolve(results[0].formatted_address);
+        return new Promise<string>((resolve) => {
+            if (json["results"][0].formatted_address) {
+                resolve(json["results"][0].formatted_address);
             }
             else {
                 resolve('Unable to get address from coordinates.')
@@ -185,14 +185,14 @@ export class API {
 
     public static getLatLangFromAddress = async (address: string) => {
         let reverseGeoCoding = await fetch(googleMapAPIUrl + 'address=' + address + addressFilter + googleMapsAPIKey);
-        let results = await reverseGeoCoding.json();
+        let json = await reverseGeoCoding.json();
 
-        return ((resolve) => {
-            if (results[0].geometry.location) {
-                resolve(results[0].geometry.location);
+        return new Promise<object>((resolve) => {
+            if (json["results"][0].geometry.location) {
+                resolve(json["results"][0].geometry.location);
             }
             else {
-                resolve('Unable to get coordinates from address.');
+                resolve({ "error": 'Unable to get coordinates from address.' });
             }
         });
     }
