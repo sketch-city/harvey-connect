@@ -1,4 +1,4 @@
-# HarveyHelper
+# Disaster Connect
 
 An app to help coordinate relief efforts in Houston after hurricane Harvey. built with React Native.
 
