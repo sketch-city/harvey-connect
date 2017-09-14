@@ -119,7 +119,7 @@ export class MainView extends Component<Props, State> {
                 return
             }
 
-            (this.refs.mainMap as MapView).animateToRegion(this.offsetCoordinate(this.state.needs[pageNum].coordinate()), 300);
+            (this.refs.mainMap as MapView).animateToCoordinate(this.state.needs[pageNum].coordinate(), 300);
             this.refs[`marker-${targetNeed.id}`].showCallout();
         })
     };
@@ -229,7 +229,7 @@ export class MainView extends Component<Props, State> {
     onPressNeedMarker = (e) => {
         e.stopPropagation();
         const { id, coordinate } = e.nativeEvent;
-        (this.refs.mainMap as MapView).animateToRegion(this.offsetCoordinate(coordinate), 300);
+        (this.refs.mainMap as MapView).animateToCoordinate(coordinate, 300);
 
         const needs = this.getFilteredNeeds();
         const prevSelectedId = this.state.selectedNeedId;
