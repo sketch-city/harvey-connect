@@ -63,8 +63,7 @@ interface State {
     address: string
     email?: string,
     description: string,
-    listData: any[],
-    infoData: any[]
+    listData: any[]
 
 }
 export class HavesView extends Component<Props, State> {
@@ -80,16 +79,9 @@ export class HavesView extends Component<Props, State> {
             email: '',
             address: '',
             name: '',
-            infoData: [{
-                data:
-                [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.Description],
-                key: 'Info',
-                keyExtractor: this.keyExtractor,
-                renderItem: this.renderItem
-            }],
             listData: [{
                 data:
-                [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.Description],
+                [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone],
                 key: 'Info',
                 keyExtractor: this.keyExtractor,
                 renderItem: this.renderItem
@@ -114,7 +106,7 @@ export class HavesView extends Component<Props, State> {
 
                     return new Category(keyName.toUpperCase(), data, this.keyExtractor, this.renderCategoryItem);
                 });
-                let final = categoryData.splice(0, 0, this.state.infoData[0])
+                let final = categoryData.splice(0, 0, this.state.listData[0])
                 this.setState({ listData: categoryData });
             }
         } catch (error) {
@@ -303,24 +295,10 @@ export class HavesView extends Component<Props, State> {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <Modal visible={this.state.modalVisible}
-                    animationType={'slide'}>
-                    <CategoryList
-                        selectedCategories={this.state.selectedCategories}
-                        closeButtonTapped={(items) => this.setState({ modalVisible: false, selectedCategories: items })}
-                        itemSelected={(item) => this.setState({
-                            modalVisible: false,
-                        })} />
-                </Modal>
                 <MapView
-                    style={{ flex: 1 }}
-                    initialRegion={{
-                        latitude: 29.7630556,
-                        longitude: -95.3630556,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
+                    style={{ flex: 0.5 }}
                     showsUserLocation={true}
+                    followsUserLocation={true}
                 >
                     {this.renderPin()}
                 </MapView>
