@@ -9,7 +9,20 @@ interface Props {
     selectedCategories?: {}
 
 }
+export class Category extends Object {
+    data: string[]
+    key: any
+    keyExtractor: any
+    renderItem: any
 
+    constructor(key: string, values: any[], keyExtractor: any, renderItem: any) {
+        super();
+        this.key = key;
+        this.data = values;
+        this.keyExtractor = keyExtractor;
+        this.renderItem = renderItem
+    }
+}
 interface State {
     selectedItems: {},
     data: { data: string[], key: any, keyExtractor: any }[]
@@ -70,9 +83,11 @@ export class CategoryList extends Component<Props, State> {
     }
     renderHeader = (item) => {
         return (
-            <Text style={{ height: 30, padding: 10, marginBottom: 10,
-             color:Colors.darkblue, backgroundColor:'#F5F5F5',
-             fontWeight:'bold'}}>{item.section.key}</Text>
+            <Text style={{
+                height: 30, padding: 10, marginBottom: 10,
+                color: Colors.darkblue, backgroundColor: '#F5F5F5',
+                fontWeight: 'bold'
+            }}>{item.section.key}</Text>
         )
     }
 
@@ -87,7 +102,7 @@ export class CategoryList extends Component<Props, State> {
                 <TouchableOpacity style={{
                     marginLeft: 10,
                     height: 40,
-                    marginBottom:10,
+                    marginBottom: 10,
                     backgroundColor: 'green',
                     width: 75,
                     justifyContent: 'center',
