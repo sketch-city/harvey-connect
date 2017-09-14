@@ -26,8 +26,15 @@ export class CardView extends Component<Props, State> {
       // open map
     }
 
-    keyExtractor = (_: string, index: number): string => {
-        return `${index}`
+    renderCategories() {
+        let categories = Object.keys(this.props.need.categories)
+        if (categories.length === 0) {
+            return <Text> N/A </Text>
+        }
+
+        return categories.map((keyName, index) => {
+            return <Text style={styles.categoryListText} key={index}>{keyName}</Text>
+        })
     }
 
     render() {
@@ -39,7 +46,12 @@ export class CardView extends Component<Props, State> {
                     {need.name}
                 </Text>
 
-                <Text style={styles.needDescriptionText}>{need.description}</Text>
+                <View style={styles.categoryListContainer}>
+                    <Text>Categories</Text>
+                    <View style={styles.categoryListTextContainer}>
+                        {this.renderCategories()}
+                    </View>
+                </View>
 
                 <View style={styles.actionButtonsContainer}>
                     <View style={styles.actionButtonsTop}>
@@ -69,31 +81,49 @@ const styles = StyleSheet.create({
     cardContainer: {
         flex: 1,
         justifyContent: 'space-between',
+        alignItems: 'center',
         width: (width - 20),
         marginLeft: 10,
         marginRight: 10,
-        height: 300,
+        height: 200,
         borderRadius: 35,
         backgroundColor: '#FFF',
     },
 
     needTitleText: {
         textAlign: 'left',
-        marginTop: 10,
-        marginBottom: 10,
-        marginLeft: 15,
         fontSize: 16,
         fontWeight: 'bold',
         color: "#505E65",
+        width: (width - 60),
+        paddingTop: 10,
+        height: 40,
+        marginTop: 0,
+        marginBottom: 0,
     },
 
-    needDescriptionText: {
+    categoryListContainer: {
+        width: (width - 60),
+        height: 60,
+    },
+
+    categoryListText: {
         textAlign: 'left',
-        height: 130,
-        marginTop: 10,
-        marginBottom: 10,
-        marginLeft: 15,
-        color: "#505E65",
+        height: 20,
+        backgroundColor: '#A2AEB6',
+        color: '#505E65',
+        paddingTop: 1,
+        paddingLeft: 5,
+        paddingRight: 5,
+        marginRight: 5,
+        overflow: 'hidden',
+        marginBottom: 4,
+    },
+    categoryListTextContainer: {
+        marginTop: 5,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        width: (width - 60),
     },
 
     actionButtonsContainer: {
