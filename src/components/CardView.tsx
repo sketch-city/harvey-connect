@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Need } from '../API/API'
 import { Separator } from '../components/Separator'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
@@ -46,12 +46,16 @@ export class CardView extends Component<Props, State> {
     renderCategories() {
         const categories = _.chain(this.props.need.categories).values().flatten().compact().value()
         if (categories.length === 0) {
-            return <Text> N/A </Text>
+            return 'N/A'
         }
 
-        return categories.map((keyName, index) => {
-            return <Text style={styles.categoryListText} key={index}>{keyName}</Text>
-        })
+        return _.reduce(categories, (result, value, index) => {
+            if (index === (categories.length - 1)) {
+                return result + 'and ' + value + '.'
+            }
+
+            return result + value + ', '
+        }, 'I need ')
     }
 
     render() {
@@ -63,11 +67,11 @@ export class CardView extends Component<Props, State> {
                     {need.name}
                 </Text>
 
-                <View style={styles.categoryListContainer}>
-                    <View style={styles.categoryListTextContainer}>
+                <ScrollView style={styles.categoryListContainer}>
+                    <Text style={styles.categoryListText}>
                         {this.renderCategories()}
-                    </View>
-                </View>
+                    </Text>
+                </ScrollView>
 
                 <View style={styles.actionButtonsContainer}>
                     <View style={styles.actionButtonsTop}>
@@ -122,9 +126,8 @@ const styles = StyleSheet.create({
     },
 
     categoryListText: {
+        ...PlainText,
         textAlign: 'left',
-        height: 20,
-        backgroundColor: '#A2AEB6',
         paddingTop: 1,
         paddingLeft: 5,
         paddingRight: 5,
@@ -132,13 +135,6 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         marginBottom: 4,
         ...PlainText,
-    },
-
-    categoryListTextContainer: {
-        marginTop: 5,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        width: (width - 60),
     },
 
     actionButtonsContainer: {
