@@ -95,12 +95,12 @@ export class NeedListView extends Component<Props, State> {
                 }}>
                     <Text style={{ color: Colors.needText, fontWeight: '600' }}>My Needs</Text>
                 </View>
-                <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
                 <FlatList data={this.state.markers}
                     ItemSeparatorComponent={Separator}
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor} />
-                <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TouchableOpacity style={{
                         flex: 1,
@@ -111,7 +111,7 @@ export class NeedListView extends Component<Props, State> {
                         onPress={this.props.cancelTapped} >
                         <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
                     </TouchableOpacity>
-                    <View style={{ height: 45, width: 1, backgroundColor: 'rgba(0,0,0,0.1)' }}></View>
+                    <View style={{ height: 45, width: 1, backgroundColor: Colors.separatorColor }}></View>
                     <TouchableOpacity style={{
                         flex: 1,
                         alignItems: 'center',
@@ -120,7 +120,7 @@ export class NeedListView extends Component<Props, State> {
                         height: 45
                     }}
                         onPress={() => this.setState({ modalVisible: true, selectedNeed: undefined })}>
-                        <Text style={{ color: 'white', fontWeight: '600' }}>Create New Need</Text>
+                        <Text style={{ color: Colors.white, fontWeight: '600' }}>Create New Need</Text>
                     </TouchableOpacity>
                 </View>
             </View>

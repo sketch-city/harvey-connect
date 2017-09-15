@@ -158,7 +158,7 @@ export class HavesView extends Component<Props, State> {
             <TouchableOpacity style={{
                 height: 40,
                 padding: 10,
-                backgroundColor: this.itemSelected(section.key, item) ? 'green' : 'white'
+                backgroundColor: this.itemSelected(section.key, item) ? Colors.green : Colors.white
             }}
                 onPress={() => {
                     if (this.itemSelected(section.key, item)) {
@@ -179,7 +179,7 @@ export class HavesView extends Component<Props, State> {
                         this.setState({ selectedCategories: current })
                     }
                 }}>
-                <Text style={{ color: this.itemSelected(section.key, item) ? 'white' : 'black' }}>{item}</Text>
+                <Text style={{ color: this.itemSelected(section.key, item) ? Colors.white : Colors.black }}>{item}</Text>
             </TouchableOpacity>
         )
     }
@@ -395,8 +395,8 @@ export class HavesView extends Component<Props, State> {
                 >
                     {this.renderPin()}
                 </MapView>
-                <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'white' }}
-                    contentContainerStyle={{ flex: 1, backgroundColor: 'white' }}
+                <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.white }}
+                    contentContainerStyle={{ flex: 1, backgroundColor: Colors.white }}
                     behavior={'position'}>
                     <View style={{ flex: 1 }}>
                         <SectionList
@@ -406,7 +406,7 @@ export class HavesView extends Component<Props, State> {
                             extraData={this.state}
                         />
                     </View>
-                    <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                    <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
                     {this.renderDeleteButton()}
                     {this.renderBottomButtons()}
                 </KeyboardAvoidingView>
@@ -423,13 +423,13 @@ export class HavesView extends Component<Props, State> {
                     <TouchableOpacity style={{
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: 'white',
+                        backgroundColor: Colors.white,
                         height: 45
                     }}
                         onPress={() => this.deleteMarkerTapped(this.props.editingNeed)}>
                         <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>No Longer Needed</Text>
                     </TouchableOpacity>
-                    <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                    <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
                 </View>
             )
         }
@@ -456,7 +456,7 @@ export class HavesView extends Component<Props, State> {
                     onPress={this.props.cancelTapped}>
                     <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
                 </TouchableOpacity>
-                <View style={{ height: 45, width: 1, backgroundColor: 'rgba(0,0,0,0.1)' }}></View>
+                <View style={{ height: 45, width: 1, backgroundColor: Colors.separatorColor }}></View>
                 <TouchableOpacity style={{
                     flex: 1,
                     alignItems: 'center',
@@ -465,7 +465,7 @@ export class HavesView extends Component<Props, State> {
                     height: 45
                 }}
                     onPress={func}>
-                    <Text style={{ color: 'white', fontWeight: '600' }}>{text}</Text>
+                    <Text style={{ color: Colors.white, fontWeight: '600' }}>{text}</Text>
                 </TouchableOpacity>
             </View>
         )
