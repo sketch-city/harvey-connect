@@ -407,10 +407,32 @@ export class HavesView extends Component<Props, State> {
                         />
                     </View>
                     <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                    {this.renderDeleteButton()}
                     {this.renderBottomButtons()}
                 </KeyboardAvoidingView>
             </View >
         )
+    }
+
+    renderDeleteButton = () => {
+        if (this.props.editingNeed === undefined || this.props.editingNeed === null) {
+            return <View></View>
+        } else {
+            return (
+                <View>
+                    <TouchableOpacity style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'white',
+                        height: 45
+                    }}
+                        onPress={() => this.deleteMarkerTapped(this.props.editingNeed)}>
+                        <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>No Longer Needed</Text>
+                    </TouchableOpacity>
+                    <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                </View>
+            )
+        }
     }
 
     renderBottomButtons = () => {
@@ -424,8 +446,9 @@ export class HavesView extends Component<Props, State> {
             func = this.updateNeed
         }
         return (
-            <View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <TouchableOpacity style={{
+                    flex: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
                     height: 45
@@ -433,7 +456,9 @@ export class HavesView extends Component<Props, State> {
                     onPress={this.props.cancelTapped}>
                     <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
                 </TouchableOpacity>
+                <View style={{ height: 45, width: 1, backgroundColor: 'rgba(0,0,0,0.1)' }}></View>
                 <TouchableOpacity style={{
+                    flex: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor: '#50E3C2',
@@ -444,5 +469,32 @@ export class HavesView extends Component<Props, State> {
                 </TouchableOpacity>
             </View>
         )
+    }
+
+    deleteMarkerTapped = (item: Need) => {
+        Alert.alert('Are you sure?', `Do you want to delete this need '${item.name}'`, [{ text: 'OK', onPress: () => this.deleteMarker(item), style: 'destructive' },
+        { text: 'Cancel', style: 'cancel' }])
+    }
+
+    deleteMarker = async (marker: Need) => {
+        let createMarker = new CreateMarker()
+        createMarker.name = marker.name
+        createMarker.id = marker.id
+        createMarker.marker_type = marker.markerType
+        createMarker.address = marker.address
+        createMarker.description = marker.description
+        createMarker.phone = marker.phone
+        createMarker.latitude = marker.latitude
+        createMarker.longitude = marker.longitude
+        createMarker.categories = marker.categories
+        createMarker.resolved = true
+
+        try {
+            await API.updateMarker(createMarker)
+            this.props.cancelTapped()
+        } catch (error) {
+            console.log(error)
+            Alert.alert('Error', 'Something went wrong, please try again.')
+        }
     }
 }

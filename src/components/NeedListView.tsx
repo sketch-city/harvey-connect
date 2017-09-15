@@ -56,39 +56,11 @@ export class NeedListView extends Component<Props, State> {
         this.setState({ modalVisible: true, selectedNeed: item })
     }
 
-    deleteMarkerTapped = (item: Need) => {
-        Alert.alert('Are you sure?', `Do you want to delete this need ${item.name}`, [{ text: 'OK', onPress: () => this.deleteMarker(item), style: 'destructive' },
-        { text: 'Cancel', style: 'cancel' }])
-    }
-
-    deleteMarker = async (marker: Need) => {
-        let createMarker = new CreateMarker()
-        createMarker.name = marker.name
-        createMarker.id = marker.id
-        createMarker.marker_type = marker.markerType
-        createMarker.address = marker.address
-        createMarker.description = marker.description
-        createMarker.phone = marker.phone
-        createMarker.latitude = marker.latitude
-        createMarker.longitude = marker.longitude
-        createMarker.categories = marker.categories
-        createMarker.resolved = true
-
-        try {
-            await API.updateMarker(createMarker)
-            this.getMarkers()
-        } catch (error) {
-            console.log(error)
-            Alert.alert('Error', 'Something went wrong, please try again.')
-        }
-    }
-
     renderItem = ({ item, index }: { item: Need, index: number }) => {
         let width = Dimensions.get('window').width
         return (
             <TouchableOpacity style={{ height: 45, justifyContent: 'center' }}
-                onPress={() => this.itemSelected(item)}
-                onLongPress={() => this.deleteMarkerTapped(item)}>
+                onPress={() => this.itemSelected(item)}>
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: 45, alignItems: 'center' }}>
                     <FAIcon name={'map-marker'} size={20} style={{ color: '#A2AEB6', marginLeft: 10, marginRight: 10 }} />
