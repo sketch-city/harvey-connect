@@ -8,7 +8,7 @@ import {
 
 import App from './src';
 
-export default class HarveyHelper extends Component {
+export default class DisasterConnect extends Component {
   render() {
     return (
       <App />
@@ -16,4 +16,4 @@ export default class HarveyHelper extends Component {
   }
 }
 
-AppRegistry.registerComponent('HarveyHelper', () => HarveyHelper);
+AppRegistry.registerComponent('DisasterConnect', () => DisasterConnect);
