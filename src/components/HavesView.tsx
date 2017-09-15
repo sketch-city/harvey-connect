@@ -91,7 +91,7 @@ export class HavesView extends Component<Props, State> {
             listData: [{
                 data:
                 [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone],
-                key: 'Info',
+                key: 'My Info',
                 keyExtractor: this.keyExtractor,
                 renderItem: this.renderItem
             }],
