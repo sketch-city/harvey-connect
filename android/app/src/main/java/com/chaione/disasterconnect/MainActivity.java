@@ -1,4 +1,4 @@
-package com.harveyhelper;
+package com.chaione.disasterconnect;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "HarveyHelper";
+        return "DisasterConnect";
     }
 }

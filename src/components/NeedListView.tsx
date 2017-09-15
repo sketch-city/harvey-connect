@@ -121,8 +121,9 @@ export class NeedListView extends Component<Props, State> {
                     alignItems: 'center',
                     justifyContent: 'center'
                 }}>
-                    <Text style={{ color: Colors.needText }}>My Needs</Text>
+                    <Text style={{ color: Colors.needText, fontWeight: '600' }}>My Needs</Text>
                 </View>
+                <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
                 <FlatList data={this.state.markers}
                     ItemSeparatorComponent={Separator}
                     renderItem={this.renderItem}

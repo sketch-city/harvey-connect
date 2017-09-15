@@ -206,12 +206,12 @@ export class API {
         let reverseGeoCoding = await fetch(googleMapAPIUrl + 'address=' + address + addressFilter + googleMapsAPIKey);
         let json = await reverseGeoCoding.json();
 
-        return new Promise<object>((resolve) => {
+        return new Promise<{ lat: number, lng: number }>((resolve, reject) => {
             if (json["results"][0].geometry.location) {
                 resolve(json["results"][0].geometry.location);
             }
             else {
-                resolve({ "error": 'Unable to get coordinates from address.' });
+                reject(new Error('Unable to get coordinates from address.'));
             }
         });
     }

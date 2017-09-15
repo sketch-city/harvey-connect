@@ -143,7 +143,6 @@ export class MainView extends Component<Props, State> {
             return (
                 <MapView.Marker
                     ref={`marker-${marker.id}`}
-                    pinColor={marker.markerType === 'need' ? 'red' : 'blue'}
                     coordinate={{
                         latitude: marker.latitude,
                         longitude: marker.longitude
@@ -151,7 +150,9 @@ export class MainView extends Component<Props, State> {
                     identifier={`${marker.id}`}
                     onPress={this.onPressNeedMarker}
                     key={marker.id}
-                />
+                >
+                    <FAIcon name='map-marker' size={40} style={{ color: 'red' }} />
+                </MapView.Marker>
             )
 
         })
@@ -283,7 +284,7 @@ export class MainView extends Component<Props, State> {
 
     onPressMap(e) {
         // dismiss modal view if not selecting a pin
-        this.setState({selectedNeedId: null})
+        this.setState({ selectedNeedId: null })
     }
 
     render() {
