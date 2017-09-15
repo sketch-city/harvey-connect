@@ -169,7 +169,7 @@ export class MainView extends Component<Props, State> {
             <View style={styles.actionButtonContainer}>
                 <View style={styles.actionButtonSpacer} />
                 <TouchableOpacity
-                    activeOpacity={0.9}
+                    activeOpacity={0.6}
                     onPress={() => this.onPressActionButton('NEED')}
                     style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
                     <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
@@ -314,7 +314,7 @@ export class MainView extends Component<Props, State> {
                     <View style={styles.actionButtonContainer}>
                         <View style={styles.actionButtonSpacer} />
                         <TouchableOpacity
-                            activeOpacity={0.9}
+                            activeOpacity={0.6}
                             onPress={() => this.onPressActionButton('FILTER')}
                             style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
