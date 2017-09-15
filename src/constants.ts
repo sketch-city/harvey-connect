@@ -14,7 +14,7 @@ export const Colors = {
     grey: '#A2AEB6',
 }
 
-const _dropShadowStyles = {
+export const _dropShadowStyles = {
     shadowRadius: 1,
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.7,
@@ -51,7 +51,7 @@ export const styles = StyleSheet.create({
     cardViewContainer: {
         flex: 1,
         height: 240,
-        borderRadius: 50
+        borderRadius: 50,
     },
 
     actionButtonContainer: {

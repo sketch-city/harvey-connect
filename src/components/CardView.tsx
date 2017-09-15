@@ -8,7 +8,7 @@ import Communications from 'react-native-communications';
 import openMap from 'react-native-open-maps';
 import { Linking, Platform } from "react-native";
 
-import { TitleText, PlainText, ButtonText, Colors } from '../constants'
+import { TitleText, PlainText, ButtonText, Colors, _dropShadowStyles } from '../constants'
 
 import _ from 'lodash';
 
@@ -108,16 +108,15 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 35,
         backgroundColor: '#FFF',
+        ..._dropShadowStyles,
     },
 
     needTitleText: {
-        textAlign: 'left',
-        width: (width - 60),
-        paddingTop: 5,
-        height: 45,
-        marginTop: 0,
-        marginBottom: 0,
         ...TitleText,
+        textAlign: 'left',
+        width: (width - 65),
+        height: 40,
+        marginTop: 5,
     },
 
     categoryListContainer: {
@@ -134,7 +133,6 @@ const styles = StyleSheet.create({
         marginRight: 5,
         overflow: 'hidden',
         marginBottom: 4,
-        ...PlainText,
     },
 
     actionButtonsContainer: {
