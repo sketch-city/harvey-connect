@@ -8,6 +8,8 @@ import Communications from 'react-native-communications';
 import openMap from 'react-native-open-maps';
 import { Linking, Platform } from "react-native";
 
+import { TitleText, PlainText, ButtonText, Colors } from '../constants'
+
 import _ from 'lodash';
 
 interface Props {
@@ -62,7 +64,6 @@ export class CardView extends Component<Props, State> {
                 </Text>
 
                 <View style={styles.categoryListContainer}>
-                    <Text>Categories</Text>
                     <View style={styles.categoryListTextContainer}>
                         {this.renderCategories()}
                     </View>
@@ -71,7 +72,7 @@ export class CardView extends Component<Props, State> {
                 <View style={styles.actionButtonsContainer}>
                     <View style={styles.actionButtonsTop}>
                         <TouchableOpacity onPress={this.onPressDirections} activeOpacity={0.9} style={StyleSheet.flatten(styles.actionButtonDirections)}>
-                            <FAIcon name="map-marker" size={24} style={styles.directionButtonIcon} />
+                            <FAIcon name="map-marker" style={styles.directionButtonIcon} />
                             <Text style={styles.actionButtonDirectionText}> Directions </Text>
                         </TouchableOpacity>
                     </View>
@@ -107,14 +108,12 @@ const styles = StyleSheet.create({
 
     needTitleText: {
         textAlign: 'left',
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: "#505E65",
         width: (width - 60),
-        paddingTop: 10,
-        height: 40,
+        paddingTop: 5,
+        height: 45,
         marginTop: 0,
         marginBottom: 0,
+        ...TitleText,
     },
 
     categoryListContainer: {
@@ -126,14 +125,15 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         height: 20,
         backgroundColor: '#A2AEB6',
-        color: '#505E65',
         paddingTop: 1,
         paddingLeft: 5,
         paddingRight: 5,
         marginRight: 5,
         overflow: 'hidden',
         marginBottom: 4,
+        ...PlainText,
     },
+
     categoryListTextContainer: {
         marginTop: 5,
         flexDirection: 'row',
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
 
     actionButtonsTop: {
         borderTopWidth: 0.5,
-        borderTopColor: '#A2AEB6',
+        borderTopColor: '#F3F3F3',
         height: 45,
     },
 
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     },
 
     actionButtonText: {
-        fontSize: 24,
+        ...ButtonText,
         color: 'white',
     },
 
@@ -182,13 +182,14 @@ const styles = StyleSheet.create({
     },
 
     actionButtonDirectionText: {
-        fontSize: 24,
-        color: '#A2AEB6',
+        ...ButtonText,
+        color: Colors.grey,
     },
 
     directionButtonIcon: {
-        color: "#A2AEB6",
-        marginRight: 5
+        marginRight: 5,
+        fontSize: 32,
+        color: Colors.grey,
     },
 
     actionButton: {

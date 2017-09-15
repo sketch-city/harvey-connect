@@ -4,7 +4,14 @@ export const Colors = {
     green: '#009000',
     maroon: '#800000',
     darkblue: '#000080',
-    needText: '#505E65'
+    needText: '#505E65',
+
+    white: '#FFFFFF',
+    red: '#FF5A5F',
+    cyan: '#50E3C2',
+    blue: '#0080FE',
+    black: '#505E65',
+    grey: '#A2AEB6',
 }
 
 const _dropShadowStyles = {
@@ -14,6 +21,22 @@ const _dropShadowStyles = {
     shadowColor: 'black',
     elevation: 4
 };
+
+export const TitleText = {
+    fontSize: 32,
+    color: Colors.black,
+}
+
+export const PlainText = {
+    fontSize: 24,
+    color: Colors.black,
+    fontWeight: '300',
+}
+
+export const ButtonText = {
+    fontSize: 32,
+    color: Colors.black,
+}
 
 export const styles = StyleSheet.create({
     cardSheet: {
@@ -79,5 +102,6 @@ export const styles = StyleSheet.create({
     },
     pageControlIndicator: {
         borderRadius: 5
-    }
+    },
+
 });
