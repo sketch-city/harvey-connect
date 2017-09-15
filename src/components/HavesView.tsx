@@ -70,6 +70,7 @@ interface State {
 
 }
 export class HavesView extends Component<Props, State> {
+    textChangedDate: Date
     constructor(props) {
         super(props)
         let need = null
@@ -183,29 +184,33 @@ export class HavesView extends Component<Props, State> {
         )
     }
 
-    updateState = (value: string, marker: MarkerValue) => {
+    updateState = async (value: string, marker: MarkerValue) => {
         switch (marker) {
             case MarkerValue.Address:
-                this.setState({
-                    address: value
-                }, () => {
-                    API.getLatLangFromAddress(value)
-                        .then(result => {
-                            const updatedLocation = {
-                                latitude: result.lat,
-                                longitude: result.lng
-                            }
-                            this.setState({
-                                pinLocation: updatedLocation,
-                                currentLocation: updatedLocation
-                            }, () => {
-                                this.refs.havesMap.animateToCoordinate(updatedLocation, 300)
-                            })
+                let now = new Date()
+                this.setState({ address: value })
+                if (value.length > 8
+                    && this.textChangedDate !== undefined
+                    && now.valueOf() - this.textChangedDate.valueOf() > 1000) {
+
+                    try {
+
+                        let result = await API.getLatLangFromAddress(value)
+                        const updatedLocation = {
+                            latitude: result.lat,
+                            longitude: result.lng
+                        }
+                        this.setState({
+                            pinLocation: updatedLocation,
+                            currentLocation: updatedLocation
+                        }, () => {
+                            this.refs.havesMap.animateToCoordinate(updatedLocation, 300)
                         })
-                        .catch(error => {
-                            console.log(error)
-                        })
-                })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+                this.textChangedDate = new Date()
                 break;
             case MarkerValue.Name: this.setState({ name: value })
                 break;
