@@ -179,7 +179,7 @@ export class HavesView extends Component<Props, State> {
                         this.setState({ selectedCategories: current })
                     }
                 }}>
-                <Text style={{ color: this.itemSelected(section.key, item) ? Colors.white : Colors.black }}>{item}</Text>
+                <Text style={{ color: this.itemSelected(section.key, item) ? Colors.white : Colors.needText }}>{item}</Text>
             </TouchableOpacity>
         )
     }
@@ -378,7 +378,7 @@ export class HavesView extends Component<Props, State> {
         return (
             <Text style={{
                 height: 40, padding: 10,
-                color: Colors.darkblue, backgroundColor: '#F5F5F5',
+                color: Colors.needText, backgroundColor: '#F5F5F5',
                 fontWeight: 'bold'
             }}>{item.section.key}</Text>
         )
