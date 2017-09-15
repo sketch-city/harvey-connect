@@ -308,23 +308,8 @@ export class MainView extends Component<Props, State> {
                 >
                     {this.renderNeeds()}
                 </MapView>
-                <View style={{
-                    left: 0,
-                    right: 0,
-                    top: 10,
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    position: 'absolute'
-                }}>
-                    <View style={{
-                        height: 0,
-                        flexDirection: 'row',
-                        alignContent: 'space-around',
-                        justifyContent: 'space-between',
-                        marginTop: 10,
-                        marginLeft: 10,
-                        marginRight: 10
-                    }}>
+                <View style={{ flex: 1, left: 0, right: 0, top: 20, position: 'absolute' }}>
+                    <View style={styles.actionButtonContainer}>
                         <View style={styles.actionButtonSpacer} />
                         <TouchableOpacity
                             activeOpacity={0.9}
@@ -367,12 +352,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignContent: 'space-around',
         justifyContent: 'space-between',
-        marginTop: 10,
-        marginLeft: 10,
-        marginRight: 10
+        margin: 10,
     },
     actionButton: {
-        height: 40,
+        height: 44,
         flex: 1,
         backgroundColor: 'green',
         justifyContent: 'center',
@@ -381,6 +364,11 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         marginRight: 10,
         marginLeft: 10,
+        shadowRadius: 1,
+        shadowOffset: { width: 0, height: 0.5 },
+        shadowOpacity: 0.7,
+        shadowColor: 'black',
+        elevation: 4,
     },
     actionButtonSpacer: {
         height: 0,
@@ -391,7 +379,7 @@ const styles = StyleSheet.create({
     },
     actionButtonIcon: {
         color: "#FFF",
-        marginRight: 5
+        marginRight: 8
     },
     actionButtonFilter: {
         backgroundColor: '#FF5A5F',
@@ -400,7 +388,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#0080FE',
     },
     actionButtonText: {
-        color: 'white'
+        color: 'white',
+        fontSize: 15
     },
     pageControl: {
         position: 'absolute',
