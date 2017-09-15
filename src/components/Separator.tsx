@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from 'react'
 import { View } from 'react-native'
-import { Colors } from './Colors'
+import { Colors } from './../constants'
 export class Separator extends PureComponent<{}, {}> {
     render() {
         return (

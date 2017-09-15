@@ -5,6 +5,7 @@ export const Colors = {
     maroon: '#800000',
     darkblue: '#000080',
     needText: '#505E65',
+    separatorColor: 'rgba(0,0,0,0.1)',
 
     white: '#FFFFFF',
     red: '#FF5A5F',
@@ -71,7 +72,7 @@ export const styles = StyleSheet.create({
         borderRadius: 50,
         marginRight: 10,
         marginLeft: 10,
-        ... _dropShadowStyles
+        ..._dropShadowStyles
     },
     actionButtonSpacer: {
         height: 0,
