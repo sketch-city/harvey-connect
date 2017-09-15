@@ -20,6 +20,7 @@ import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
 import { Colors } from './Colors'
 import { strings } from './../localization/Strings'
+import FAIcon from 'react-native-vector-icons/FontAwesome';
 type LatLng = {
     latitude: number,
     longitude: number,
@@ -354,13 +355,13 @@ export class HavesView extends Component<Props, State> {
                     ref='marker'
                     draggable
                     onDragEnd={this.handlePinDrag}
-                    pinColor={'red'}
                     coordinate={{
                         latitude: this.state.currentLocation.latitude,
                         longitude: this.state.currentLocation.longitude
                     }}
                     key={'blah'}
                 >
+                    <FAIcon name='map-marker' size={40} style={{ color: 'red' }} />
                 </MapView.Marker>
             )
         } else {
