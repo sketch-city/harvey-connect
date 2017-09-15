@@ -189,7 +189,7 @@ export class API {
     }
 
     public static getAddressFromLatLang = async (latitude: number, longitude: number) => {
-        let reverseGeoCoding = await fetch(googleMapAPIUrl + 'latlng=' + latitude + ',' + longitude + latlngFilter + googleMapsAPIKey);
+        let reverseGeoCoding = await fetch(googleMapAPIUrl + 'latlng=' + latitude + ',' + longitude + googleMapsAPIKey);
         let json = await reverseGeoCoding.json();
         console.log(json)
         return new Promise<string>((resolve, reject) => {
