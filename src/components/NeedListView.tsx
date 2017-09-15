@@ -129,23 +129,28 @@ export class NeedListView extends Component<Props, State> {
                     renderItem={this.renderItem}
                     keyExtractor={this.keyExtractor} />
                 <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
-                <TouchableOpacity style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: 45
-                }}
-                    onPress={this.props.cancelTapped} >
-                    <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#50E3C2',
-                    height: 45
-                }}
-                    onPress={() => this.setState({ modalVisible: true, selectedNeed: undefined })}>
-                    <Text style={{ color: 'white', fontWeight: '600' }}>Create New Need</Text>
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TouchableOpacity style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 45
+                    }}
+                        onPress={this.props.cancelTapped} >
+                        <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
+                    </TouchableOpacity>
+                    <View style={{ height: 45, width: 1, backgroundColor: 'rgba(0,0,0,0.1)' }}></View>
+                    <TouchableOpacity style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#50E3C2',
+                        height: 45
+                    }}
+                        onPress={() => this.setState({ modalVisible: true, selectedNeed: undefined })}>
+                        <Text style={{ color: 'white', fontWeight: '600' }}>Create New Need</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }
