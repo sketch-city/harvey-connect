@@ -59,13 +59,19 @@ export class NeedListView extends Component<Props, State> {
     renderItem = ({ item, index }: { item: Need, index: number }) => {
         let width = Dimensions.get('window').width
         return (
-            <TouchableOpacity style={{ height: 45, justifyContent: 'center' }}
+            <TouchableOpacity style={{ height: 75, justifyContent: 'center' }}
                 onPress={() => this.itemSelected(item)}>
 
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: 45, alignItems: 'center' }}>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: 75, alignItems: 'center' }}>
                     <FAIcon name={'map-marker'} size={20} style={{ color: '#A2AEB6', marginLeft: 10, marginRight: 10 }} />
-                    <Text style={{ position: 'absolute', left: 15 + 10 + 10, width: width - 65, color: Colors.needText }}
-                        numberOfLines={2}>{item.address}</Text>
+                    <View style={{ flex: 1, height: 75, alignContent: 'center', justifyContent: 'center' }}>
+                        <Text style={{ width: width - 65, color: Colors.needText, marginBottom: 2 }}>
+                            {item.name}</Text>
+                        <Text style={{ width: width - 65, color: Colors.needText, marginTop: 2 }}
+                            numberOfLines={2}>{item.address}</Text>
+                    </View>
+
                     <FAIcon name={'angle-right'} size={20} style={{ color: '#A2AEB6', marginLeft: 10, marginRight: 10 }} />
                 </View>
             </TouchableOpacity>
@@ -109,7 +115,7 @@ export class NeedListView extends Component<Props, State> {
                         height: 45
                     }}
                         onPress={this.props.cancelTapped} >
-                        <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
+                        <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Done</Text>
                     </TouchableOpacity>
                     <View style={{ height: 45, width: 1, backgroundColor: Colors.separatorColor }}></View>
                     <TouchableOpacity style={{

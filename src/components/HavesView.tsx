@@ -36,7 +36,8 @@ export const enum MarkerValue {
     Phone,
     Address,
     Description,
-    Email
+    Email,
+    FakeHeader
 }
 
 export const enum MarkerType {
@@ -71,6 +72,7 @@ interface State {
 }
 export class HavesView extends Component<Props, State> {
     textChangedDate: Date
+    localizedStrings: Object = { categories: 'I Need Help With' }
     constructor(props) {
         super(props)
         let need = null
@@ -90,7 +92,7 @@ export class HavesView extends Component<Props, State> {
             name: need.name || '',
             listData: [{
                 data:
-                [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone],
+                [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.FakeHeader],
                 key: 'My Info',
                 keyExtractor: this.keyExtractor,
                 renderItem: this.renderItem
@@ -111,7 +113,7 @@ export class HavesView extends Component<Props, State> {
                     lang = 'en'
                 }
                 let localized = json[lang]
-
+                this.localizedStrings = localized
                 let categoryData = categoriesParsed.map((val) => {
                     let keyName = Object.getOwnPropertyNames(val)[0];
                     let values = val[keyName];
@@ -133,8 +135,6 @@ export class HavesView extends Component<Props, State> {
         return (
             <View style={{
                 height: height,
-                marginRight: 10,
-                marginLeft: 10,
                 justifyContent: 'center'
             }}
             >
@@ -179,9 +179,20 @@ export class HavesView extends Component<Props, State> {
                         this.setState({ selectedCategories: current })
                     }
                 }}>
-                <Text style={{ color: this.itemSelected(section.key, item) ? Colors.white : Colors.needText }}>{item}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Text style={{ color: this.itemSelected(section.key, item) ? Colors.white : Colors.needText }}>{item}</Text>
+                    {this.renderCheckmark(section, item)}
+                </View>
             </TouchableOpacity>
         )
+    }
+
+    renderCheckmark = (section: any, item: string) => {
+        if (this.itemSelected(section.key, item)) {
+            return <FAIcon name='check' size={15} style={{ color: Colors.white }} />
+        } else {
+            return <View />
+        }
     }
 
     updateState = async (value: string, marker: MarkerValue) => {
@@ -226,34 +237,46 @@ export class HavesView extends Component<Props, State> {
     viewForCell = (item: MarkerValue) => {
         switch (item) {
             case MarkerValue.Phone:
-                return <TextCell placeholder={'Phone Number'}
-                    keyboardType={'phone-pad'}
-                    markerValue={MarkerValue.Phone}
-                    textChanged={this.updateState}
-                    value={this.state.phone} />
+                return (
+                    <View style={{ marginHorizontal: 10 }}>
+                        <TextCell placeholder={'Phone Number'}
+                            keyboardType={'phone-pad'}
+                            markerValue={MarkerValue.Phone}
+                            textChanged={this.updateState}
+                            value={this.state.phone} />
+                    </View>
+                )
             case MarkerValue.Name:
-                return <TextCell placeholder={'Name'}
-                    markerValue={MarkerValue.Name}
-                    textChanged={this.updateState}
-                    value={this.state.name} />
-            case MarkerValue.Email:
-                return <TextCell placeholder={'Email'}
-                    markerValue={MarkerValue.Email}
-                    textChanged={this.updateState}
-                    value={this.state.email} />
-            case MarkerValue.Description:
-                let placeholder = this.props.markerType === MarkerType.Need ? 'I Need ...' : 'I Have ...'
-                return <TextCell placeholder={placeholder}
-                    markerValue={MarkerValue.Description}
-                    textChanged={this.updateState}
-                    value={this.state.description} />
+                return (
+                    <View style={{ marginHorizontal: 10 }}>
+                        <TextCell placeholder={'Name'}
+                            markerValue={MarkerValue.Name}
+                            textChanged={this.updateState}
+                            value={this.state.name} />
+                    </View>
+                )
             case MarkerValue.Address:
-                return <TextCell placeholder={'Address'}
-                    ref='addressCell'
-                    markerValue={MarkerValue.Address}
-                    textChanged={this.updateState}
-                    value={this.state.address} />
 
+                return (
+                    <View style={{ marginHorizontal: 10 }}>
+                        <TextCell placeholder={'Address'}
+                            ref='addressCell'
+                            markerValue={MarkerValue.Address}
+                            textChanged={this.updateState}
+                            value={this.state.address} />
+                    </View>
+                )
+            case MarkerValue.FakeHeader:
+                return (
+                    <View>
+                        <Text style={{
+                            height: 45, padding: 10,
+                            color: Colors.needText, backgroundColor: '#F5F5F5',
+                            fontWeight: 'bold'
+                        }}>{this.localizedStrings['categories']}</Text>
+                        <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
+                    </View>
+                )
         }
     }
 
@@ -366,7 +389,7 @@ export class HavesView extends Component<Props, State> {
                     }}
                     key={'blah'}
                 >
-                    <FAIcon name='map-marker' size={40} style={{ color: 'red' }} />
+                    <FAIcon name='map-marker' size={40} style={{ color: Colors.red }} />
                 </MapView.Marker>
             )
         } else {

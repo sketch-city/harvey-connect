@@ -106,21 +106,21 @@ export class FiltersView extends Component<Props, State> {
         }
     }
 
-    onPressFilter (filterName, e) {
+    onPressFilter(filterName, e) {
         this.setState({
             activeFilter: filterName
         })
     }
 
-    onPressDone () {
-        const selectedFilters= this.state.activeFilter === 'Anything'
+    onPressDone() {
+        const selectedFilters = this.state.activeFilter === 'Anything'
             ? []
             : [this.state.activeFilter]
 
         this.props.onSelectFilters(selectedFilters)
     }
 
-    renderItem ({item, index}) {
+    renderItem({ item, index }) {
         const isActiveFilter = (item.name === this.state.activeFilter)
 
         return (
@@ -133,7 +133,7 @@ export class FiltersView extends Component<Props, State> {
         )
     }
 
-    getOrderedCategoriesList () {
+    getOrderedCategoriesList() {
         const categories = _.map(this.props.categories.items, (item, keyName) => {
             return {
                 name: _.capitalize(keyName),
@@ -151,7 +151,7 @@ export class FiltersView extends Component<Props, State> {
         return (
             <View style={styles.filtersListContainer}>
                 <View style={styles.filtersListHeader}>
-                    <Text style={styles.filtersListHeaderText}> Show some people who need...</Text>
+                    <Text style={styles.filtersListHeaderText}> Show people who need</Text>
                 </View>
 
                 <View style={styles.filtersList}>
