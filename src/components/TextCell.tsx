@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet, TextInput, KeyboardTypeIOS, KeyboardType } from 'react-native';
 import { MarkerValue } from './HavesView'
-import { Colors } from './Colors'
+import { Colors } from '../constants';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 
 interface Props {

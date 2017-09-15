@@ -18,7 +18,7 @@ import { CategoryList, Category } from './CategoryList'
 import { API, CreateMarker, KeyedCollection, IKeyedCollection, Need } from './../API/API'
 import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
-import { Colors } from './Colors'
+import { Colors } from '../constants';
 import { strings } from './../localization/Strings'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 type LatLng = {

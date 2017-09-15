@@ -21,6 +21,8 @@ import { ModalView } from './ModalView';
 
 import { strings } from '../localization/Strings';
 
+import { styles } from '../constants';
+
 const DEFAULT_VP_DELTA = {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
@@ -308,23 +310,8 @@ export class MainView extends Component<Props, State> {
                 >
                     {this.renderNeeds()}
                 </MapView>
-                <View style={{
-                    left: 0,
-                    right: 0,
-                    top: 10,
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    position: 'absolute'
-                }}>
-                    <View style={{
-                        height: 0,
-                        flexDirection: 'row',
-                        alignContent: 'space-around',
-                        justifyContent: 'space-between',
-                        marginTop: 10,
-                        marginLeft: 10,
-                        marginRight: 10
-                    }}>
+                <View style={{ flex: 1, left: 0, right: 0, top: 20, position: 'absolute' }}>
+                    <View style={styles.actionButtonContainer}>
                         <View style={styles.actionButtonSpacer} />
                         <TouchableOpacity
                             activeOpacity={0.9}
@@ -344,71 +331,3 @@ export class MainView extends Component<Props, State> {
         )
     }
 }
-
-const { width, height } = Dimensions.get('window');
-const styles = StyleSheet.create({
-    cardSheet: {
-        left: 0,
-        right: 0,
-        bottom: 10,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        position: 'absolute'
-    },
-
-    cardViewContainer: {
-        flex: 1,
-        height: 240,
-        borderRadius: 50
-    },
-
-    actionButtonContainer: {
-        height: 44,
-        flexDirection: 'row',
-        alignContent: 'space-around',
-        justifyContent: 'space-between',
-        marginTop: 10,
-        marginLeft: 10,
-        marginRight: 10
-    },
-    actionButton: {
-        height: 40,
-        flex: 1,
-        backgroundColor: 'green',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderRadius: 50,
-        marginRight: 10,
-        marginLeft: 10,
-    },
-    actionButtonSpacer: {
-        height: 0,
-        flex: 1,
-        flexDirection: 'row',
-        marginRight: 0,
-        marginLeft: 0,
-    },
-    actionButtonIcon: {
-        color: "#FFF",
-        marginRight: 5
-    },
-    actionButtonFilter: {
-        backgroundColor: '#FF5A5F',
-    },
-    actionButtonNeed: {
-        backgroundColor: '#0080FE',
-    },
-    actionButtonText: {
-        color: 'white'
-    },
-    pageControl: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 15
-    },
-    pageControlIndicator: {
-        borderRadius: 5
-    }
-});

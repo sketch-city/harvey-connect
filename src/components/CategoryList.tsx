@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, SectionList, TouchableOpacity } from 'react-native';
-import { Separator } from './Separator'
-import { Colors } from './Colors'
+import { Separator } from './Separator';
+import { Colors } from '../constants';
 
 interface Props {
     closeButtonTapped: ({ }) => void,

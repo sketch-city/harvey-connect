@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Need } from '../API/API'
 import { Separator } from '../components/Separator'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
@@ -7,6 +7,8 @@ import FAIcon from 'react-native-vector-icons/FontAwesome';
 import Communications from 'react-native-communications';
 import openMap from 'react-native-open-maps';
 import { Linking, Platform } from "react-native";
+
+import { TitleText, PlainText, ButtonText, Colors, _dropShadowStyles } from '../constants'
 
 import _ from 'lodash';
 
@@ -44,12 +46,16 @@ export class CardView extends Component<Props, State> {
     renderCategories() {
         const categories = _.chain(this.props.need.categories).values().flatten().compact().value()
         if (categories.length === 0) {
-            return <Text> N/A </Text>
+            return 'N/A'
         }
 
-        return categories.map((keyName, index) => {
-            return <Text style={styles.categoryListText} key={index}>{keyName}</Text>
-        })
+        return _.reduce(categories, (result, value, index) => {
+            if (index === (categories.length - 1)) {
+                return result + 'and ' + value + '.'
+            }
+
+            return result + value + ', '
+        }, 'I need ')
     }
 
     render() {
@@ -61,17 +67,16 @@ export class CardView extends Component<Props, State> {
                     {need.name}
                 </Text>
 
-                <View style={styles.categoryListContainer}>
-                    <Text>Categories</Text>
-                    <View style={styles.categoryListTextContainer}>
+                <ScrollView style={styles.categoryListContainer}>
+                    <Text style={styles.categoryListText}>
                         {this.renderCategories()}
-                    </View>
-                </View>
+                    </Text>
+                </ScrollView>
 
                 <View style={styles.actionButtonsContainer}>
                     <View style={styles.actionButtonsTop}>
                         <TouchableOpacity onPress={this.onPressDirections} activeOpacity={0.9} style={StyleSheet.flatten(styles.actionButtonDirections)}>
-                            <FAIcon name="map-marker" size={24} style={styles.directionButtonIcon} />
+                            <FAIcon name="map-marker" style={styles.directionButtonIcon} />
                             <Text style={styles.actionButtonDirectionText}> Directions </Text>
                         </TouchableOpacity>
                     </View>
@@ -103,18 +108,15 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 35,
         backgroundColor: '#FFF',
+        ..._dropShadowStyles,
     },
 
     needTitleText: {
+        ...TitleText,
         textAlign: 'left',
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: "#505E65",
-        width: (width - 60),
-        paddingTop: 10,
+        width: (width - 65),
         height: 40,
-        marginTop: 0,
-        marginBottom: 0,
+        marginTop: 5,
     },
 
     categoryListContainer: {
@@ -123,22 +125,14 @@ const styles = StyleSheet.create({
     },
 
     categoryListText: {
+        ...PlainText,
         textAlign: 'left',
-        height: 20,
-        backgroundColor: '#A2AEB6',
-        color: '#505E65',
         paddingTop: 1,
         paddingLeft: 5,
         paddingRight: 5,
         marginRight: 5,
         overflow: 'hidden',
         marginBottom: 4,
-    },
-    categoryListTextContainer: {
-        marginTop: 5,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        width: (width - 60),
     },
 
     actionButtonsContainer: {
@@ -155,7 +149,7 @@ const styles = StyleSheet.create({
 
     actionButtonsTop: {
         borderTopWidth: 0.5,
-        borderTopColor: '#A2AEB6',
+        borderTopColor: '#F3F3F3',
         height: 45,
     },
 
@@ -169,7 +163,7 @@ const styles = StyleSheet.create({
     },
 
     actionButtonText: {
-        fontSize: 24,
+        ...ButtonText,
         color: 'white',
     },
 
@@ -182,13 +176,14 @@ const styles = StyleSheet.create({
     },
 
     actionButtonDirectionText: {
-        fontSize: 24,
-        color: '#A2AEB6',
+        ...ButtonText,
+        color: Colors.grey,
     },
 
     directionButtonIcon: {
-        color: "#A2AEB6",
-        marginRight: 5
+        marginRight: 5,
+        fontSize: 32,
+        color: Colors.grey,
     },
 
     actionButton: {
