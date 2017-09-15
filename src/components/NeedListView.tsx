@@ -16,7 +16,7 @@ import {
 import { ModalView } from './ModalView';
 import { Separator } from "./Separator";
 import { HavesView, MarkerType } from './HavesView';
-import { Colors } from './Colors';
+import { Colors } from '../constants';
 
 interface Props {
     cancelTapped: () => void

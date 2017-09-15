@@ -15,8 +15,7 @@ import MapView from 'react-native-maps'
 import { API, Need, KeyedCollection, Marker, CreateMarker, IKeyedCollection } from '../API/API'
 import { TextCell } from './TextCell'
 import { ButtonCell } from './ButtonCell'
-import { CategoryList } from './CategoryList'
-import { API, CreateMarker } from './../API/API'
+import { CategoryList } from './CategoryList';
 import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
 import FAIcon from 'react-native-vector-icons/FontAwesome';
@@ -55,7 +54,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: Dimensions.get('window').width,
     },
-    
+
     filtersListHeaderText: {
         fontSize: 24,
     },
@@ -112,22 +111,22 @@ export class FiltersView extends Component<Props, State> {
             activeFilter: filterName
         })
     }
-    
+
     onPressDone () {
         const selectedFilters= this.state.activeFilter === 'Anything'
-            ? [] 
+            ? []
             : [this.state.activeFilter]
-        
+
         this.props.onSelectFilters(selectedFilters)
     }
 
     renderItem ({item, index}) {
         const isActiveFilter = (item.name === this.state.activeFilter)
-     
+
         return (
             <TouchableOpacity style={[styles.filtersListItem]} onPress={this.onPressFilter.bind(this, item.name)}>
                 <Text style={[styles.filterListItemText, isActiveFilter && styles.filterListItemTextActive]}>{item.name}</Text>
-                {isActiveFilter && 
+                {isActiveFilter &&
                     <FAIcon name="check" size={15} style={styles.activeFilterCheckMark} />
                 }
             </TouchableOpacity>
@@ -156,7 +155,7 @@ export class FiltersView extends Component<Props, State> {
                 </View>
 
                 <View style={styles.filtersList}>
-                    <FlatList 
+                    <FlatList
                         data={this.getOrderedCategoriesList()}
                         renderItem={this.renderItem.bind(this)}
                     />
