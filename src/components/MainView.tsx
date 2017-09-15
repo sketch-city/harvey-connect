@@ -21,7 +21,7 @@ import { ModalView } from './ModalView';
 
 import { strings } from '../localization/Strings';
 
-import { styles } from '../constants';
+import { styles, Colors } from '../constants';
 
 const DEFAULT_VP_DELTA = {
     latitudeDelta: 0.0922,
@@ -153,7 +153,7 @@ export class MainView extends Component<Props, State> {
                     onPress={this.onPressNeedMarker}
                     key={marker.id}
                 >
-                    <FAIcon name='map-marker' size={40} style={{ color: 'red' }} />
+                    <FAIcon name='map-marker' size={40} style={{ color: Colors.red }} />
                 </MapView.Marker>
             )
 
