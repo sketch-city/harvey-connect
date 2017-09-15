@@ -91,7 +91,7 @@ export class HavesView extends Component<Props, State> {
             listData: [{
                 data:
                 [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone],
-                key: 'Info',
+                key: 'My Info',
                 keyExtractor: this.keyExtractor,
                 renderItem: this.renderItem
             }],
@@ -158,7 +158,7 @@ export class HavesView extends Component<Props, State> {
             <TouchableOpacity style={{
                 height: 40,
                 padding: 10,
-                backgroundColor: this.itemSelected(section.key, item) ? 'green' : 'white'
+                backgroundColor: this.itemSelected(section.key, item) ? Colors.green : Colors.white
             }}
                 onPress={() => {
                     if (this.itemSelected(section.key, item)) {
@@ -179,7 +179,7 @@ export class HavesView extends Component<Props, State> {
                         this.setState({ selectedCategories: current })
                     }
                 }}>
-                <Text style={{ color: this.itemSelected(section.key, item) ? 'white' : 'black' }}>{item}</Text>
+                <Text style={{ color: this.itemSelected(section.key, item) ? Colors.white : Colors.needText }}>{item}</Text>
             </TouchableOpacity>
         )
     }
@@ -378,7 +378,7 @@ export class HavesView extends Component<Props, State> {
         return (
             <Text style={{
                 height: 40, padding: 10,
-                color: Colors.darkblue, backgroundColor: '#F5F5F5',
+                color: Colors.needText, backgroundColor: '#F5F5F5',
                 fontWeight: 'bold'
             }}>{item.section.key}</Text>
         )
@@ -395,8 +395,8 @@ export class HavesView extends Component<Props, State> {
                 >
                     {this.renderPin()}
                 </MapView>
-                <KeyboardAvoidingView style={{ flex: 1, backgroundColor: 'white' }}
-                    contentContainerStyle={{ flex: 1, backgroundColor: 'white' }}
+                <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.white }}
+                    contentContainerStyle={{ flex: 1, backgroundColor: Colors.white }}
                     behavior={'position'}>
                     <View style={{ flex: 1 }}>
                         <SectionList
@@ -406,11 +406,33 @@ export class HavesView extends Component<Props, State> {
                             extraData={this.state}
                         />
                     </View>
-                    <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.1)' }} />
+                    <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
+                    {this.renderDeleteButton()}
                     {this.renderBottomButtons()}
                 </KeyboardAvoidingView>
             </View >
         )
+    }
+
+    renderDeleteButton = () => {
+        if (this.props.editingNeed === undefined || this.props.editingNeed === null) {
+            return <View></View>
+        } else {
+            return (
+                <View>
+                    <TouchableOpacity style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: Colors.white,
+                        height: 45
+                    }}
+                        onPress={() => this.deleteMarkerTapped(this.props.editingNeed)}>
+                        <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>No Longer Needed</Text>
+                    </TouchableOpacity>
+                    <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
+                </View>
+            )
+        }
     }
 
     renderBottomButtons = () => {
@@ -424,8 +446,9 @@ export class HavesView extends Component<Props, State> {
             func = this.updateNeed
         }
         return (
-            <View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <TouchableOpacity style={{
+                    flex: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
                     height: 45
@@ -433,16 +456,45 @@ export class HavesView extends Component<Props, State> {
                     onPress={this.props.cancelTapped}>
                     <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
                 </TouchableOpacity>
+                <View style={{ height: 45, width: 1, backgroundColor: Colors.separatorColor }}></View>
                 <TouchableOpacity style={{
+                    flex: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor: '#50E3C2',
                     height: 45
                 }}
                     onPress={func}>
-                    <Text style={{ color: 'white', fontWeight: '600' }}>{text}</Text>
+                    <Text style={{ color: Colors.white, fontWeight: '600' }}>{text}</Text>
                 </TouchableOpacity>
             </View>
         )
+    }
+
+    deleteMarkerTapped = (item: Need) => {
+        Alert.alert('Are you sure?', `Do you want to delete this need '${item.name}'`, [{ text: 'OK', onPress: () => this.deleteMarker(item), style: 'destructive' },
+        { text: 'Cancel', style: 'cancel' }])
+    }
+
+    deleteMarker = async (marker: Need) => {
+        let createMarker = new CreateMarker()
+        createMarker.name = marker.name
+        createMarker.id = marker.id
+        createMarker.marker_type = marker.markerType
+        createMarker.address = marker.address
+        createMarker.description = marker.description
+        createMarker.phone = marker.phone
+        createMarker.latitude = marker.latitude
+        createMarker.longitude = marker.longitude
+        createMarker.categories = marker.categories
+        createMarker.resolved = true
+
+        try {
+            await API.updateMarker(createMarker)
+            this.props.cancelTapped()
+        } catch (error) {
+            console.log(error)
+            Alert.alert('Error', 'Something went wrong, please try again.')
+        }
     }
 }

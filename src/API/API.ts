@@ -164,7 +164,6 @@ export class API {
                 resolve(json)
             })
         } else {
-            console.log(response)
             return new Promise<Need>((reslove, reject) => reject(new Error(`Got a bad status code: ${response.status}`)))
         }
     }
@@ -189,9 +188,8 @@ export class API {
     }
 
     public static getAddressFromLatLang = async (latitude: number, longitude: number) => {
-        let reverseGeoCoding = await fetch(googleMapAPIUrl + 'latlng=' + latitude + ',' + longitude + latlngFilter + googleMapsAPIKey);
+        let reverseGeoCoding = await fetch(googleMapAPIUrl + 'latlng=' + latitude + ',' + longitude + googleMapsAPIKey);
         let json = await reverseGeoCoding.json();
-        console.log(json)
         return new Promise<string>((resolve, reject) => {
             if (json["results"][0].formatted_address) {
                 resolve(json["results"][0].formatted_address);
