@@ -8,7 +8,8 @@ import {
     KeyboardAvoidingView,
     Modal,
     Alert,
-    StyleSheet
+    StyleSheet,
+    AsyncStorage
 } from 'react-native';
 import MapView from 'react-native-maps'
 
@@ -19,7 +20,7 @@ import { CategoryList } from './CategoryList';
 import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
 import FAIcon from 'react-native-vector-icons/FontAwesome';
-
+import { strings } from './../localization/Strings'
 import _ from 'lodash';
 
 interface Props {
@@ -31,7 +32,8 @@ interface Props {
 }
 
 interface State {
-    activeFilter: string
+    activeFilter: string,
+    categoryJSON: Object
 }
 
 const styles = StyleSheet.create({
@@ -100,9 +102,10 @@ const styles = StyleSheet.create({
 export class FiltersView extends Component<Props, State> {
     constructor(props) {
         super(props)
-
+        this.getCategoryJSON()
         this.state = {
-            activeFilter: this.props.filters[0] || 'Anything'
+            activeFilter: this.props.filters[0] || 'Anything',
+            categoryJSON: undefined
         }
     }
 
@@ -112,6 +115,18 @@ export class FiltersView extends Component<Props, State> {
         })
     }
 
+    getCategoryJSON = async () => {
+        try {
+            let cats = await AsyncStorage.getItem('categories')
+            let json = JSON.parse(cats)
+
+            this.setState({ categoryJSON: json })
+        } catch (error) {
+            console.log(error);
+
+        }
+
+    }
     onPressDone() {
         const selectedFilters = this.state.activeFilter === 'Anything'
             ? []
@@ -124,13 +139,45 @@ export class FiltersView extends Component<Props, State> {
         const isActiveFilter = (item.name === this.state.activeFilter)
 
         return (
-            <TouchableOpacity style={[styles.filtersListItem]} onPress={this.onPressFilter.bind(this, item.name)}>
-                <Text style={[styles.filterListItemText, isActiveFilter && styles.filterListItemTextActive]}>{item.name}</Text>
+            <TouchableOpacity style={[styles.filtersListItem]}
+                onPress={this.onPressFilter.bind(this, item.name)}>
+                <View>
+                    <Text style={[styles.filterListItemText, isActiveFilter && styles.filterListItemTextActive]}>
+                        {item.name}
+                    </Text>
+                    <Text style={[styles.filterListItemText]}
+                        numberOfLines={1}>
+                        {this.getCategoryDescriptor(item)}
+                    </Text>
+                </View>
                 {isActiveFilter &&
                     <FAIcon name="check" size={15} style={styles.activeFilterCheckMark} />
                 }
             </TouchableOpacity>
         )
+    }
+
+    getCategoryDescriptor = (item) => {
+        if (this.state.categoryJSON === undefined) {
+            return ''
+        }
+
+        let lang = strings.getInterfaceLanguage()
+        if (lang !== 'es' && lang !== 'en') {
+            lang = 'en'
+        }
+        let cats = this.props.categories.items[item.name.toLowerCase()]
+        if (cats !== undefined) {
+            let str = ''
+            for (let i = 0; i < Math.min(3, cats.length); i++) {
+                let key = Object.keys(cats[i])[0]
+                let value = this.state.categoryJSON[lang][key]
+                str += value + ', '
+            }
+            return str.slice(0, str.length - 2)
+        } else {
+            return ''
+        }
     }
 
     getOrderedCategoriesList() {
