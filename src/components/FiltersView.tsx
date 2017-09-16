@@ -18,6 +18,7 @@ import { ButtonCell } from './ButtonCell'
 import { CategoryList } from './CategoryList';
 import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
+import { Colors, SmallButtonText } from '../constants';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 
 import _ from 'lodash';
@@ -91,9 +92,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
     },
     filterListFooterText: {
-        color: 'white',
-        fontSize: 24,
-        fontWeight: 'bold',
+        ...SmallButtonText
     }
 })
 

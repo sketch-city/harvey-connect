@@ -18,7 +18,7 @@ import { CategoryList, Category } from './CategoryList'
 import { API, CreateMarker, KeyedCollection, IKeyedCollection, Need } from './../API/API'
 import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
-import { Colors } from '../constants';
+import { Colors, SmallButtonText } from '../constants';
 import { strings } from './../localization/Strings'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 type LatLng = {
@@ -450,7 +450,7 @@ export class HavesView extends Component<Props, State> {
                         height: 45
                     }}
                         onPress={() => this.deleteMarkerTapped(this.props.editingNeed)}>
-                        <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>No Longer Needed</Text>
+                        <Text style={{ ...SmallButtonText, color: '#A2AEB6' }}>No Longer Needed</Text>
                     </TouchableOpacity>
                     <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
                 </View>
@@ -477,7 +477,7 @@ export class HavesView extends Component<Props, State> {
                     height: 45
                 }}
                     onPress={this.props.cancelTapped}>
-                    <Text style={{ color: '#A2AEB6', fontWeight: '600' }}>Cancel</Text>
+                    <Text style={{ ...SmallButtonText, color: '#A2AEB6' }}>Cancel</Text>
                 </TouchableOpacity>
                 <View style={{ height: 45, width: 1, backgroundColor: Colors.separatorColor }}></View>
                 <TouchableOpacity style={{
@@ -488,7 +488,7 @@ export class HavesView extends Component<Props, State> {
                     height: 45
                 }}
                     onPress={func}>
-                    <Text style={{ color: Colors.white, fontWeight: '600' }}>{text}</Text>
+                    <Text style={ SmallButtonText }>{text}</Text>
                 </TouchableOpacity>
             </View>
         )
