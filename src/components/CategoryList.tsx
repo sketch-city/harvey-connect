@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View, Text, SectionList, TouchableOpacity } from 'react-native';
 import { Separator } from './Separator';
 import { Colors } from '../constants';
+import { strings } from '../localization/Strings';
+
 
 interface Props {
     closeButtonTapped: ({ }) => void,
@@ -111,7 +113,7 @@ export class CategoryList extends Component<Props, State> {
                 }}
                     onPress={() => this.props.closeButtonTapped(this.state.selectedItems)}
                 >
-                    <Text style={{ color: 'white' }}>Save</Text>
+                    <Text style={{ color: 'white' }}>{strings.saveAction}</Text>
                 </TouchableOpacity>
                 <SectionList
                     renderItem={this.renderItem}

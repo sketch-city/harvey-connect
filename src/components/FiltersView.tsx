@@ -19,6 +19,7 @@ import { ButtonCell } from './ButtonCell'
 import { CategoryList } from './CategoryList';
 import { UUIDHelper } from './../API/UUIDHelper'
 import { Separator } from "./Separator";
+import { Colors, SmallButtonText } from '../constants';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import { strings } from './../localization/Strings'
 import _ from 'lodash';
@@ -93,9 +94,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
     },
     filterListFooterText: {
-        color: 'white',
-        fontSize: 24,
-        fontWeight: 'bold',
+        ...SmallButtonText
     }
 })
 
@@ -198,7 +197,7 @@ export class FiltersView extends Component<Props, State> {
         return (
             <View style={styles.filtersListContainer}>
                 <View style={styles.filtersListHeader}>
-                    <Text style={styles.filtersListHeaderText}> Show people who need</Text>
+                    <Text style={styles.filtersListHeaderText}>{strings.filterSelectionTitle}</Text>
                 </View>
 
                 <View style={styles.filtersList}>
@@ -209,7 +208,7 @@ export class FiltersView extends Component<Props, State> {
                 </View>
 
                 <TouchableOpacity style={styles.filtersListFooter} onPress={this.onPressDone.bind(this)}>
-                    <Text style={styles.filterListFooterText}> Done </Text>
+                    <Text style={styles.filterListFooterText}>{strings.doneAction}</Text>
                 </TouchableOpacity>
             </View >
         )

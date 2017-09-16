@@ -5,10 +5,10 @@ import { Separator } from '../components/Separator'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 
 import Communications from 'react-native-communications';
-import openMap from 'react-native-open-maps';
 import { Linking, Platform } from "react-native";
 
-import { TitleText, PlainText, ButtonText, Colors, _dropShadowStyles } from '../constants'
+import { TitleText, PlainText, ButtonText, Colors, dropShadowStyles } from '../constants';
+import { strings } from '../localization/Strings';
 
 import _ from 'lodash';
 
@@ -76,19 +76,19 @@ export class CardView extends Component<Props, State> {
 
                 <View style={styles.actionButtonsContainer}>
                     <View style={styles.actionButtonsTop}>
-                        <TouchableOpacity onPress={this.onPressDirections} activeOpacity={0.9} style={StyleSheet.flatten(styles.actionButtonDirections)}>
+                        <TouchableOpacity onPress={this.onPressDirections} activeOpacity={0.6} style={StyleSheet.flatten(styles.actionButtonDirections)}>
                             <FAIcon name="map-marker" style={styles.directionButtonIcon} />
-                            <Text style={styles.actionButtonDirectionText}> Directions </Text>
+                            <Text style={styles.actionButtonDirectionText}>{strings.directionsAction}</Text>
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.actionButtonsBottom}>
-                        <TouchableOpacity onPress={() => Communications.phonecall(need.phone, true)} activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton])}>
-                            <Text style={styles.actionButtonText}> Call </Text>
+                        <TouchableOpacity onPress={() => Communications.phonecall(need.phone, true)} activeOpacity={0.6} style={StyleSheet.flatten([styles.actionButton])}>
+                            <Text style={styles.actionButtonText}>{strings.phoneCallAction}</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => Communications.text(need.phone)} activeOpacity={0.9} style={StyleSheet.flatten([styles.actionButton])}>
-                            <Text style={styles.actionButtonText}> Text </Text>
+                        <TouchableOpacity onPress={() => Communications.text(need.phone)} activeOpacity={0.6} style={{ ...StyleSheet.flatten([styles.actionButton]), borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: Colors.white }}>
+                            <Text style={styles.actionButtonText}>{strings.smsAction}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -98,6 +98,8 @@ export class CardView extends Component<Props, State> {
 }
 
 const { width, height } = Dimensions.get('window');
+const cardBorderRadius = 16;
+
 const styles = StyleSheet.create({
     cardContainer: {
         flex: 1,
@@ -107,24 +109,21 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10,
         height: 200,
-        borderRadius: 35,
+        borderRadius: cardBorderRadius,
         backgroundColor: '#FFF',
-        ..._dropShadowStyles,
+        ...dropShadowStyles,
     },
-
     needTitleText: {
         ...TitleText,
         textAlign: 'left',
         width: (width - 65),
         height: 40,
-        marginTop: 5,
+        marginTop: 8,
     },
-
     categoryListContainer: {
         width: (width - 60),
         height: 60,
     },
-
     categoryListText: {
         ...PlainText,
         textAlign: 'left',
@@ -135,7 +134,6 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         marginBottom: 4,
     },
-
     actionButtonsContainer: {
         backgroundColor: 'red',
         height: 90,
@@ -144,16 +142,14 @@ const styles = StyleSheet.create({
         marginTop: 10,
         overflow: 'hidden',
         width: (width - 20),
-        borderBottomLeftRadius: 35,
-        borderBottomRightRadius: 35,
+        borderBottomLeftRadius: cardBorderRadius,
+        borderBottomRightRadius: cardBorderRadius,
     },
-
     actionButtonsTop: {
         borderTopWidth: 0.5,
         borderTopColor: '#F3F3F3',
         height: 45,
     },
-
     actionButtonsBottom: {
         flex: 1,
         backgroundColor: '#50E3C2',
@@ -162,12 +158,10 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         width: (width - 20)
     },
-
     actionButtonText: {
         ...ButtonText,
         color: 'white',
     },
-
     actionButtonDirections: {
         flex: 1,
         flexDirection: 'row',
@@ -175,18 +169,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#FFF',
     },
-
     actionButtonDirectionText: {
         ...ButtonText,
         color: Colors.grey,
     },
-
     directionButtonIcon: {
         marginRight: 5,
         fontSize: 32,
         color: Colors.grey,
     },
-
     actionButton: {
         flex: 1,
         justifyContent: 'center',

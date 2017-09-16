@@ -15,7 +15,7 @@ export const Colors = {
     grey: '#A2AEB6',
 }
 
-export const _dropShadowStyles = {
+export const dropShadowStyles = {
     shadowRadius: 1,
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.7,
@@ -24,19 +24,27 @@ export const _dropShadowStyles = {
 };
 
 export const TitleText = {
-    fontSize: 32,
+    fontSize: 24,
+    fontWeight: '600',
     color: Colors.black,
 }
 
 export const PlainText = {
-    fontSize: 24,
+    fontSize: 18,
     color: Colors.black,
     fontWeight: '300',
 }
 
 export const ButtonText = {
-    fontSize: 32,
+    fontSize: 26,
+    fontWeight: '500',
     color: Colors.black,
+}
+
+export const SmallButtonText = {
+    fontSize: 15,
+    fontWeight: '700',
+    color: Colors.white,
 }
 
 export const styles = StyleSheet.create({
@@ -48,13 +56,11 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         position: 'absolute',
     },
-
     cardViewContainer: {
         flex: 1,
         height: 240,
         borderRadius: 50,
     },
-
     actionButtonContainer: {
         height: 44,
         flexDirection: 'row',
@@ -72,7 +78,7 @@ export const styles = StyleSheet.create({
         borderRadius: 50,
         marginRight: 10,
         marginLeft: 10,
-        ..._dropShadowStyles
+        ...dropShadowStyles
     },
     actionButtonSpacer: {
         height: 0,
@@ -92,17 +98,6 @@ export const styles = StyleSheet.create({
         backgroundColor: '#0080FE',
     },
     actionButtonText: {
-        color: 'white',
-        fontSize: 15
+        ...SmallButtonText
     },
-    pageControl: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 15
-    },
-    pageControlIndicator: {
-        borderRadius: 5
-    },
-
 });
