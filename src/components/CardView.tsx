@@ -10,6 +10,8 @@ import { Linking, Platform } from "react-native";
 import { TitleText, PlainText, ButtonText, Colors, dropShadowStyles } from '../constants';
 import { strings } from '../localization/Strings';
 
+import { Answers } from 'react-native-fabric';
+
 import _ from 'lodash';
 
 interface Props {
@@ -27,6 +29,7 @@ export class CardView extends Component<Props, State> {
         if (!need.latitude || !need.longitude) {
             return false
         }
+        Answers.logCustom('trigger_directions_action', { need_id: need.id });
         let url = this.directionsURL(need.latitude, need.longitude)
         Linking.openURL(url).catch(err =>
             console.error("An error occurred", err)
@@ -83,11 +86,17 @@ export class CardView extends Component<Props, State> {
                     </View>
 
                     <View style={styles.actionButtonsBottom}>
-                        <TouchableOpacity onPress={() => Communications.phonecall(need.phone, true)} activeOpacity={0.6} style={StyleSheet.flatten([styles.actionButton])}>
+                        <TouchableOpacity onPress={() => {
+                                Answers.logCustom('trigger_phone_call_action', { need_id: need.id });
+                                Communications.phonecall(need.phone, true);
+                            }} activeOpacity={0.6} style={StyleSheet.flatten([styles.actionButton])}>
                             <Text style={styles.actionButtonText}>{strings.phoneCallAction}</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => Communications.text(need.phone)} activeOpacity={0.6} style={{ ...StyleSheet.flatten([styles.actionButton]), borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: Colors.white }}>
+                        <TouchableOpacity onPress={() => {
+                                Answers.logCustom('trigger_sms_action', { need_id: need.id });
+                                Communications.text(need.phone);
+                            }} activeOpacity={0.6} style={{ ...StyleSheet.flatten([styles.actionButton]), borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: Colors.white }}>
                             <Text style={styles.actionButtonText}>{strings.smsAction}</Text>
                         </TouchableOpacity>
                     </View>
