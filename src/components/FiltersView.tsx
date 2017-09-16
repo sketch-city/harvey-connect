@@ -197,7 +197,7 @@ export class FiltersView extends Component<Props, State> {
         return (
             <View style={styles.filtersListContainer}>
                 <View style={styles.filtersListHeader}>
-                    <Text style={styles.filtersListHeaderText}> Show people who need</Text>
+                    <Text style={styles.filtersListHeaderText}>{strings.filterSelectionTitle}</Text>
                 </View>
 
                 <View style={styles.filtersList}>
@@ -208,7 +208,7 @@ export class FiltersView extends Component<Props, State> {
                 </View>
 
                 <TouchableOpacity style={styles.filtersListFooter} onPress={this.onPressDone.bind(this)}>
-                    <Text style={styles.filterListFooterText}> Done </Text>
+                    <Text style={styles.filterListFooterText}>{strings.doneAction}</Text>
                 </TouchableOpacity>
             </View >
         )

@@ -7,7 +7,8 @@ import FAIcon from 'react-native-vector-icons/FontAwesome';
 import Communications from 'react-native-communications';
 import { Linking, Platform } from "react-native";
 
-import { TitleText, PlainText, ButtonText, Colors, dropShadowStyles } from '../constants'
+import { TitleText, PlainText, ButtonText, Colors, dropShadowStyles } from '../constants';
+import { strings } from '../localization/Strings';
 
 import _ from 'lodash';
 
@@ -77,17 +78,17 @@ export class CardView extends Component<Props, State> {
                     <View style={styles.actionButtonsTop}>
                         <TouchableOpacity onPress={this.onPressDirections} activeOpacity={0.6} style={StyleSheet.flatten(styles.actionButtonDirections)}>
                             <FAIcon name="map-marker" style={styles.directionButtonIcon} />
-                            <Text style={styles.actionButtonDirectionText}> Directions </Text>
+                            <Text style={styles.actionButtonDirectionText}>{strings.directionsAction}</Text>
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.actionButtonsBottom}>
                         <TouchableOpacity onPress={() => Communications.phonecall(need.phone, true)} activeOpacity={0.6} style={StyleSheet.flatten([styles.actionButton])}>
-                            <Text style={styles.actionButtonText}> Call </Text>
+                            <Text style={styles.actionButtonText}>{strings.phoneCallAction}</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => Communications.text(need.phone)} activeOpacity={0.6} style={{ ...StyleSheet.flatten([styles.actionButton]), borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: Colors.white }}>
-                            <Text style={styles.actionButtonText}> Text </Text>
+                            <Text style={styles.actionButtonText}>{strings.smsAction}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

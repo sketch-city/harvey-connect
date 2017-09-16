@@ -240,7 +240,7 @@ export class HavesView extends Component<Props, State> {
             case MarkerValue.Phone:
                 return (
                     <View style={{ marginHorizontal: 10 }}>
-                        <TextCell placeholder={'Phone Number'}
+                        <TextCell placeholder={strings.phoneNumberLabel}
                             keyboardType={'phone-pad'}
                             markerValue={MarkerValue.Phone}
                             textChanged={this.updateState}
@@ -250,7 +250,7 @@ export class HavesView extends Component<Props, State> {
             case MarkerValue.Name:
                 return (
                     <View style={{ marginHorizontal: 10 }}>
-                        <TextCell placeholder={'Name'}
+                        <TextCell placeholder={strings.nameLabel}
                             markerValue={MarkerValue.Name}
                             textChanged={this.updateState}
                             value={this.state.name} />
@@ -260,7 +260,7 @@ export class HavesView extends Component<Props, State> {
 
                 return (
                     <View style={{ marginHorizontal: 10 }}>
-                        <TextCell placeholder={'Address'}
+                        <TextCell placeholder={strings.addressLabel}
                             ref='addressCell'
                             markerValue={MarkerValue.Address}
                             textChanged={this.updateState}
@@ -451,7 +451,7 @@ export class HavesView extends Component<Props, State> {
                         height: 45
                     }}
                         onPress={() => this.deleteMarkerTapped(this.props.editingNeed)}>
-                        <Text style={{ ...SmallButtonText, color: '#A2AEB6' }}>No Longer Needed</Text>
+                        <Text style={{ ...SmallButtonText, color: '#A2AEB6' }}>{strings.deleteMarkerAction}</Text>
                     </TouchableOpacity>
                     <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
                 </View>
@@ -478,7 +478,7 @@ export class HavesView extends Component<Props, State> {
                     height: 45
                 }}
                     onPress={this.props.cancelTapped}>
-                    <Text style={{ ...SmallButtonText, color: '#A2AEB6' }}>Cancel</Text>
+                    <Text style={{ ...SmallButtonText, color: '#A2AEB6' }}>{strings.cancelAction}</Text>
                 </TouchableOpacity>
                 <View style={{ height: 45, width: 1, backgroundColor: Colors.separatorColor }}></View>
                 <TouchableOpacity style={{

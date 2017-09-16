@@ -1,5 +1,17 @@
 export const en_US = {
-    hello: 'hello',
-    filterActionLabel: 'filter',
-    needActionLabel: 'I need'
+    filterAction: 'filter',
+    needAction: 'I need',
+    directionsAction: 'Directions',
+    phoneCallAction: 'Call',
+    smsAction: 'Text',
+    saveAction: 'Save',
+    filterSelectionTitle: 'Show people who need',
+    doneAction: 'Done',
+    phoneNumberLabel: 'Phone Number',
+    nameLabel: 'Name',
+    addressLabel: 'Address',
+    deleteMarkerAction: 'No Longer Needed',
+    cancelAction: 'Cancel',
+    myNeedsListTitle: 'My Needs',
+    createNeedAction: 'Create New Need',
 }

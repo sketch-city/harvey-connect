@@ -185,7 +185,7 @@ export class MainView extends Component<Props, State> {
                     onPress={() => this.onPressActionButton('NEED')}
                     style={StyleSheet.flatten([styles.actionButton, styles.actionButtonNeed])}>
                     <EntypoIcon name="edit" size={15} style={styles.actionButtonIcon} />
-                    <Text style={styles.actionButtonText}>{strings.needActionLabel.toLocaleUpperCase()}</Text>
+                    <Text style={styles.actionButtonText}>{strings.needAction.toLocaleUpperCase()}</Text>
                 </TouchableOpacity>
                 <View style={styles.actionButtonSpacer} />
             </View>
@@ -336,7 +336,7 @@ export class MainView extends Component<Props, State> {
                             onPress={() => this.onPressActionButton('FILTER')}
                             style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
                             <FAIcon name="filter" size={15} style={styles.actionButtonIcon} />
-                            <Text style={styles.actionButtonText}>{strings.filterActionLabel.toLocaleUpperCase()}</Text>
+                            <Text style={styles.actionButtonText}>{strings.filterAction.toLocaleUpperCase()}</Text>
                         </TouchableOpacity>
                         <View style={styles.actionButtonSpacer} />
                     </View>

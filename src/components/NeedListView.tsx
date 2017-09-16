@@ -17,6 +17,8 @@ import { ModalView } from './ModalView';
 import { Separator } from "./Separator";
 import { HavesView, MarkerType } from './HavesView';
 import { Colors, SmallButtonText } from '../constants';
+import { strings } from '../localization/Strings';
+
 
 interface Props {
     cancelTapped: () => void
@@ -99,7 +101,7 @@ export class NeedListView extends Component<Props, State> {
                     alignItems: 'center',
                     justifyContent: 'center'
                 }}>
-                    <Text style={{ color: Colors.needText, fontWeight: '600', marginTop: 10 }}>My Needs</Text>
+                    <Text style={{ color: Colors.needText, fontWeight: '600', marginTop: 10 }}>{strings.myNeedsListTitle}</Text>
                 </View>
                 <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
                 <FlatList data={this.state.markers}
@@ -115,7 +117,7 @@ export class NeedListView extends Component<Props, State> {
                         height: 45
                     }}
                         onPress={this.props.cancelTapped} >
-                        <Text style={{ ...SmallButtonText, color: '#A2AEB6' }}>Done</Text>
+                        <Text style={{ ...SmallButtonText, color: '#A2AEB6' }}>{strings.doneAction}</Text>
                     </TouchableOpacity>
                     <View style={{ height: 45, width: 1, backgroundColor: Colors.separatorColor }}></View>
                     <TouchableOpacity style={{
@@ -126,7 +128,7 @@ export class NeedListView extends Component<Props, State> {
                         height: 45
                     }}
                         onPress={() => this.setState({ modalVisible: true, selectedNeed: undefined })}>
-                        <Text style={ SmallButtonText }>Create New Need</Text>
+                        <Text style={ SmallButtonText }>{strings.createNeedAction}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
