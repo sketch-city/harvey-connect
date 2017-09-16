@@ -421,7 +421,8 @@ export class HavesView extends Component<Props, State> {
                 </MapView>
                 <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.white }}
                     contentContainerStyle={{ flex: 1, backgroundColor: Colors.white }}
-                    behavior={'position'}>
+                    behavior={'position'}
+                    keyboardVerticalOffset={-250}>
                     <View style={{ flex: 1 }}>
                         <SectionList
                             renderSectionHeader={this.renderHeader}
@@ -489,7 +490,7 @@ export class HavesView extends Component<Props, State> {
                     height: 45
                 }}
                     onPress={func}>
-                    <Text style={ SmallButtonText }>{text}</Text>
+                    <Text style={SmallButtonText}>{text}</Text>
                 </TouchableOpacity>
             </View>
         )
