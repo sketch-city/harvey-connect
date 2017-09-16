@@ -50,7 +50,8 @@ export class CardView extends Component<Props, State> {
 
         return _.reduce(categories, (result, value, index) => {
             if (index === (categories.length - 1)) {
-                return result + 'and ' + value.toLowerCase() + '.'
+                let andString = categories.length === 1 ? '' : 'and '
+                return result + andString + value.toLowerCase() + '.'
             }
 
             return result + value.toLowerCase() + ', '

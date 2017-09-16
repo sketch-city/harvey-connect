@@ -44,12 +44,13 @@ export const enum MarkerType {
     Have = 1,
     Need
 }
+
 interface Props {
     cancelTapped: () => void,
     markerType: MarkerType,
     editingNeed?: Need
-
 }
+
 interface State {
     currentLocation: {
         latitude: number,
@@ -68,8 +69,8 @@ interface State {
     description: string,
     listData: any[],
     categoryMap: Object
-
 }
+
 export class HavesView extends Component<Props, State> {
     textChangedDate: Date
     localizedStrings: Object = { categories: 'I Need Help With' }
@@ -122,7 +123,7 @@ export class HavesView extends Component<Props, State> {
                     let data = values.map((prop) => localized[Object.getOwnPropertyNames(prop)[0]]);
                     return new Category(localized[keyName], data, this.keyExtractor, this.renderCategoryItem);
                 });
-                let final = categoryData.splice(0, 0, this.state.listData[0])
+                categoryData.splice(0, 0, this.state.listData[0])
                 this.setState({ listData: categoryData });
             }
         } catch (error) {
@@ -158,7 +159,7 @@ export class HavesView extends Component<Props, State> {
             <TouchableOpacity style={{
                 height: 40,
                 padding: 10,
-                backgroundColor: this.itemSelected(section.key, item) ? Colors.green : Colors.white
+                backgroundColor: Colors.white
             }}
                 onPress={() => {
                     if (this.itemSelected(section.key, item)) {
@@ -180,7 +181,7 @@ export class HavesView extends Component<Props, State> {
                     }
                 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text style={{ color: this.itemSelected(section.key, item) ? Colors.white : Colors.needText }}>{item}</Text>
+                    <Text style={{ color: Colors.needText }}>{item}</Text>
                     {this.renderCheckmark(section, item)}
                 </View>
             </TouchableOpacity>
@@ -189,7 +190,7 @@ export class HavesView extends Component<Props, State> {
 
     renderCheckmark = (section: any, item: string) => {
         if (this.itemSelected(section.key, item)) {
-            return <FAIcon name='check' size={15} style={{ color: Colors.white }} />
+            return <FAIcon name='check' size={15} style={{ color: Colors.black }} />
         } else {
             return <View />
         }
