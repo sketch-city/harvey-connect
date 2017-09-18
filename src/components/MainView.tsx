@@ -6,6 +6,7 @@ import FAIcon from 'react-native-vector-icons/FontAwesome';
 import _ from 'lodash';
 import MapView from 'react-native-maps';
 
+import { AndroidPermissionHelper } from '../API/AndroidPermissionHelper';
 import { CardView } from './CardView'
 import PageControl from 'react-native-page-control';
 import {
@@ -66,6 +67,11 @@ export class MainView extends Component<Props, State> {
     }
 
     componentDidMount() {
+        AndroidPermissionHelper.checkLocationPermission().then((value) => {
+            if (value !== 'true') {
+                AndroidPermissionHelper.requestLocationPermission();
+            }
+        });
         // this.watchId = navigator.geolocation.watchPosition((pos) => this.setState({ currentPosition: pos }), (err) => { }, { enableHighAccuracy: true })
         navigator.geolocation.getCurrentPosition((pos) => this.setState({ currentPosition: pos }), (err) => { }, { enableHighAccuracy: true });
         this.getNeeds();
