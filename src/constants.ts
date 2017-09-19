@@ -67,6 +67,7 @@ export const styles = StyleSheet.create({
         alignContent: 'space-around',
         justifyContent: 'space-between',
         margin: 10,
+        alignItems: 'center'
     },
     actionButton: {
         height: 44,
