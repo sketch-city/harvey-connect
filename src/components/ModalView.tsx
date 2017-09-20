@@ -37,7 +37,7 @@ export class ModalView extends Component<Props, State> {
         modalContent = <NeedListView cancelTapped={this.props.onCancel} />
         break
       case 'ABOUT':
-        modalContent = <AboutView />
+        modalContent = <AboutView cancelTapped={this.props.onCancel} />
         break
       case 'HAVE':
         modalContent = <HavesView cancelTapped={this.props.onCancel}

@@ -256,7 +256,7 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    dismissModal() {
+    dismissModal = () => {
         this.setState({
             modalVisible: false,
             modalType: ''
@@ -298,7 +298,7 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    onSelectFilters(filters) {
+    onSelectFilters = (filters) => {
         this.setState({
             filters,
             modalVisible: false,
@@ -331,8 +331,8 @@ export class MainView extends Component<Props, State> {
                 <ModalView
                     modalVisible={this.state.modalVisible}
                     modalType={this.state.modalType}
-                    onCancel={this.dismissModal.bind(this)}
-                    onSelectFilters={this.onSelectFilters.bind(this)}
+                    onCancel={this.dismissModal}
+                    onSelectFilters={this.onSelectFilters}
                     categories={this.state.categories}
                     filters={this.state.filters} />
 
