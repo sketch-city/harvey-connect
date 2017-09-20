@@ -4,7 +4,6 @@ import { compose, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { MainView } from './components/MainView';
 import { UUIDHelper } from './API/UUIDHelper';
-import { AndroidPermissionHelper } from './API/AndroidPermissionHelper';
 
 export default function AppContainer() {
     //TODO:sample code of how to check for permission as app lunch layer, we can only request permission when its needed instead and take this code out.
