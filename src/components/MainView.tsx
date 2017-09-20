@@ -15,6 +15,7 @@ import FAIcon from 'react-native-vector-icons/FontAwesome';
 import _ from 'lodash';
 import MapView from 'react-native-maps';
 
+import { LocationManager } from '../API/LocationManager';
 import { CardView } from './CardView'
 import PageControl from 'react-native-page-control';
 import {
@@ -75,17 +76,12 @@ export class MainView extends Component<Props, State> {
     }
 
     componentDidMount() {
-        // this.watchId = navigator.geolocation.watchPosition((pos) => this.setState({ currentPosition: pos }), (err) => { }, { enableHighAccuracy: true })
-        navigator.geolocation.getCurrentPosition((pos) => this.setState({ currentPosition: pos }), (err) => { }, { enableHighAccuracy: true });
+        LocationManager.getCurrentPosition().then(pos => this.setState({ currentPosition: pos }));
         this.getNeeds();
         this.getCategories();
     }
 
-    // componentWillUnmount() {
-    //     navigator.geolocation.clearWatch(this.watchId);
-    // }
-
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps: Props, prevState: State) {
         if (this.state.currentPosition && prevState.currentPosition === null) {
             (this.refs.mainMap as MapView).animateToCoordinate(this.state.currentPosition.coords, 300);
         }

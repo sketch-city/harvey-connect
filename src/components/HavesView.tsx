@@ -12,6 +12,7 @@ import {
     AsyncStorage
 } from 'react-native';
 import MapView from 'react-native-maps'
+import { LocationManager } from '../API/LocationManager';
 import { TextCell } from './TextCell'
 import { ButtonCell } from './ButtonCell'
 import { CategoryList, Category } from './CategoryList'
@@ -215,9 +216,7 @@ export class HavesView extends Component<Props, State> {
                         this.setState({
                             pinLocation: updatedLocation,
                             currentLocation: updatedLocation
-                        }, () => {
-                            this.refs.havesMap.animateToCoordinate(updatedLocation, 300)
-                        })
+                        });
                     } catch (error) {
                         console.log(error)
                     }
@@ -294,31 +293,25 @@ export class HavesView extends Component<Props, State> {
         }
     }
 
-    getCurrentLocation = async () => {
-        navigator.geolocation.getCurrentPosition((position) => {
+    componentDidMount() {
+        this.readCategories();
+        LocationManager.getCurrentPosition().then(position => {
             this.updateAddressFromCoords(position.coords)
+            const location = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            };
             this.setState({
-                currentLocation: {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                }, pinLocation: {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                }
-            })
-        }, (error) => {
-            console.log(error)
-        }, {
-                enableHighAccuracy: true,
-                timeout: 20000,
-                maximumAge: 1000
-            })
+                currentLocation: location,
+                pinLocation: location
+            });
+        });
     }
 
-    componentDidMount() {
-        this.readCategories()
-        this.getCurrentLocation()
-
+    componentDidUpdate(prevProps: Props, prevState: State) {
+        if (this.state.currentLocation !== null && this.state.currentLocation !== prevState.currentLocation) {
+            (this.refs.havesMap as MapView).animateToCoordinate(this.state.currentLocation, 300);
+        }
     }
 
     updateNeed = async () => {

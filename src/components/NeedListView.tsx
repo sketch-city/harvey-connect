@@ -87,10 +87,10 @@ export class NeedListView extends Component<Props, State> {
     render() {
         return (
             <View style={{ flex: 1 }}>
-                <Modal visible={this.state.modalVisible} animationType={'slide'}>
+                <Modal visible={this.state.modalVisible} animationType={'slide'} onRequestClose={this.props.cancelTapped}>
                     <HavesView cancelTapped={() => {
-                        this.setState({ modalVisible: false })
-                        this.getMarkers()
+                        this.setState({ modalVisible: false });
+                        this.getMarkers();
                     }}
                         markerType={MarkerType.Need}
                         editingNeed={this.state.selectedNeed} />
