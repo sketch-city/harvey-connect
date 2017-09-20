@@ -36,29 +36,44 @@ export class AboutView extends Component<Props, State> {
         });
     }
 
+    aboutText = () => {
+        return `Supported by Houston's creative community \n and the team at ChaiOne`
+    }
     render() {
         const { width, height } = Dimensions.get('window');
         return (
-            <Image source={require('./../images/aboutImage.png')} style={{ width: width, height: height }} >
-                <View style={{ flex: 1, left: 0, right: 0, top: 20, position: 'absolute' }}>
+            <Image source={require('./../images/AboutNoCopy.png')} style={{ width: width, height: height }} >
+                <View style={{ flex: 1, left: 0, right: 0, bottom: 20, position: 'absolute' }}>
+                    <Text style={{
+                        color: Colors.needText,
+                        fontWeight: '500',
+                        backgroundColor: 'rgba(0,0,0,0)',
+                        alignSelf: 'center',
+                        marginHorizontal: 20,
+                        textAlign: 'center',
+                        marginBottom: 10
+
+
+                    }}
+                        numberOfLines={2}>{this.aboutText()}</Text>
                     <View style={styles.actionButtonContainer}>
                         <TouchableOpacity
                             activeOpacity={0.6}
                             onPress={this.props.cancelTapped}
                             style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
-                            <Text style={styles.actionButtonText}>DONE</Text>
+                            <Text style={styles.actionButtonText}>{strings.doneAction.toLocaleUpperCase()}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.6}
                             onPress={() => Linking.openURL('https://ChaiOne.com/eula')}
                             style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
-                            <Text style={styles.actionButtonText}>EULA</Text>
+                            <Text style={styles.actionButtonText}>{strings.eula.toLocaleUpperCase()}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.6}
                             onPress={this.contactTapped}
                             style={StyleSheet.flatten([styles.actionButton, styles.actionButtonFilter])}>
-                            <Text style={styles.actionButtonText}>CONTACT</Text>
+                            <Text style={styles.actionButtonText}>{strings.contact.toLocaleUpperCase()}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
