@@ -40,7 +40,7 @@ export class AboutView extends Component<Props, State> {
         const { width, height } = Dimensions.get('window');
         return (
             <Image source={require('./../images/aboutImage.png')} style={{ width: width, height: height }} >
-                <View style={{ flex: 1, left: 0, right: 0, bottom: 5, position: 'absolute' }}>
+                <View style={{ flex: 1, left: 0, right: 0, top: 20, position: 'absolute' }}>
                     <View style={styles.actionButtonContainer}>
                         <TouchableOpacity
                             activeOpacity={0.6}
