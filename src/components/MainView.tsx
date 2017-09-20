@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Modal } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    FlatList,
+    TouchableOpacity,
+    Dimensions,
+    Modal,
+    Image
+} from 'react-native';
 
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
@@ -247,7 +256,7 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    dismissModal() {
+    dismissModal = () => {
         this.setState({
             modalVisible: false,
             modalType: ''
@@ -289,7 +298,7 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    onSelectFilters(filters) {
+    onSelectFilters = (filters) => {
         this.setState({
             filters,
             modalVisible: false,
@@ -307,6 +316,13 @@ export class MainView extends Component<Props, State> {
         });
     }
 
+    showAboutView = () => {
+        this.setState({
+            modalVisible: true,
+            modalType: 'ABOUT'
+        })
+    }
+
     render() {
         const { height } = Dimensions.get('window');
 
@@ -315,8 +331,8 @@ export class MainView extends Component<Props, State> {
                 <ModalView
                     modalVisible={this.state.modalVisible}
                     modalType={this.state.modalType}
-                    onCancel={this.dismissModal.bind(this)}
-                    onSelectFilters={this.onSelectFilters.bind(this)}
+                    onCancel={this.dismissModal}
+                    onSelectFilters={this.onSelectFilters}
                     categories={this.state.categories}
                     filters={this.state.filters} />
 
@@ -339,6 +355,10 @@ export class MainView extends Component<Props, State> {
                             <Text style={styles.actionButtonText}>{strings.filterAction.toLocaleUpperCase()}</Text>
                         </TouchableOpacity>
                         <View style={styles.actionButtonSpacer} />
+                        <TouchableOpacity onPress={this.showAboutView}>
+                            <Image source={require('./../images/info.png')} style={{ width: 28, height: 28 }} />
+                        </TouchableOpacity>
+
                     </View>
                 </View>
                 <View style={styles.cardSheet}>

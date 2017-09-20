@@ -3409,6 +3409,10 @@ react-native-localization@^0.1.32:
   version "0.1.32"
   resolved "https://registry.yarnpkg.com/react-native-localization/-/react-native-localization-0.1.32.tgz#623bf3359abdd0f0afff50951dcf06cffda01b2a"
 
+react-native-mail@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-mail/-/react-native-mail-3.0.4.tgz#764c5db699c36351fea455f02a746c5082f0301a"
+
 react-native-maps@^0.16.3:
   version "0.16.3"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.16.3.tgz#c061b78a9cca83b814efcf56006cc90020f720f7"
