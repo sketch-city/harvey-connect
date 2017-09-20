@@ -351,16 +351,16 @@ export class MainView extends Component<Props, State> {
                             <Text style={styles.actionButtonText}>{strings.filterAction.toLocaleUpperCase()}</Text>
                         </TouchableOpacity>
                         <View style={styles.actionButtonSpacer} />
-                        <TouchableOpacity onPress={this.showAboutView}>
-                            <Image source={require('./../images/info.png')} style={{ width: 28, height: 28 }} />
-                        </TouchableOpacity>
-
                     </View>
                 </View>
                 <View style={styles.cardSheet}>
                     {this.renderActionButtonsIfNecessary()}
                     {this.renderNeedCardViewIfNecessary()}
                 </View>
+                <TouchableOpacity style={{ position: 'absolute', right: 10, bottom: 28 }}
+                    onPress={this.showAboutView}>
+                    <Image source={require('./../images/info.png')} style={{ width: 28, height: 28 }} />
+                </TouchableOpacity>
             </View>
         )
     }
