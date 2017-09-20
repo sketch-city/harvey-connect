@@ -357,11 +357,21 @@ export class MainView extends Component<Props, State> {
                     {this.renderActionButtonsIfNecessary()}
                     {this.renderNeedCardViewIfNecessary()}
                 </View>
+                {this.renderInfoButton()}
+            </View>
+        )
+    }
+
+    renderInfoButton = () => {
+        if (!this.state.selectedNeedId) {
+            return (
                 <TouchableOpacity style={{ position: 'absolute', right: 10, bottom: 28 }}
                     onPress={this.showAboutView}>
                     <Image source={require('./../images/info.png')} style={{ width: 28, height: 28 }} />
                 </TouchableOpacity>
-            </View>
-        )
+            )
+        } else {
+            return <View />
+        }
     }
 }
