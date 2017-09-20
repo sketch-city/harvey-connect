@@ -29,7 +29,6 @@ interface Props {
     filters: string[]
     onSelectFilters([])
     onCancel()
-    onSelectFilters()
 }
 
 interface State {
@@ -138,13 +137,13 @@ export class FiltersView extends Component<Props, State> {
         const isActiveFilter = (item.name === this.state.activeFilter)
 
         return (
-            <TouchableOpacity style={[styles.filtersListItem]}
+            <TouchableOpacity style={styles.filtersListItem}
                 onPress={this.onPressFilter.bind(this, item.name)}>
                 <View>
-                    <Text style={[styles.filterListItemText, isActiveFilter && styles.filterListItemTextActive]}>
+                    <Text style={StyleSheet.flatten([styles.filterListItemText, isActiveFilter && styles.filterListItemTextActive])}>
                         {item.name}
                     </Text>
-                    <Text style={[styles.filterListItemText]}
+                    <Text style={styles.filterListItemText}
                         numberOfLines={1}>
                         {this.getCategoryDescriptor(item)}
                     </Text>

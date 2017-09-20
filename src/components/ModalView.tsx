@@ -19,7 +19,7 @@ interface Props {
   categories?: KeyedCollection<any>
   filters?: string[]
   onCancel(): void
-  onSelectFilters?(): void
+  onSelectFilters?([]): void
 }
 
 interface State { }

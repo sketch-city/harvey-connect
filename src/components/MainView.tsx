@@ -294,7 +294,7 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    onSelectFilters = (filters) => {
+    onSelectFilters = (filters: string[]) => {
         this.setState({
             filters,
             modalVisible: false,
@@ -318,6 +318,7 @@ export class MainView extends Component<Props, State> {
             modalType: 'ABOUT'
         })
     }
+
 
     render() {
         const { height } = Dimensions.get('window');
