@@ -52,7 +52,7 @@ export class ModalView extends Component<Props, State> {
     }
 
     return (
-      <Modal visible={this.props.modalVisible} animationType={'slide'}>
+      <Modal visible={this.props.modalVisible} animationType={'slide'} onRequestClose={this.props.onCancel}>
         {modalContent}
       </Modal>
     )
