@@ -47,6 +47,7 @@
 		C6C4F6333EA04B1B9B6E1E24 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E5644499D22D41A8BD5109B7 /* Entypo.ttf */; };
 		CEA32F24AC4B495086873698 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 63CB47B5FC474C0F8D3E3E6B /* EvilIcons.ttf */; };
 		D42AF2B1236D460A807D7E25 /* libSMXCrashlytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B36948045EEE4259A7B6E9F7 /* libSMXCrashlytics.a */; };
+		DE88C43E1F71C616000338F2 /* libRNMail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE88C4381F71C60B000338F2 /* libRNMail.a */; };
 		DF8645CA1F6AE9A900EB9581 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4276021F6AD86C00D9A396 /* Fabric.framework */; };
 		DF8645CB1F6AE9A900EB9581 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF4276011F6AD86C00D9A396 /* Crashlytics.framework */; };
 		E0615509649D46CF9D965928 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 26E1422B08F346F0B425C912 /* Zocial.ttf */; };
@@ -244,6 +245,20 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		DE88C4371F71C60B000338F2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE88C4151F71C60B000338F2 /* RNMail.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 46FEDE7F1AFF192F00D3261C;
+			remoteInfo = RNMail;
+		};
+		DE88C4391F71C60B000338F2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE88C4151F71C60B000338F2 /* RNMail.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 46FEDE8A1AFF192F00D3261C;
+			remoteInfo = RNMailTests;
+		};
 		DEC5D05D1F5AF5C000348C91 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CB327E944BF44967A03376D3 /* AirMaps.xcodeproj */;
@@ -336,6 +351,7 @@
 		D653C932FA844F668C35EF97 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		D7A5B5341E9945EEB5233E55 /* libReactNativeLocalization.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeLocalization.a; sourceTree = "<group>"; };
 		DD9AAE524F1D4605B8A9D804 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		DE88C4151F71C60B000338F2 /* RNMail.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNMail.xcodeproj; path = "../node_modules/react-native-mail/RNMail.xcodeproj"; sourceTree = "<group>"; };
 		DF4276011F6AD86C00D9A396 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		DF4276021F6AD86C00D9A396 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		DF8645C61F6AE89200EB9581 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
@@ -359,6 +375,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE88C43E1F71C616000338F2 /* libRNMail.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -533,6 +550,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				DE88C4151F71C60B000338F2 /* RNMail.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -602,6 +620,15 @@
 				26E1422B08F346F0B425C912 /* Zocial.ttf */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		DE88C4161F71C60B000338F2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DE88C4381F71C60B000338F2 /* libRNMail.a */,
+				DE88C43A1F71C60B000338F2 /* RNMailTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		DEC5D05A1F5AF5C000348C91 /* Products */ = {
@@ -831,6 +858,10 @@
 					ProjectRef = 1323308649B04C6E8DAAB5D7 /* ReactNativeLocalization.xcodeproj */;
 				},
 				{
+					ProductGroup = DE88C4161F71C60B000338F2 /* Products */;
+					ProjectRef = DE88C4151F71C60B000338F2 /* RNMail.xcodeproj */;
+				},
+				{
 					ProductGroup = DEFF337C1F6260EC0043C65D /* Products */;
 					ProjectRef = 67F7F8F220DB4D45A9C7CA5B /* RNVectorIcons.xcodeproj */;
 				},
@@ -1023,6 +1054,20 @@
 			fileType = archive.ar;
 			path = libRCTText.a;
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DE88C4381F71C60B000338F2 /* libRNMail.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNMail.a;
+			remoteRef = DE88C4371F71C60B000338F2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DE88C43A1F71C60B000338F2 /* RNMailTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = RNMailTests.xctest;
+			remoteRef = DE88C4391F71C60B000338F2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		DEC5D05E1F5AF5C000348C91 /* libAirMaps.a */ = {

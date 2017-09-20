@@ -5,7 +5,7 @@ import { Separator } from '../components/Separator'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 
 import Communications from 'react-native-communications';
-import { Linking, Platform } from "react-native";
+import { Linking, Platform, Alert } from "react-native";
 
 import { TitleText, PlainText, ButtonText, Colors, dropShadowStyles } from '../constants';
 import { strings } from '../localization/Strings';
@@ -13,6 +13,7 @@ import { strings } from '../localization/Strings';
 import { Answers } from 'react-native-fabric';
 
 import _ from 'lodash';
+import Mailer from 'react-native-mail'
 
 interface Props {
     need?: Need
@@ -62,14 +63,33 @@ export class CardView extends Component<Props, State> {
         }, 'I need ')
     }
 
+    flagNeed = () => {
+        Mailer.mail({
+            subject: 'Report',
+            recipients: [' connectapp@chaione.com'],
+            body: `I would like to report the Need '${this.props.need.id}' for objectionable content.`,
+            isHTML: true
+        }, (error, event) => {
+            if (error) {
+                Alert.alert('Error', 'Could not send mail. Please send a mail to connectapp@chaione.com');
+            }
+        });
+    }
+
     render() {
         const { need } = this.props;
 
         return (
             <View style={styles.cardContainer}>
-                <Text style={styles.needTitleText}>
-                    {need.name}
-                </Text>
+                <View style={{ flexDirection: 'row' }}>
+                    <Text style={styles.needTitleText}>
+                        {need.name}
+                    </Text>
+                    <TouchableOpacity
+                        onPress={this.flagNeed}>
+                        <FAIcon name="flag" style={[styles.directionButtonIcon, { marginTop: 8 }]} />
+                    </TouchableOpacity>
+                </View>
 
                 <ScrollView style={styles.categoryListContainer}>
                     <Text style={styles.categoryListText}>
@@ -87,16 +107,16 @@ export class CardView extends Component<Props, State> {
 
                     <View style={styles.actionButtonsBottom}>
                         <TouchableOpacity onPress={() => {
-                                Answers.logCustom('trigger_phone_call_action', { need_id: need.id });
-                                Communications.phonecall(need.phone, true);
-                            }} activeOpacity={0.6} style={StyleSheet.flatten([styles.actionButton])}>
+                            Answers.logCustom('trigger_phone_call_action', { need_id: need.id });
+                            Communications.phonecall(need.phone, true);
+                        }} activeOpacity={0.6} style={StyleSheet.flatten([styles.actionButton])}>
                             <Text style={styles.actionButtonText}>{strings.phoneCallAction}</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => {
-                                Answers.logCustom('trigger_sms_action', { need_id: need.id });
-                                Communications.text(need.phone);
-                            }} activeOpacity={0.6} style={{ ...StyleSheet.flatten([styles.actionButton]), borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: Colors.white }}>
+                            Answers.logCustom('trigger_sms_action', { need_id: need.id });
+                            Communications.text(need.phone);
+                        }} activeOpacity={0.6} style={{ ...StyleSheet.flatten([styles.actionButton]), borderLeftWidth: StyleSheet.hairlineWidth, borderLeftColor: Colors.white }}>
                             <Text style={styles.actionButtonText}>{strings.smsAction}</Text>
                         </TouchableOpacity>
                     </View>
