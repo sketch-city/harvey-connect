@@ -89,12 +89,12 @@ export class CardView extends Component<Props, State> {
         return (
             <View style={styles.cardContainer}>
                 <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.needTitleText}>
+                    <Text style={[styles.needTitleText, { marginLeft: 10 }]}>
                         {need.name}
                     </Text>
                     <TouchableOpacity
                         onPress={this.flagNeedTapped}>
-                        <FAIcon name="flag" style={[styles.directionButtonIcon, { marginTop: 8 }]} />
+                        <FAIcon name="flag" style={[styles.directionButtonIcon, { marginTop: 8, marginRight: 10 }]} />
                     </TouchableOpacity>
                 </View>
 
