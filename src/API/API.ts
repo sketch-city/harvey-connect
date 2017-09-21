@@ -92,7 +92,7 @@ export class Marker extends Object {
 
 export class API {
     public static getNeeds = async () => {
-        let needs = await fetch('https://api.harveyneeds.org/api/v1/connect/markers')
+        let needs = await fetch('https://disasterconnect.herokuapp.com/api/v1/connect/markers')
         let json = await needs.json()
         await AsyncStorage.setItem('needs', JSON.stringify(json))
 
@@ -104,7 +104,7 @@ export class API {
 
     public static getMyMarkers = async () => {
         let uuid = await UUIDHelper.getUUID()
-        let needs = await fetch(`https://api.harveyneeds.org/api/v1/connect/markers?device_uuid=${uuid}`, {
+        let needs = await fetch(`https://disasterconnect.herokuapp.com/api/v1/connect/markers?device_uuid=${uuid}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -124,7 +124,7 @@ export class API {
     public static saveNewMarker = async (item: CreateMarker) => {
         let post = null
         let uuid = await UUIDHelper.getUUID()
-        let response = await fetch('https://api.harveyneeds.org/api/v1/connect/markers', {
+        let response = await fetch('https://disasterconnect.herokuapp.com/api/v1/connect/markers', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -146,7 +146,7 @@ export class API {
     }
 
     public static updateMarker = async (item: CreateMarker) => {
-        let url = 'https://api.harveyneeds.org/api/v1/connect/markers/' + item.id
+        let url = 'https://disasterconnect.herokuapp.com/api/v1/connect/markers/' + item.id
         let uuid = await UUIDHelper.getUUID()
         let response = await fetch(url, {
             method: 'PUT',
@@ -169,7 +169,7 @@ export class API {
     }
 
     public static flagMarker = async (id: number) => {
-        let url = `https://api.harveyneeds.org/api/v1/connect/markers/${id}/flag`
+        let url = `https://disasterconnect.herokuapp.com/api/v1/connect/markers/${id}/flag`
         let uuid = await UUIDHelper.getUUID()
         let response = await fetch(url, {
             method: 'POST',
@@ -189,7 +189,7 @@ export class API {
     }
 
     public static getCategories = async () => {
-        let categories = await fetch('https://api.harveyneeds.org/api/v1/connect/categories')
+        let categories = await fetch('https://disasterconnect.herokuapp.com/api/v1/connect/categories')
         let json = await categories.json()
         await AsyncStorage.setItem('categories', JSON.stringify(json))
 
