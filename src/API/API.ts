@@ -168,6 +168,26 @@ export class API {
         }
     }
 
+    public static flagMarker = async (id: number) => {
+        let url = `https://api.harveyneeds.org/api/v1/connect/markers/${id}/flag`
+        let uuid = await UUIDHelper.getUUID()
+        let response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'DisasterConnect-Device-UUID': uuid
+            }
+        })
+        if (response.status === 204) {
+            return new Promise((resolve) => {
+                resolve()
+            })
+        } else {
+            return new Promise<Need>((reslove, reject) => reject(new Error(`Got a bad status code: ${response.status}`)))
+        }
+    }
+
     public static getCategories = async () => {
         let categories = await fetch('https://api.harveyneeds.org/api/v1/connect/categories')
         let json = await categories.json()

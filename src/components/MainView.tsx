@@ -240,7 +240,7 @@ export class MainView extends Component<Props, State> {
         const { width, height } = Dimensions.get('window');
 
         return (
-            <CardView need={item} />
+            <CardView need={item} needFlagged={this.getNeeds} />
         )
     };
 
