@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     Dimensions,
     Modal,
-    Image
+    Image,
+    AsyncStorage
 } from 'react-native';
 
 import EntypoIcon from 'react-native-vector-icons/Entypo';
@@ -77,6 +78,11 @@ export class MainView extends Component<Props, State> {
 
     componentDidMount() {
         LocationManager.getCurrentPosition().then(pos => this.setState({ currentPosition: pos }));
+        AsyncStorage.getItem('onboardHelpSeen', (error, result) => {
+            if (result === null) {
+                this.showOnboardingView();
+            }
+        });
         this.getNeeds();
         this.getCategories();
     }
@@ -88,6 +94,9 @@ export class MainView extends Component<Props, State> {
 
         if (prevState.modalVisible && !this.state.modalVisible) {
             this.getNeeds();
+            if (prevState.modalType === 'ONBOARD' && this.state.modalType === '') {
+                AsyncStorage.setItem('onboardHelpSeen', 'true');
+            }
         }
     }
 
@@ -316,6 +325,13 @@ export class MainView extends Component<Props, State> {
         this.setState({
             modalVisible: true,
             modalType: 'ABOUT'
+        })
+    }
+
+    showOnboardingView = () => {
+        this.setState({
+            modalVisible: true,
+            modalType: 'ONBOARD'
         })
     }
 
