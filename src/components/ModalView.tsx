@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Modal } from 'react-native';
 import { API, Need, KeyedCollection, Marker, CreateMarker, IKeyedCollection } from '../API/API'
@@ -9,6 +8,7 @@ import MapView from 'react-native-maps';
 import _ from 'lodash';
 
 import { HavesView, MarkerType } from './HavesView';
+import { OnboardingView } from './OnboardingView';
 import { FiltersView } from './FiltersView'
 import { NeedListView } from './NeedListView';
 import { AboutView } from './AboutView';
@@ -38,6 +38,9 @@ export class ModalView extends Component<Props, State> {
         break
       case 'ABOUT':
         modalContent = <AboutView cancelTapped={this.props.onCancel} />
+        break
+      case 'ONBOARD':
+        modalContent = <OnboardingView cancelTapped={this.props.onCancel} />
         break
       case 'HAVE':
         modalContent = <HavesView cancelTapped={this.props.onCancel}
