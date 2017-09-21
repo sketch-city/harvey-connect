@@ -170,7 +170,7 @@ export class MainView extends Component<Props, State> {
                     onPress={this.onPressNeedMarker}
                     key={marker.id}
                 >
-                    <FAIcon name='map-marker' size={40} style={{ color: Colors.red }} />
+                    <FAIcon name='map-marker' size={60} style={{ color: Colors.red }} />
                 </MapView.Marker>
             )
 

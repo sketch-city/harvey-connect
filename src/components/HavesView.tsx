@@ -376,6 +376,7 @@ export class HavesView extends Component<Props, State> {
                 <MapView.Marker
                     ref='marker'
                     draggable
+                    centerOffset={{ x: 0, y: -25 }}
                     onDragEnd={this.handlePinDrag}
                     coordinate={{
                         latitude: this.state.currentLocation.latitude,
@@ -383,7 +384,7 @@ export class HavesView extends Component<Props, State> {
                     }}
                     key={'blah'}
                 >
-                    <FAIcon name='map-marker' size={40} style={{ color: Colors.red }} />
+                    <FAIcon name='map-marker' size={60} style={{ color: Colors.red }} />
                 </MapView.Marker>
             )
         } else {
