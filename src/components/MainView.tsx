@@ -82,11 +82,6 @@ export class MainView extends Component<Props, State> {
             if (result === null) {
                 this.showOnboardingView();
             }
-            // FIXME: Remove this after dev!!!
-            // TODO:  see this ^^^
-            else {
-                AsyncStorage.removeItem('onboardHelpSeen');
-            }
         });
         this.getNeeds();
         this.getCategories();
