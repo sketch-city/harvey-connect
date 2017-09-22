@@ -138,13 +138,13 @@ export class FiltersView extends Component<Props, State> {
         const isActiveFilter = (item.name === this.state.activeFilter)
 
         return (
-            <TouchableOpacity style={[styles.filtersListItem]}
+            <TouchableOpacity style={styles.filtersListItem}
                 onPress={this.onPressFilter.bind(this, item.name)}>
                 <View>
                     <Text style={[styles.filterListItemText, isActiveFilter && styles.filterListItemTextActive]}>
                         {item.name}
                     </Text>
-                    <Text style={[styles.filterListItemText]}
+                    <Text style={styles.filterListItemText}
                         numberOfLines={1}>
                         {this.getCategoryDescriptor(item)}
                     </Text>
@@ -161,7 +161,7 @@ export class FiltersView extends Component<Props, State> {
             return ''
         }
 
-        let lang = strings.getInterfaceLanguage()
+        let lang = strings.getLanguage()
         if (lang !== 'es' && lang !== 'en') {
             lang = 'en'
         }
