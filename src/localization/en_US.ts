@@ -17,5 +17,7 @@ export const en_US = {
     locationPermissionRequestTitle: 'Location for needs',
     locationPermissionRequestMessage: 'App needs access to your location so you can find others in need or request your needs.',
     contact: 'Contact',
-    eula: 'EULA'
+    eula: 'EULA',
+    updateAction: 'Update',
+    myInfo: 'My Info'
 }

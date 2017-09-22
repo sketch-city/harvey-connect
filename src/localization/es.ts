@@ -17,5 +17,7 @@ export const es = {
     locationPermissionRequestTitle: 'Localizacion para necesidades',
     locationPermissionRequestMessage: 'La aplicacion necesita acceso a su localizacion para que pueda encontrar encontrar a otros o ingresar sus propias necesidades.',
     contact: 'Contacto',
-    eula: 'Terminos'
+    eula: 'Terminos',
+    updateAction: 'Update',
+    myInfo: 'My Info'
 }

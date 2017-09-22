@@ -22,6 +22,7 @@ import { Separator } from "./Separator";
 import { Colors, SmallButtonText } from '../constants';
 import { strings } from './../localization/Strings'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
+import * as _ from 'lodash'
 type LatLng = {
     latitude: number,
     longitude: number,
@@ -95,7 +96,7 @@ export class HavesView extends Component<Props, State> {
             listData: [{
                 data:
                 [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.FakeHeader],
-                key: 'My Info',
+                key: strings.myInfo,
                 keyExtractor: this.keyExtractor,
                 renderItem: this.renderItem
             }],
@@ -110,7 +111,8 @@ export class HavesView extends Component<Props, State> {
             if (value !== null) {
                 let json = JSON.parse(value);
                 let categoriesParsed = json.categories
-                let lang = strings.getInterfaceLanguage()
+                let lang = strings.getLanguage()
+
                 if (lang !== 'es' && lang !== 'en') {
                     lang = 'en'
                 }
@@ -458,10 +460,10 @@ export class HavesView extends Component<Props, State> {
         let text = null
         let func = null
         if (this.props.editingNeed === undefined || this.props.editingNeed === null) {
-            text = 'Done'
+            text = strings.doneAction
             func = this.createNeed
         } else {
-            text = 'Update'
+            text = strings.updateAction
             func = this.updateNeed
         }
         return (
