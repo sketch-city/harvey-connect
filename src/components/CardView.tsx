@@ -17,6 +17,7 @@ import Mailer from 'react-native-mail'
 
 interface Props {
     need?: Need
+    localizedCategories: {}
     needFlagged?: () => void
 }
 interface State { }
@@ -54,13 +55,17 @@ export class CardView extends Component<Props, State> {
             return 'N/A'
         }
 
-        return _.reduce(categories, (result, value, index) => {
+        return _.reduce(categories, (result, value: string, index) => {
+            let localized = this.props.localizedCategories[value]
+            if (localized === undefined || localized === null || localized === '') {
+                localized = value
+            }
             if (index === (categories.length - 1)) {
                 let andString = categories.length === 1 ? '' : 'and '
-                return result + andString + value.toLowerCase() + '.'
+                return result + andString + localized.toLowerCase() + '.'
             }
 
-            return result + value.toLowerCase() + ', '
+            return result + localized.toLowerCase() + ', '
         }, 'I need ')
     }
 

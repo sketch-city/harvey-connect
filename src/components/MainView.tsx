@@ -61,6 +61,7 @@ interface State {
 
 export class MainView extends Component<Props, State> {
     private watchId: number;
+    localizedStrings: Object = {}
 
     constructor(props) {
         super(props);
@@ -101,8 +102,16 @@ export class MainView extends Component<Props, State> {
     }
 
     getCategories = async () => {
-        let categories = await API.getCategories()
+        let { categories, all } = await API.getCategories()
         if (categories !== undefined || categories !== null) {
+            let lang = strings.getLanguage()
+
+            if (lang !== 'es' && lang !== 'en') {
+                lang = 'en'
+            }
+            let localized = all[lang]
+
+            this.localizedStrings = localized
             this.setState({ categories: categories })
         }
     }
@@ -249,7 +258,7 @@ export class MainView extends Component<Props, State> {
         const { width, height } = Dimensions.get('window');
 
         return (
-            <CardView need={item} needFlagged={this.getNeeds} />
+            <CardView need={item} needFlagged={this.getNeeds} localizedCategories={this.localizedStrings} />
         )
     };
 
