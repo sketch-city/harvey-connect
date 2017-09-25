@@ -123,8 +123,8 @@ export class HavesView extends Component<Props, State> {
                     let values = val[keyName];
 
                     if (values === null || values === undefined) { return; }
-                    let data = values.map((prop) => localized[Object.getOwnPropertyNames(prop)[0]]);
-                    return new Category(localized[keyName], data, this.keyExtractor, this.renderCategoryItem);
+                    let data = values.map((prop) => Object.getOwnPropertyNames(prop)[0]);
+                    return new Category(keyName, data, this.keyExtractor, this.renderCategoryItem);
                 });
                 categoryData.splice(0, 0, this.state.listData[0])
                 this.setState({ listData: categoryData });
@@ -184,7 +184,7 @@ export class HavesView extends Component<Props, State> {
                     }
                 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text style={{ color: Colors.needText }}>{item}</Text>
+                    <Text style={{ color: Colors.needText }}>{this.localizedStrings[item]}</Text>
                     {this.renderCheckmark(section, item)}
                 </View>
             </TouchableOpacity>
@@ -400,7 +400,7 @@ export class HavesView extends Component<Props, State> {
                 height: 40, padding: 10,
                 color: Colors.needText, backgroundColor: '#F5F5F5',
                 fontWeight: 'bold'
-            }}>{item.section.key}</Text>
+            }}>{this.localizedStrings[item.section.key]}</Text>
         )
     }
 
