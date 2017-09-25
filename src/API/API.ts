@@ -195,7 +195,7 @@ export class API {
 
         let categoryDictionary = new KeyedCollection<any>()
 
-        return new Promise<KeyedCollection<any>>((resolve) => {
+        return new Promise<{ categories: KeyedCollection<any>, all: any }>((resolve) => {
             json["categories"].map((val) => {
                 let keyName = Object.getOwnPropertyNames(val)[0]
                 let values = val[keyName]
@@ -203,7 +203,7 @@ export class API {
                 categoryDictionary.Add(keyName, values)
             })
 
-            resolve(categoryDictionary)
+            resolve({ categories: categoryDictionary, all: json })
         })
     }
 
