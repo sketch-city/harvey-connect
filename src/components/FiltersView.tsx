@@ -160,7 +160,7 @@ export class FiltersView extends Component<Props, State> {
             return ''
         }
 
-        let lang = strings.getInterfaceLanguage()
+        let lang = strings.getLanguage()
         if (lang !== 'es' && lang !== 'en') {
             lang = 'en'
         }

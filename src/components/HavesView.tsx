@@ -22,6 +22,7 @@ import { Separator } from "./Separator";
 import { Colors, SmallButtonText } from '../constants';
 import { strings } from './../localization/Strings'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
+import * as _ from 'lodash'
 type LatLng = {
     latitude: number,
     longitude: number,
@@ -95,7 +96,7 @@ export class HavesView extends Component<Props, State> {
             listData: [{
                 data:
                 [MarkerValue.Name, MarkerValue.Address, MarkerValue.Phone, MarkerValue.FakeHeader],
-                key: 'My Info',
+                key: strings.myInfo,
                 keyExtractor: this.keyExtractor,
                 renderItem: this.renderItem
             }],
@@ -110,7 +111,8 @@ export class HavesView extends Component<Props, State> {
             if (value !== null) {
                 let json = JSON.parse(value);
                 let categoriesParsed = json.categories
-                let lang = strings.getInterfaceLanguage()
+                let lang = strings.getLanguage()
+
                 if (lang !== 'es' && lang !== 'en') {
                     lang = 'en'
                 }
@@ -121,8 +123,8 @@ export class HavesView extends Component<Props, State> {
                     let values = val[keyName];
 
                     if (values === null || values === undefined) { return; }
-                    let data = values.map((prop) => localized[Object.getOwnPropertyNames(prop)[0]]);
-                    return new Category(localized[keyName], data, this.keyExtractor, this.renderCategoryItem);
+                    let data = values.map((prop) => Object.getOwnPropertyNames(prop)[0]);
+                    return new Category(keyName, data, this.keyExtractor, this.renderCategoryItem);
                 });
                 categoryData.splice(0, 0, this.state.listData[0])
                 this.setState({ listData: categoryData });
@@ -182,7 +184,7 @@ export class HavesView extends Component<Props, State> {
                     }
                 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text style={{ color: Colors.needText }}>{item}</Text>
+                    <Text style={{ color: Colors.needText }}>{this.localizedStrings[item]}</Text>
                     {this.renderCheckmark(section, item)}
                 </View>
             </TouchableOpacity>
@@ -376,6 +378,7 @@ export class HavesView extends Component<Props, State> {
                 <MapView.Marker
                     ref='marker'
                     draggable
+                    centerOffset={{ x: 0, y: -25 }}
                     onDragEnd={this.handlePinDrag}
                     coordinate={{
                         latitude: this.state.currentLocation.latitude,
@@ -383,7 +386,7 @@ export class HavesView extends Component<Props, State> {
                     }}
                     key={'blah'}
                 >
-                    <FAIcon name='map-marker' size={40} style={{ color: Colors.red }} />
+                    <FAIcon name='map-marker' size={60} style={{ color: Colors.red }} />
                 </MapView.Marker>
             )
         } else {
@@ -397,7 +400,7 @@ export class HavesView extends Component<Props, State> {
                 height: 40, padding: 10,
                 color: Colors.needText, backgroundColor: '#F5F5F5',
                 fontWeight: 'bold'
-            }}>{item.section.key}</Text>
+            }}>{this.localizedStrings[item.section.key]}</Text>
         )
     }
 
@@ -457,10 +460,10 @@ export class HavesView extends Component<Props, State> {
         let text = null
         let func = null
         if (this.props.editingNeed === undefined || this.props.editingNeed === null) {
-            text = 'Done'
+            text = strings.doneAction
             func = this.createNeed
         } else {
-            text = 'Update'
+            text = strings.updateAction
             func = this.updateNeed
         }
         return (

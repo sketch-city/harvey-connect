@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, FlatList, StyleSheet, Dimensions } from 'react-native';
-import { Need } from '../API/API'
+import { Need, API } from '../API/API'
 import { Separator } from '../components/Separator'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 
@@ -17,6 +17,8 @@ import Mailer from 'react-native-mail'
 
 interface Props {
     need?: Need
+    localizedCategories: {}
+    needFlagged?: () => void
 }
 interface State { }
 
@@ -53,27 +55,37 @@ export class CardView extends Component<Props, State> {
             return 'N/A'
         }
 
-        return _.reduce(categories, (result, value, index) => {
+        return _.reduce(categories, (result, value: string, index) => {
+            let localized = this.props.localizedCategories[value]
+            if (localized === undefined || localized === null || localized === '') {
+                localized = value
+            }
             if (index === (categories.length - 1)) {
                 let andString = categories.length === 1 ? '' : 'and '
-                return result + andString + value.toLowerCase() + '.'
+                return result + andString + localized.toLowerCase() + '.'
             }
 
-            return result + value.toLowerCase() + ', '
+            return result + localized.toLowerCase() + ', '
         }, 'I need ')
     }
 
-    flagNeed = () => {
-        Mailer.mail({
-            subject: 'Report',
-            recipients: [' connectapp@chaione.com'],
-            body: `I would like to report the Need '${this.props.need.id}' for objectionable content.`,
-            isHTML: true
-        }, (error, event) => {
-            if (error) {
-                Alert.alert('Error', 'Could not send mail. Please send a mail to connectapp@chaione.com');
+    flagNeedTapped = () => {
+        Alert.alert('Are you sure?', `Do you flag this post for objectionable content?`, [{ text: 'OK', onPress: () => this.flagNeed(), style: 'destructive' },
+        { text: 'Cancel', style: 'cancel' }])
+    }
+
+    flagNeed = async () => {
+        if (this.props.need !== null || this.props.need !== undefined) {
+            try {
+                await API.flagMarker(this.props.need.id)
+                Alert.alert('Done!', 'The post has been flagged.')
+                if (this.props.needFlagged !== null && this.props.needFlagged() !== undefined) {
+                    this.props.needFlagged()
+                }
+            } catch (error) {
+                Alert.alert('Error', 'Something went wrong, please try again.')
             }
-        });
+        }
     }
 
     render() {
@@ -82,12 +94,12 @@ export class CardView extends Component<Props, State> {
         return (
             <View style={styles.cardContainer}>
                 <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.needTitleText}>
+                    <Text style={[styles.needTitleText, { marginLeft: 10 }]}>
                         {need.name}
                     </Text>
                     <TouchableOpacity
-                        onPress={this.flagNeed}>
-                        <FAIcon name="flag" style={[styles.directionButtonIcon, { marginTop: 8 }]} />
+                        onPress={this.flagNeedTapped}>
+                        <FAIcon name="flag" style={[styles.directionButtonIcon, { marginTop: 8, marginRight: 10 }]} />
                     </TouchableOpacity>
                 </View>
 

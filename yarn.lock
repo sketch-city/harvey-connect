@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/lodash@^4.14.74":
+  version "4.14.74"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.74.tgz#ac3bd8db988e7f7038e5d22bd76a7ba13f876168"
+
 "@types/react-native@^0.48.6":
   version "0.48.6"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.48.6.tgz#a3b4103e6213fff2bdab3ed4422af3349d8ca1d2"

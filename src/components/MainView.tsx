@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     Dimensions,
     Modal,
-    Image
+    Image,
+    AsyncStorage
 } from 'react-native';
 
 import EntypoIcon from 'react-native-vector-icons/Entypo';
@@ -60,6 +61,7 @@ interface State {
 
 export class MainView extends Component<Props, State> {
     private watchId: number;
+    localizedStrings: Object = {}
 
     constructor(props) {
         super(props);
@@ -77,6 +79,11 @@ export class MainView extends Component<Props, State> {
 
     componentDidMount() {
         LocationManager.getCurrentPosition().then(pos => this.setState({ currentPosition: pos }));
+        AsyncStorage.getItem('onboardHelpSeen', (error, result) => {
+            if (result === null) {
+                this.showOnboardingView();
+            }
+        });
         this.getNeeds();
         this.getCategories();
     }
@@ -88,12 +95,23 @@ export class MainView extends Component<Props, State> {
 
         if (prevState.modalVisible && !this.state.modalVisible) {
             this.getNeeds();
+            if (prevState.modalType === 'ONBOARD' && this.state.modalType === '') {
+                AsyncStorage.setItem('onboardHelpSeen', 'true');
+            }
         }
     }
 
     getCategories = async () => {
-        let categories = await API.getCategories()
+        let { categories, all } = await API.getCategories()
         if (categories !== undefined || categories !== null) {
+            let lang = strings.getLanguage()
+
+            if (lang !== 'es' && lang !== 'en') {
+                lang = 'en'
+            }
+            let localized = all[lang]
+
+            this.localizedStrings = localized
             this.setState({ categories: categories })
         }
     }
@@ -170,7 +188,7 @@ export class MainView extends Component<Props, State> {
                     onPress={this.onPressNeedMarker}
                     key={marker.id}
                 >
-                    <FAIcon name='map-marker' size={40} style={{ color: Colors.red }} />
+                    <FAIcon name='map-marker' size={60} style={{ color: Colors.red }} />
                 </MapView.Marker>
             )
 
@@ -240,7 +258,7 @@ export class MainView extends Component<Props, State> {
         const { width, height } = Dimensions.get('window');
 
         return (
-            <CardView need={item} />
+            <CardView need={item} needFlagged={this.getNeeds} localizedCategories={this.localizedStrings} />
         )
     };
 
@@ -319,6 +337,12 @@ export class MainView extends Component<Props, State> {
         })
     }
 
+    showOnboardingView = () => {
+        this.setState({
+            modalVisible: true,
+            modalType: 'ONBOARD'
+        })
+    }
 
     render() {
         const { height } = Dimensions.get('window');
@@ -352,17 +376,27 @@ export class MainView extends Component<Props, State> {
                             <Text style={styles.actionButtonText}>{strings.filterAction.toLocaleUpperCase()}</Text>
                         </TouchableOpacity>
                         <View style={styles.actionButtonSpacer} />
-                        <TouchableOpacity onPress={this.showAboutView}>
-                            <Image source={require('./../images/info.png')} style={{ width: 28, height: 28 }} />
-                        </TouchableOpacity>
-
                     </View>
                 </View>
                 <View style={styles.cardSheet}>
                     {this.renderActionButtonsIfNecessary()}
                     {this.renderNeedCardViewIfNecessary()}
                 </View>
+                {this.renderInfoButton()}
             </View>
         )
+    }
+
+    renderInfoButton = () => {
+        if (!this.state.selectedNeedId) {
+            return (
+                <TouchableOpacity style={{ position: 'absolute', right: 10, bottom: 28 }}
+                    onPress={this.showAboutView}>
+                    <Image source={require('./../images/info.png')} style={{ width: 28, height: 28 }} />
+                </TouchableOpacity>
+            )
+        } else {
+            return <View />
+        }
     }
 }
