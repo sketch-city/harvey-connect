@@ -10,7 +10,7 @@
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@types/react-native-communications/-/react-native-communications-2.2.0.tgz#9fdd4c3706a9164fb64f0b160cae3359289943a0"
 
-"@types/react-native@^0.48.7":
+"@types/react-native@^0.48.4":
   version "0.48.7"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.48.7.tgz#6b673dbebc5e216454db13e77fa8aab24098abe6"
   dependencies:
