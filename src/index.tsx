@@ -6,13 +6,6 @@ import { MainView } from './components/MainView';
 import { UUIDHelper } from './API/UUIDHelper';
 
 export default function AppContainer() {
-    //TODO:sample code of how to check for permission as app lunch layer, we can only request permission when its needed instead and take this code out.
-    // AndroidPermissionHelper.checkLocationPermission().then((value) => {
-    //     if (value === PermissionsAndroid.RESULTS.DENIED) {
-    //         AndroidPermissionHelper.requestLocationPermission();
-    //     }
-    // });
-
     UUIDHelper.setupUUIDIfNeeded().then((value) => {
         console.log(`created uuid: ${value}`)
     }).catch((error) => {

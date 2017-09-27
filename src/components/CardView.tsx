@@ -62,10 +62,10 @@ export class CardView extends Component<Props, State> {
             }
             if (index === (categories.length - 1)) {
                 let andString = categories.length === 1 ? '' : 'and '
-                return result + andString + localized.toLowerCase() + '.'
+                return `${result}${andString}${localized.toLowerCase()}.`
             }
 
-            return result + localized.toLowerCase() + ', '
+            return `${result}${localized.toLowerCase()},`
         }, 'I need ')
     }
 

@@ -128,7 +128,7 @@ export class NeedListView extends Component<Props, State> {
                         height: 45
                     }}
                         onPress={() => this.setState({ modalVisible: true, selectedNeed: undefined })}>
-                        <Text style={ SmallButtonText }>{strings.createNeedAction}</Text>
+                        <Text style={SmallButtonText}>{strings.createNeedAction}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
