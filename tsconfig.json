@@ -6,6 +6,12 @@
         "jsx": "react-native",
         "allowJs": true,
         "allowSyntheticDefaultImports": true,
-        "alwaysStrict": true
+        "alwaysStrict": true,
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "noImplicitAny": false,
+        "noImplicitThis": true
     }
 }
