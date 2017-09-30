@@ -146,7 +146,7 @@ export class API {
     }
 
     public static updateMarker = async (item: CreateMarker) => {
-        let url = 'https://disasterconnect.herokuapp.com/api/v1/connect/markers/' + item.id
+        let url = `https://disasterconnect.herokuapp.com/api/v1/connect/markers/${item.id}`
         let uuid = await UUIDHelper.getUUID()
         let response = await fetch(url, {
             method: 'PUT',
@@ -208,7 +208,7 @@ export class API {
     }
 
     public static getAddressFromLatLang = async (latitude: number, longitude: number) => {
-        let reverseGeoCoding = await fetch(googleMapAPIUrl + 'latlng=' + latitude + ',' + longitude + googleMapsAPIKey);
+        let reverseGeoCoding = await fetch(`${googleMapAPIUrl}latlng=${latitude},${longitude}${googleMapsAPIKey}`);
         let json = await reverseGeoCoding.json();
         return new Promise<string>((resolve, reject) => {
             if (json["results"][0].formatted_address) {
@@ -221,7 +221,7 @@ export class API {
     }
 
     public static getLatLangFromAddress = async (address: string) => {
-        let reverseGeoCoding = await fetch(googleMapAPIUrl + 'address=' + address + addressFilter + googleMapsAPIKey);
+        let reverseGeoCoding = await fetch(`${googleMapAPIUrl}address=${address}${addressFilter}${googleMapsAPIKey}`);
         let json = await reverseGeoCoding.json();
 
         return new Promise<{ lat: number, lng: number }>((resolve, reject) => {

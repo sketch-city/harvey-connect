@@ -5,10 +5,10 @@ export class LocationPermissionHelper {
 
     public static async requestLocationPermissionIfNecessary(): Promise<boolean> {
         try {
-            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-                    'title': strings.locationPermissionRequestTitle,
-                    'message': strings.locationPermissionRequestMessage
-                }) as PermissionStatus;
+            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
+                'title': strings.locationPermissionRequestTitle,
+                'message': strings.locationPermissionRequestMessage
+            }) as PermissionStatus;
 
             if (granted === 'granted') {
                 return new Promise<boolean>(resolve => resolve(true));

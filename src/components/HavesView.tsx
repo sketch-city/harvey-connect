@@ -22,7 +22,7 @@ import { Separator } from "./Separator";
 import { Colors, SmallButtonText } from '../constants';
 import { strings } from './../localization/Strings'
 import FAIcon from 'react-native-vector-icons/FontAwesome';
-import * as _ from 'lodash'
+import _ from 'lodash';
 type LatLng = {
     latitude: number,
     longitude: number,

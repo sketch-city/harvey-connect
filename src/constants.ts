@@ -15,6 +15,8 @@ export const Colors = {
     grey: '#A2AEB6',
 }
 
+type fontWeightType = "600" | "300" | "500" | "700" | "normal" | "bold" | "100" | "200" | "400" | "800" | "900";
+
 export const dropShadowStyles = {
     shadowRadius: 1,
     shadowOffset: { width: 0, height: 0.5 },
@@ -25,25 +27,25 @@ export const dropShadowStyles = {
 
 export const TitleText = {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: '600' as fontWeightType,
     color: Colors.black,
 }
 
 export const PlainText = {
     fontSize: 18,
     color: Colors.black,
-    fontWeight: '300',
+    fontWeight: '300' as fontWeightType,
 }
 
 export const ButtonText = {
     fontSize: 26,
-    fontWeight: '500',
+    fontWeight: '500' as fontWeightType,
     color: Colors.black,
 }
 
 export const SmallButtonText = {
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '700' as fontWeightType,
     color: Colors.white,
 }
 

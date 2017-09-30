@@ -4,6 +4,14 @@
         "module": "es2015",
         "moduleResolution": "node",
         "jsx": "react-native",
-        "allowSyntheticDefaultImports": true
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "alwaysStrict": true,
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "noImplicitAny": false,
+        "noImplicitThis": true
     }
 }

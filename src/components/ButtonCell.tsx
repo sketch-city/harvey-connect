@@ -25,7 +25,7 @@ export class ButtonCell extends Component<Props, {}> {
                 }}
                     onPress={this.props.onButtonPress}
                 >
-                    <Text style={{color:'#fff'}} >{this.props.buttonTitle}</Text>
+                    <Text style={{ color: '#fff' }} >{this.props.buttonTitle}</Text>
                 </TouchableOpacity>
                 <Text>{this.props.value}</Text>
             </View>

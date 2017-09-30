@@ -312,7 +312,7 @@ export class MainView extends Component<Props, State> {
         })
     }
 
-    onSelectFilters = (filters) => {
+    onSelectFilters = (filters: string[]) => {
         this.setState({
             filters,
             modalVisible: false,
