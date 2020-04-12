@@ -141,7 +141,7 @@ export class FiltersView extends Component<Props, State> {
                 onPress={this.onPressFilter.bind(this, item.name)}>
                 <View>
                     <Text style={StyleSheet.flatten([styles.filterListItemText, isActiveFilter && styles.filterListItemTextActive])}>
-                        {item.name}
+                        {this.getCategoryName(item)}
                     </Text>
                     <Text style={styles.filterListItemText}
                         numberOfLines={1}>
@@ -155,13 +155,34 @@ export class FiltersView extends Component<Props, State> {
         )
     }
 
+    getCategoryName = (item) => {
+        if (this.state.categoryJSON === undefined) {
+            return ''
+        }
+
+        let lang = strings.getLanguage()
+        if (lang !== 'es' && lang !== 'en' && lang !== 'hi') {
+            lang = 'en'
+        }
+        
+        console.log(item)
+
+        let catName = item.name.toLowerCase()
+        console.log(catName)
+                
+        let value = this.state.categoryJSON[lang][catName]
+        console.log(value)
+        
+        return value
+    }
+
     getCategoryDescriptor = (item) => {
         if (this.state.categoryJSON === undefined) {
             return ''
         }
 
         let lang = strings.getLanguage()
-        if (lang !== 'es' && lang !== 'en') {
+        if (lang !== 'es' && lang !== 'en' && lang !== 'hi') {
             lang = 'en'
         }
         let cats = this.props.categories.items[item.name.toLowerCase()]

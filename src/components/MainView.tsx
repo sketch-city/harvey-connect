@@ -106,7 +106,7 @@ export class MainView extends Component<Props, State> {
         if (categories !== undefined || categories !== null) {
             let lang = strings.getLanguage()
 
-            if (lang !== 'es' && lang !== 'en') {
+            if (lang !== 'es' && lang !== 'en' && lang !== 'hi') {
                 lang = 'en'
             }
             let localized = all[lang]

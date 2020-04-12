@@ -19,5 +19,6 @@ export const es = {
     contact: 'Contacto',
     eula: 'Terminos',
     updateAction: 'Actualizar',
-    myInfo: 'Mi información'
+    myInfo: 'Mi información',
+    aboutDev: 'Supported by Houston\'s creative community \n and the team at ChaiOne'
 }

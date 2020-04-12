@@ -35,11 +35,7 @@ export class CategoryList extends Component<Props, State> {
         console.log(props.selectedCategories)
         this.state = {
             selectedItems: props.selectedCategories ? props.selectedCategories : {},
-            data: [
-                { data: ['muck', 'heavy trash', 'laundry'], key: 'labor', keyExtractor: this.keyExtractor },
-                { data: ['Nurse, medical doctor', 'House repairs', 'Legal advice'], key: 'specialized', keyExtractor: this.keyExtractor },
-                { data: ['construction', 'baby and child care', 'medicine'], key: 'supplies', keyExtractor: this.keyExtractor }
-            ]
+            data: []
 
         }
     }
