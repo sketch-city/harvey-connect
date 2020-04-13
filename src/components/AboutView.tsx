@@ -10,7 +10,6 @@ import { Linking, Platform, Alert } from "react-native";
 import { TitleText, PlainText, ButtonText, Colors, dropShadowStyles, styles } from '../constants';
 import { strings } from '../localization/Strings';
 import Mailer from 'react-native-mail'
-import { Answers } from 'react-native-fabric';
 
 
 interface Props {
@@ -37,7 +36,7 @@ export class AboutView extends Component<Props, State> {
     }
 
     aboutText = () => {
-        return `Supported by Houston's creative community \n and the team at ChaiOne`
+        return strings.aboutDev
     }
     render() {
         const { width, height } = Dimensions.get('window');

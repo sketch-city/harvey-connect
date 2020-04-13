@@ -113,7 +113,7 @@ export class HavesView extends Component<Props, State> {
                 let categoriesParsed = json.categories
                 let lang = strings.getLanguage()
 
-                if (lang !== 'es' && lang !== 'en') {
+                if (lang !== 'es' && lang !== 'en' && lang !== 'hi') {
                     lang = 'en'
                 }
                 let localized = json[lang]

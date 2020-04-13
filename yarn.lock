@@ -3478,17 +3478,14 @@ react-native-drawer-layout@1.3.2:
   dependencies:
     react-native-dismiss-keyboard "1.0.0"
 
-react-native-fabric@^0.5.0:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/react-native-fabric/-/react-native-fabric-0.5.1.tgz#e5eb65c56196355b41f230c14adcc9c4bcf60dda"
-
 react-native-localization@^0.1.32:
   version "0.1.32"
   resolved "https://registry.yarnpkg.com/react-native-localization/-/react-native-localization-0.1.32.tgz#623bf3359abdd0f0afff50951dcf06cffda01b2a"
 
-react-native-mail@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/react-native-mail/-/react-native-mail-3.0.4.tgz#764c5db699c36351fea455f02a746c5082f0301a"
+react-native-mail@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-mail/-/react-native-mail-4.1.0.tgz#2ebe2df2211a84862a3aea77316736189e23435b"
+  integrity sha512-3IHQmUQJwFFV7HwDONeIEahhaEvK9u23liqIUQajPy7frk/AoIGhkdKf4FVSTeq+VlUx97qls4uNizP7hBXIIw==
 
 react-native-maps@^0.16.4:
   version "0.16.4"
