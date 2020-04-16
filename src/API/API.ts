@@ -1,4 +1,4 @@
-import {AsyncStorage} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import {UUIDHelper} from './UUIDHelper';
 
 let googleMapAPIUrl = 'https://maps.googleapis.com/maps/api/geocode/json?';

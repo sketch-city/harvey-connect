@@ -1,4 +1,4 @@
-import {AsyncStorage} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 export class UUIDHelper {
   private static generateUUID = () => {
     // Public Domain/MIT

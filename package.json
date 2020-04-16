@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.9.0",
     "@types/lodash": "^4.14.149",
     "@types/react-native-mail": "^3.0.0",
     "@types/react-native-vector-icons": "^6.4.5",

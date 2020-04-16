@@ -9,8 +9,8 @@ import {
   KeyboardAvoidingView,
   Modal,
   Alert,
-  AsyncStorage,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import MapView from 'react-native-maps';
 import {LocationManager} from '../API/LocationManager';
 import {TextCell} from './TextCell';
