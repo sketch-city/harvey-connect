@@ -1,4 +1,6 @@
 import {LocationPermissionHelper} from './LocationPermissionHelper';
+import Geolocation from '@react-native-community/geolocation';
+
 import {Platform} from 'react-native';
 
 export class LocationManager {
@@ -11,7 +13,7 @@ export class LocationManager {
           timeout: 20000,
           maximumAge: 1000,
         };
-        navigator.geolocation.getCurrentPosition(
+        Geolocation.getCurrentPosition(
           (pos) => resolve(pos),
           (err) => reject(err),
           options,
