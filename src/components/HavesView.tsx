@@ -207,10 +207,14 @@ export class HavesView extends Component<Props, State> {
           } else {
             let current = {...this.state.selectedCategories};
 
-            let array = current[section.key] ? current[section.key] : [];
-            array.push(item);
-            current[section.key] = array;
-            this.setState({selectedCategories: current});
+            if (!current[section.key]) {
+              let array = current[section.key] ? current[section.key] : [];
+              array.push(item);
+              current[section.key] = array;
+              this.setState({selectedCategories: current});
+            } else {
+              alert('Please make one selection from same grocery');
+            }
           }
         }}>
         <View
