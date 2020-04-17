@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -9,13 +9,13 @@ import {
   KeyboardAvoidingView,
   Modal,
   Alert,
-  AsyncStorage,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import MapView from 'react-native-maps';
-import { LocationManager } from '../API/LocationManager';
-import { TextCell } from './TextCell';
-import { ButtonCell } from './ButtonCell';
-import { CategoryList, Category } from './CategoryList';
+import {LocationManager} from '../API/LocationManager';
+import {TextCell} from './TextCell';
+import {ButtonCell} from './ButtonCell';
+import {CategoryList, Category} from './CategoryList';
 import {
   API,
   CreateMarker,
@@ -23,10 +23,10 @@ import {
   IKeyedCollection,
   Need,
 } from './../API/API';
-import { UUIDHelper } from './../API/UUIDHelper';
-import { Separator } from './Separator';
-import { Colors, SmallButtonText } from '../constants';
-import { strings } from './../localization/Strings';
+import {UUIDHelper} from './../API/UUIDHelper';
+import {Separator} from './Separator';
+import {Colors, SmallButtonText} from '../constants';
+import {strings} from './../localization/Strings';
 import FAIcon from 'react-native-vector-icons/FontAwesome';
 import _ from 'lodash';
 type LatLng = {
@@ -39,7 +39,7 @@ type Point = {
   y: number;
 };
 
-export const enum MarkerValue {
+export enum MarkerValue {
   Name = 1,
   Phone,
   Address,
@@ -48,7 +48,7 @@ export const enum MarkerValue {
   FakeHeader,
 }
 
-export const enum MarkerType {
+export enum MarkerType {
   Have = 1,
   Need,
 }
@@ -81,7 +81,7 @@ interface State {
 
 export class HavesView extends Component<Props, State> {
   textChangedDate: Date;
-  localizedStrings: Object = { categories: 'I Need Help With' };
+  localizedStrings: Object = {categories: 'I Need Help With'};
   constructor(props) {
     super(props);
     let need = null;
@@ -145,26 +145,25 @@ export class HavesView extends Component<Props, State> {
             keyName,
             data,
             this.keyExtractor,
-            this.renderCategoryItem
+            this.renderCategoryItem,
           );
         });
         categoryData.splice(0, 0, this.state.listData[0]);
-        this.setState({ listData: categoryData });
+        this.setState({listData: categoryData});
       }
     } catch (error) {
       console.log(error);
     }
   }
 
-  renderItem = ({ item, index }: { item: MarkerValue; index: number }) => {
+  renderItem = ({item, index}: {item: MarkerValue; index: number}) => {
     let height = item === MarkerValue.Description ? 100 : 45;
     return (
       <View
         style={{
           height: height,
           justifyContent: 'center',
-        }}
-      >
+        }}>
         {this.viewForCell(item)}
       </View>
     );
@@ -197,36 +196,30 @@ export class HavesView extends Component<Props, State> {
         }}
         onPress={() => {
           if (this.itemSelected(section.key, item)) {
-            let current = { ...this.state.selectedCategories };
+            let current = {...this.state.selectedCategories};
             let items = current[section.key];
             let foundIndex = items.findIndex((val) => val === item);
             items.splice(foundIndex, 1);
             if (items.length === 0) {
               delete current[section.key];
             }
-            this.setState({ selectedCategories: current });
+            this.setState({selectedCategories: current});
           } else {
-            let current = { ...this.state.selectedCategories };
+            let current = {...this.state.selectedCategories};
 
-            if (!current[section.key]) {
-              let array = current[section.key] ? current[section.key] : [];
-              array.push(item);
-              current[section.key] = array;
-              this.setState({ selectedCategories: current });
-            } else {
-              alert('Please make one selection from same grocery');
-            }
+            let array = current[section.key] ? current[section.key] : [];
+            array.push(item);
+            current[section.key] = array;
+            this.setState({selectedCategories: current});
           }
-        }}
-      >
+        }}>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-          }}
-        >
-          <Text style={{ color: Colors.needText }}>
+          }}>
+          <Text style={{color: Colors.needText}}>
             {this.localizedStrings[item]}
           </Text>
           {this.renderCheckmark(section, item)}
@@ -237,7 +230,7 @@ export class HavesView extends Component<Props, State> {
 
   renderCheckmark = (section: any, item: string) => {
     if (this.itemSelected(section.key, item)) {
-      return <FAIcon name='check' size={15} style={{ color: Colors.black }} />;
+      return <FAIcon name="check" size={15} style={{color: Colors.black}} />;
     } else {
       return <View />;
     }
@@ -247,7 +240,7 @@ export class HavesView extends Component<Props, State> {
     switch (marker) {
       case MarkerValue.Address:
         let now = new Date();
-        this.setState({ address: value });
+        this.setState({address: value});
         if (
           value.length > 8 &&
           this.textChangedDate !== undefined &&
@@ -270,16 +263,16 @@ export class HavesView extends Component<Props, State> {
         this.textChangedDate = new Date();
         break;
       case MarkerValue.Name:
-        this.setState({ name: value });
+        this.setState({name: value});
         break;
       case MarkerValue.Phone:
-        this.setState({ phone: value });
+        this.setState({phone: value});
         break;
       case MarkerValue.Description:
-        this.setState({ description: value });
+        this.setState({description: value});
         break;
       case MarkerValue.Email:
-        this.setState({ email: value });
+        this.setState({email: value});
         break;
     }
   };
@@ -288,7 +281,7 @@ export class HavesView extends Component<Props, State> {
     switch (item) {
       case MarkerValue.Phone:
         return (
-          <View style={{ marginHorizontal: 10 }}>
+          <View style={{marginHorizontal: 10}}>
             <TextCell
               placeholder={strings.phoneNumberLabel}
               keyboardType={'phone-pad'}
@@ -300,7 +293,7 @@ export class HavesView extends Component<Props, State> {
         );
       case MarkerValue.Name:
         return (
-          <View style={{ marginHorizontal: 10 }}>
+          <View style={{marginHorizontal: 10}}>
             <TextCell
               placeholder={strings.nameLabel}
               markerValue={MarkerValue.Name}
@@ -311,10 +304,10 @@ export class HavesView extends Component<Props, State> {
         );
       case MarkerValue.Address:
         return (
-          <View style={{ marginHorizontal: 10 }}>
+          <View style={{marginHorizontal: 10}}>
             <TextCell
               placeholder={strings.addressLabel}
-              ref='addressCell'
+              ref="addressCell"
               markerValue={MarkerValue.Address}
               textChanged={this.updateState}
               value={this.state.address}
@@ -331,13 +324,10 @@ export class HavesView extends Component<Props, State> {
                 color: Colors.needText,
                 backgroundColor: '#F5F5F5',
                 fontWeight: 'bold',
-              }}
-            >
+              }}>
               {this.localizedStrings['categories']}
             </Text>
-            <View
-              style={{ height: 1, backgroundColor: Colors.separatorColor }}
-            />
+            <View style={{height: 1, backgroundColor: Colors.separatorColor}} />
           </View>
         );
     }
@@ -351,9 +341,9 @@ export class HavesView extends Component<Props, State> {
     try {
       let address = await API.getAddressFromLatLang(
         coords.latitude,
-        coords.longitude
+        coords.longitude,
       );
-      this.setState({ address: address });
+      this.setState({address: address});
     } catch (error) {}
   };
 
@@ -379,7 +369,7 @@ export class HavesView extends Component<Props, State> {
     ) {
       (this.refs.havesMap as MapView).animateToCoordinate(
         this.state.currentLocation,
-        300
+        300,
       );
     }
   }
@@ -400,7 +390,7 @@ export class HavesView extends Component<Props, State> {
     try {
       let result = await API.updateMarker(createMarker);
       Alert.alert('Success!', 'Updated the need!', [
-        { text: 'OK', onPress: this.props.cancelTapped, style: 'default' },
+        {text: 'OK', onPress: this.props.cancelTapped, style: 'default'},
       ]);
     } catch (error) {
       console.log(error);
@@ -423,7 +413,7 @@ export class HavesView extends Component<Props, State> {
     try {
       let result = await API.saveNewMarker(createMarker);
       Alert.alert('Success!', 'Created a new need!', [
-        { text: 'OK', onPress: this.props.cancelTapped, style: 'default' },
+        {text: 'OK', onPress: this.props.cancelTapped, style: 'default'},
       ]);
     } catch (error) {
       console.log(error);
@@ -436,12 +426,12 @@ export class HavesView extends Component<Props, State> {
     try {
       let address = await API.getAddressFromLatLang(
         dict.latitude,
-        dict.longitude
+        dict.longitude,
       );
-      this.setState({ pinLocation: dict, address: address });
+      this.setState({pinLocation: dict, address: address});
     } catch (error) {
       console.log(error);
-      this.setState({ pinLocation: dict });
+      this.setState({pinLocation: dict});
     }
   };
 
@@ -449,17 +439,16 @@ export class HavesView extends Component<Props, State> {
     if (this.state.currentLocation !== null) {
       return (
         <MapView.Marker
-          ref='marker'
+          ref="marker"
           draggable
-          centerOffset={{ x: 0, y: -25 }}
+          centerOffset={{x: 0, y: -25}}
           onDragEnd={this.handlePinDrag}
           coordinate={{
             latitude: this.state.currentLocation.latitude,
             longitude: this.state.currentLocation.longitude,
           }}
-          key={'blah'}
-        >
-          <FAIcon name='map-marker' size={60} style={{ color: Colors.red }} />
+          key={'blah'}>
+          <FAIcon name="map-marker" size={60} style={{color: Colors.red}} />
         </MapView.Marker>
       );
     } else {
@@ -476,8 +465,7 @@ export class HavesView extends Component<Props, State> {
           color: Colors.needText,
           backgroundColor: '#F5F5F5',
           fontWeight: 'bold',
-        }}
-      >
+        }}>
         {this.localizedStrings[item.section.key]}
       </Text>
     );
@@ -485,22 +473,20 @@ export class HavesView extends Component<Props, State> {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <MapView
-          ref='havesMap'
-          style={{ flex: 0.5 }}
+          ref="havesMap"
+          style={{flex: 0.5}}
           showsUserLocation={true}
-          followsUserLocation={true}
-        >
+          followsUserLocation={true}>
           {this.renderPin()}
         </MapView>
         <KeyboardAvoidingView
-          style={{ flex: 1, backgroundColor: Colors.white }}
-          contentContainerStyle={{ flex: 1, backgroundColor: Colors.white }}
+          style={{flex: 1, backgroundColor: Colors.white}}
+          contentContainerStyle={{flex: 1, backgroundColor: Colors.white}}
           behavior={'position'}
-          keyboardVerticalOffset={-250}
-        >
-          <View style={{ flex: 1 }}>
+          keyboardVerticalOffset={-250}>
+          <View style={{flex: 1}}>
             <SectionList
               renderSectionHeader={this.renderHeader}
               ItemSeparatorComponent={Separator}
@@ -508,7 +494,7 @@ export class HavesView extends Component<Props, State> {
               extraData={this.state}
             />
           </View>
-          <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
+          <View style={{height: 1, backgroundColor: Colors.separatorColor}} />
           {this.renderDeleteButton()}
           {this.renderBottomButtons()}
         </KeyboardAvoidingView>
@@ -532,13 +518,12 @@ export class HavesView extends Component<Props, State> {
               backgroundColor: Colors.white,
               height: 45,
             }}
-            onPress={() => this.deleteMarkerTapped(this.props.editingNeed)}
-          >
-            <Text style={{ ...SmallButtonText, color: '#A2AEB6' }}>
+            onPress={() => this.deleteMarkerTapped(this.props.editingNeed)}>
+            <Text style={{...SmallButtonText, color: '#A2AEB6'}}>
               {strings.deleteMarkerAction}
             </Text>
           </TouchableOpacity>
-          <View style={{ height: 1, backgroundColor: Colors.separatorColor }} />
+          <View style={{height: 1, backgroundColor: Colors.separatorColor}} />
         </View>
       );
     }
@@ -558,7 +543,7 @@ export class HavesView extends Component<Props, State> {
       func = this.updateNeed;
     }
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <TouchableOpacity
           style={{
             flex: 1,
@@ -566,9 +551,8 @@ export class HavesView extends Component<Props, State> {
             justifyContent: 'center',
             height: 45,
           }}
-          onPress={this.props.cancelTapped}
-        >
-          <Text style={{ ...SmallButtonText, color: '#A2AEB6' }}>
+          onPress={this.props.cancelTapped}>
+          <Text style={{...SmallButtonText, color: '#A2AEB6'}}>
             {strings.cancelAction}
           </Text>
         </TouchableOpacity>
@@ -577,8 +561,7 @@ export class HavesView extends Component<Props, State> {
             height: 45,
             width: 1,
             backgroundColor: Colors.separatorColor,
-          }}
-        ></View>
+          }}></View>
         <TouchableOpacity
           style={{
             flex: 1,
@@ -587,8 +570,7 @@ export class HavesView extends Component<Props, State> {
             backgroundColor: '#50E3C2',
             height: 45,
           }}
-          onPress={func}
-        >
+          onPress={func}>
           <Text style={SmallButtonText}>{text}</Text>
         </TouchableOpacity>
       </View>
@@ -605,8 +587,8 @@ export class HavesView extends Component<Props, State> {
           onPress: () => this.deleteMarker(item),
           style: 'destructive',
         },
-        { text: 'Cancel', style: 'cancel' },
-      ]
+        {text: 'Cancel', style: 'cancel'},
+      ],
     );
   };
 
