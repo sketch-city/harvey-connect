@@ -20,5 +20,6 @@ export const en_US = {
     eula: 'EULA',
     updateAction: 'Update',
     myInfo: 'My Info',
-    aboutDev: 'Supported by Houston\'s creative community \n and the team at ChaiOne'
+    aboutDev: 'Supported by Houston\'s creative community \n and the team at ChaiOne',
+    anything: 'Anything'
 }
