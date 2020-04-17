@@ -46,7 +46,7 @@
 		00E356F21AD99517003FC87E /* sevaTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sevaTests.m; sourceTree = "<group>"; };
 		0401E19734F3236F8E8BD900 /* Pods-seva-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-seva-tvOS.release.xcconfig"; path = "Target Support Files/Pods-seva-tvOS/Pods-seva-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		11657924FD68377D6F51470F /* Pods-seva-sevaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-seva-sevaTests.release.xcconfig"; path = "Target Support Files/Pods-seva-sevaTests/Pods-seva-sevaTests.release.xcconfig"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* Seva.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Seva.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Disaster Connect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disaster Connect.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = seva/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = seva/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -174,7 +174,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* Seva.app */,
+				13B07F961A680F5B00A75B9A /* Disaster Connect.app */,
 				00E356EE1AD99517003FC87E /* sevaTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* seva-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* seva-tvOSTests.xctest */,
@@ -238,7 +238,7 @@
 			);
 			name = seva;
 			productName = seva;
-			productReference = 13B07F961A680F5B00A75B9A /* Seva.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Disaster Connect.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* seva-tvOS */ = {
@@ -740,7 +740,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.chaione.disasterconnect;
-				PRODUCT_NAME = Seva;
+				PRODUCT_NAME = "Disaster Connect";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -762,7 +762,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.chaione.disasterconnect;
-				PRODUCT_NAME = Seva;
+				PRODUCT_NAME = "Disaster Connect";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
