@@ -109,7 +109,7 @@ export class FiltersView extends Component<Props, State> {
     super(props);
     this.getCategoryJSON();
     this.state = {
-      activeFilter: this.props.filters[0] || 'Anything',
+      activeFilter: this.props.filters[0] || strings.anything,
       categoryJSON: undefined,
     };
   }
@@ -132,7 +132,7 @@ export class FiltersView extends Component<Props, State> {
   };
   onPressDone() {
     const selectedFilters =
-      this.state.activeFilter === 'Anything' ? [] : [this.state.activeFilter];
+      this.state.activeFilter === strings.anything ? [] : [this.state.activeFilter];
 
     this.props.onSelectFilters(selectedFilters);
   }
@@ -173,13 +173,13 @@ export class FiltersView extends Component<Props, State> {
       lang = 'en';
     }
 
-    console.log(item);
-
     let catName = item.name.toLowerCase();
-    console.log(catName);
 
     let value = this.state.categoryJSON[lang][catName];
-    console.log(value);
+    
+    if(value === undefined){
+      value = strings.anything
+    }
 
     return value;
   };
@@ -215,7 +215,7 @@ export class FiltersView extends Component<Props, State> {
       };
     });
 
-    return [{name: 'Anything', key: 'anything'}, ...categories];
+    return [{name: strings.anything, key: 'anything'}, ...categories];
   }
 
   render() {

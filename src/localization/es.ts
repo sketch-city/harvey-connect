@@ -20,5 +20,6 @@ export const es = {
     eula: 'Terminos',
     updateAction: 'Actualizar',
     myInfo: 'Mi información',
-    aboutDev: 'Supported by Houston\'s creative community \n and the team at ChaiOne'
+    aboutDev: 'Supported by Houston\'s creative community \n and the team at ChaiOne',
+    anything: 'Anything'
 }
