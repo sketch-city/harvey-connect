@@ -1,17 +1,14 @@
 {
-    "compilerOptions": {
-        "target": "es2015",
-        "module": "es2015",
-        "moduleResolution": "node",
-        "jsx": "react-native",
-        "allowJs": true,
-        "allowSyntheticDefaultImports": true,
-        "alwaysStrict": true,
-        "lib": [
-            "es6",
-            "dom"
-        ],
-        "noImplicitAny": false,
-        "noImplicitThis": true
-    }
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "jsx": "react-native",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "alwaysStrict": true,
+    "lib": ["es6", "dom"],
+    "noImplicitAny": false,
+    "noImplicitThis": true
+  }
 }

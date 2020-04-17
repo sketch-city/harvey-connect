@@ -1,59 +1,58 @@
 {
-	"name": "DisasterConnect",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"start": "node node_modules/react-native/local-cli/cli.js start",
-		"test": "jest"
-	},
-	"dependencies": {
-		"lodash": "^4.17.4",
-		"react": "16.0.0-alpha.12",
-		"react-native": "0.48.4",
-		"react-native-communications": "^2.2.1",
-		"react-native-localization": "^0.1.32",
-		"react-native-mail": "^4.1.0",
-		"react-native-maps": "^0.16.4",
-		"react-native-page-control": "^1.1.0",
-		"react-native-vector-icons": "^4.3.0",
-		"react-navigation": "^1.0.0-beta.13",
-		"react-redux": "^5.0.6",
-		"redux": "^3.7.2"
-	},
-	"devDependencies": {
-		"@types/jest": "^21.1.1",
-		"@types/lodash": "^4.14.74",
-		"@types/react": "^16.0.7",
-		"@types/react-native": "^0.48.9",
-		"@types/react-native-communications": "^2.2.0",
-		"@types/react-redux": "^5.0.6",
-		"@types/react-test-renderer": "^15.5.4",
-		"babel-jest": "^20.0.1",
-		"babel-preset-react-native": "4.0.0",
-		"jest": "^21.1.0",
-		"react-native-typescript-transformer": "^1.1.4",
-		"react-test-renderer": "^16.0.0",
-		"ts-jest": "^21.0.1",
-		"tslint": "^5.7.0",
-		"typescript": "2.5.3"
-	},
-	"jest": {
-		"preset": "react-native",
-		"moduleFileExtensions": [
-			"ts",
-			"tsx",
-			"js"
-		],
-		"transform": {
-			"^.+\\.(js)$": "<rootDir>/node_modules/babel-jest",
-			"\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-		},
-		"testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-		"testPathIgnorePatterns": [
-			"\\.snap$",
-			"<rootDir>/node_modules/",
-			"<rootDir>/lib/"
-		],
-		"cacheDirectory": ".jest/cache"
-	}
+  "name": "DisasterConnect",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@react-native-community/async-storage": "^1.9.0",
+    "@react-native-community/geolocation": "^2.0.2",
+    "@types/lodash": "^4.14.149",
+    "@types/react-native-mail": "^3.0.0",
+    "@types/react-native-vector-icons": "^6.4.5",
+    "@types/react-redux": "^7.1.7",
+    "lodash": "^4.17.15",
+    "react": "16.11.0",
+    "react-native": "0.62.2",
+    "react-native-communications": "^2.2.1",
+    "react-native-localization": "^2.1.6",
+    "react-native-mail": "^4.1.0",
+    "react-native-maps": "0.27.1",
+    "react-native-vector-icons": "^6.6.0",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/runtime": "^7.6.2",
+    "@react-native-community/eslint-config": "^1.0.0",
+    "@types/jest": "^24.0.24",
+    "@types/react-native": "^0.62.0",
+    "@types/react-test-renderer": "16.9.2",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "babel-jest": "^24.9.0",
+    "eslint": "^6.5.1",
+    "jest": "^24.9.0",
+    "metro-react-native-babel-preset": "^0.58.0",
+    "prettier": "^2.0.4",
+    "react-test-renderer": "16.11.0",
+    "typescript": "^3.8.3"
+  },
+  "jest": {
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
 }
