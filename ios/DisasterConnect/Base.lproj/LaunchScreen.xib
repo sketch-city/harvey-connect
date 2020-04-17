@@ -10,23 +10,23 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="321" height="546"/>
+            <rect key="frame" x="0.0" y="0.0" width="241" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splash" translatesAutoresizingMaskIntoConstraints="NO" id="91B-Iz-jdT">
-                    <rect key="frame" x="0.0" y="0.0" width="321" height="546"/>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Splash" translatesAutoresizingMaskIntoConstraints="NO" id="hRM-um-tGG">
+                    <rect key="frame" x="0.0" y="0.0" width="241" height="480"/>
                 </imageView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="91B-Iz-jdT" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="RWx-8T-xO3"/>
-                <constraint firstAttribute="trailing" secondItem="91B-Iz-jdT" secondAttribute="trailing" id="UHb-nT-DHL"/>
-                <constraint firstAttribute="bottom" secondItem="91B-Iz-jdT" secondAttribute="bottom" id="V7j-OG-hHC"/>
-                <constraint firstItem="91B-Iz-jdT" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="q2m-UI-2tz"/>
+                <constraint firstItem="hRM-um-tGG" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="AIo-Ly-mJt"/>
+                <constraint firstItem="hRM-um-tGG" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="U9l-ZG-xS4"/>
+                <constraint firstAttribute="trailing" secondItem="hRM-um-tGG" secondAttribute="trailing" id="b4Q-oV-aaZ"/>
+                <constraint firstAttribute="bottom" secondItem="hRM-um-tGG" secondAttribute="bottom" id="cia-um-Wdc"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="432.60869565217394" y="476.78571428571428"/>
+            <point key="canvasLocation" x="319.56521739130437" y="453.34821428571428"/>
         </view>
     </objects>
     <resources>
